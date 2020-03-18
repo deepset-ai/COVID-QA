@@ -25,7 +25,7 @@ QA_MODE = os.getenv("QA_MODE", "text")
 MODEL_PATH = os.getenv("MODEL_PATH", "DeepPavlov/bert-base-multilingual-cased-sentence")
 
 # Computation
-USE_GPU = os.getenv("TEXT_FIELD_NAME", "True").lower() == "true"
+USE_GPU = os.getenv("USE_GPU", "True").lower() == "true"
 MAX_PROCESSES = int(os.getenv("MAX_PROCESSES", 4))
 BATCHSIZE = int(os.getenv("BATCHSIZE", 50))
 
@@ -36,7 +36,7 @@ DB_PW = os.getenv("DB_PW", "")
 DB_INDEX = os.getenv("DB_INDEX", "document")
 ES_CONN_SCHEME = os.getenv("ES_CONN_SCHEME", "http")
 TEXT_FIELD_NAME = os.getenv("TEXT_FIELD_NAME", "text")
-EMBEDDING_FIELD_NAME = os.getenv("TEXT_FIELD_NAME", None)
+EMBEDDING_FIELD_NAME = os.getenv("EMBEDDING_FIELD_NAME", None)
 EMBEDDING_DIM = os.getenv("EMBEDDING_DIM", None)
 
 # Reader
