@@ -16,7 +16,7 @@ document_store = ElasticsearchDocumentStore(host="localhost", username="", passw
 retriever = ElasticsearchEmbeddingRetriever(document_store=document_store, embedding_model="bert-base-cased", gpu=False)
 
 # Get dataframe with questions, answers and some metadata
-df = pd.read_csv("data/covid/faq_covidbert.csv")
+df = pd.read_csv("data/faqs/faq_covidbert.csv")
 df.fillna(value="", inplace=True)
 
 # Index to ES
