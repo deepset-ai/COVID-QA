@@ -6,7 +6,8 @@ WORKDIR /home/user
 COPY requirements.txt /home/user/
 RUN pip install -r requirements.txt
 
+COPY covid-qa /home/user/covid-qa
 EXPOSE 8000
 
 # cmd for running the API
-CMD ["uvicorn", "haystack.api.inference:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "covid-qa.api:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -5,6 +5,8 @@ from haystack.retriever.elasticsearch import ElasticsearchEmbeddingRetriever
 from haystack.utils import print_answers
 import pandas as pd
 
+MODEL = "DeepPavlov/bert-base-multilingual-cased-sentence"
+GPU = False
 
 document_store = ElasticsearchDocumentStore(host="localhost", username="", password="",
                                             index="document", text_field="answer",
@@ -12,8 +14,7 @@ document_store = ElasticsearchDocumentStore(host="localhost", username="", passw
                                             embedding_dim=768,
                                             excluded_meta_data=["question_emb"])
 
-# alternative to try: DeepPavlov/bert-base-multilingual-cased-sentence
-retriever = ElasticsearchEmbeddingRetriever(document_store=document_store, embedding_model="bert-base-cased", gpu=False)
+retriever = ElasticsearchEmbeddingRetriever(document_store=document_store, embedding_model=MODEL, gpu=GPU)
 
 # Get dataframe with questions, answers and some metadata
 df = pd.read_csv("data/faqs/faq_covidbert.csv")
@@ -33,8 +34,6 @@ if True:
         d["question_emb"] = question_embedding
         docs_to_index.append(d)
         print(idx)
-        # if idx == 10:
-        #     break
     document_store.write_documents(docs_to_index)
 
 
