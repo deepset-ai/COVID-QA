@@ -1,5 +1,9 @@
 # COVID-QA
+
+<img src="https://github.com/deepset-ai/COVID-QA/blob/master/docs/img/covid-bert.png?raw=true" width="130" height="298" />
+
 Provide trustworthy questions to COVID-19 via NLP
+
 
 ## :zap: Problem
 - People have many questions about COVID-19
