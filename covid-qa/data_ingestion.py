@@ -5,7 +5,7 @@ from haystack.retriever.elasticsearch import ElasticsearchEmbeddingRetriever
 from haystack.utils import print_answers
 import pandas as pd
 
-MODEL = "DeepPavlov/bert-base-multilingual-cased-sentence"
+MODEL = "bert-base-uncased"
 GPU = False
 
 document_store = ElasticsearchDocumentStore(host="localhost", username="", password="",
@@ -21,8 +21,7 @@ df = pd.read_csv("data/faqs/faq_covidbert.csv")
 df.fillna(value="", inplace=True)
 
 # Index to ES
-# if document_store.get_document_count() == 0:
-if True:
+if document_store.get_document_count() == 0:
     docs_to_index = []
     doc_id = 1
     for idx, row in df.iterrows():
@@ -39,5 +38,6 @@ if True:
 
 # Init reader & and use Finder to get answer
 finder = Finder(reader=None, retriever=retriever)
-prediction = finder.get_answers_via_similar_questions(question="How is the virus spreading?", top_k_retriever=10)
-print_answers(prediction, details="all")
+prediction = finder.get_answers_via_similar_questions(question="How high is mortality?", top_k_retriever=10)
+for p in prediction["answers"]:
+    print(p["question"])

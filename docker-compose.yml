@@ -3,16 +3,16 @@ services:
   model-api:
     image: "deepset/covid-qa-haystack"
     ports:
-      - "8000:8000"
+      - "80:80"
     environment:
       - TEXT_FIELD_NAME=answer
       - QA_MODE=FAQ
-      - EMBEDDING_FIELD_NAME=question
+      - EMBEDDING_FIELD_NAME=question_emb
       - EMBEDDING_DIM=768
       - USE_GPU=False
-      - MODEL_PATH=DeepPavlov/bert-base-multilingual-cased-sentence # must be the same as used for indexing the FAQs
+      - MODEL_PATH=bert-base-uncased # must be the same as used for indexing the FAQs
       - EXCLUDE_META_DATA_FIELDS=["question_emb"]
-    command: /bin/sh -c "cd /home/user && sleep 20 && uvicorn covid-qa.api:app --host 0.0.0.0 --port 8000 --limit-concurrency 10 --workers 1"
+    command: /bin/sh -c "cd /home/user && sleep 20 && uvicorn covid-qa.api:app --host 0.0.0.0 --port 80 --limit-concurrency 10 --workers 1"
     network_mode: host
   elastic:
     image: "deepset/covid-qa-elastic"
