@@ -1,0 +1,5 @@
+coverage
+app/views/**/*
+app/public/**/*
+test/
+migrations/
