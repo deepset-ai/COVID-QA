@@ -47,7 +47,7 @@ class rki_infos(scrapy.Spider):
 		columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
 		dataframe = pd.DataFrame(columns)
-		dataframe.to_csv("who.tsv", sep="\t", index=False)
+		dataframe.to_csv("rki.tsv", sep="\t", index=False)
 
 
 
