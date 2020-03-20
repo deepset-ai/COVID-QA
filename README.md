@@ -25,7 +25,7 @@ Prod: (coming soon)
 ## :gear:	Tech 
 - Scrapers to collect data
 - Elasticsearch to store texts, FAQs, embeddings
-- NLP Models implented via Haystack to find answers via a) detecting similar question in FAQs b) detect answers in free texts (extractive QA)
+- NLP Models implented via [Haystack](https://github.com/deepset-ai/haystack/) to find answers via a) detecting similar question in FAQs b) detect answers in free texts (extractive QA)
 - React Frontend
 
 ## :heart: How you can help
