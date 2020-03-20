@@ -52,3 +52,4 @@ class rki_infos(scrapy.Spider):
 
 
 
+
