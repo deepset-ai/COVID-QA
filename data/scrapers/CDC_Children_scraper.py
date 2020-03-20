@@ -4,8 +4,8 @@ from datetime import date
 import scrapy
 import pandas as pd
 
-class CDCScrapper(scrapy.Spider):
-  name = "CDC_General_Scraper"
+class CDCChildrenScrapper(scrapy.Spider):
+  name = "CDC_Children_Scraper"
   start_urls = ["https://www.cdc.gov/coronavirus/2019-ncov/prepare/children-faq.html"]
 
   def parse(self, response):

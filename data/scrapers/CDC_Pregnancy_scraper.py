@@ -4,7 +4,7 @@ from datetime import date
 import scrapy
 import pandas as pd
 
-class CDCScrapper(scrapy.Spider):
+class CDCPregnancyScrapper(scrapy.Spider):
   name = "CDC_Pregnancy_Scraper"
   start_urls = ["https://www.cdc.gov/coronavirus/2019-ncov/prepare/pregnancy-breastfeeding.html"]
 
