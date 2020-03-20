@@ -29,9 +29,9 @@ Prod: https://covid.deepset.ai/
 - NodeJS / koa / eggjs middleware
 - React Frontend
 
-## Quick overview of current status
+## Quick overview of current status 
 
-1. Check out the [demo app](https://covid-staging.deepset.ai/) to get a basic idea 
+1. Check out the [demo app](https://covid.deepset.ai/) to get a basic idea 
 2. Data: At the moment we are using a [CSV with collected FAQs](https://github.com/deepset-ai/COVID-QA/blob/master/data/faqs/faq_covidbert.csv) that get's ingested into elasticsearch [here](https://github.com/deepset-ai/COVID-QA/blob/master/covid-qa/data_ingestion.py)
 3. Model: The NLP model to find answers is build via haystack. It's configured and exposed via this [API](https://github.com/deepset-ai/COVID-QA/blob/master/covid-qa/api.py).
 4. Frontend/middleware: TODO
@@ -43,7 +43,8 @@ We are also happy if you just report bugs, add documentation or flag useful/inap
 
 Some next TODOs we see:
 ### Data / Backend
-- [ ] Integrate more data sources via scrapers
+- [ ] Integrate more data sources via scrapers that return a csv with fields: [question,	answer, answer_html, 
+link, name, source, category, country, region, city, lang, last_update](https://github.com/deepset-ai/COVID-QA/blob/master/docs/img/example-data-format.png)
 - [ ] Handling of special non-FAQ questions via other APIs (e.g. “How many infections in Berlin?”)
 - [ ] Improve API to foster external integrations (e.g. Chatsystems) 
 - [ ] Logging & storage to foster analysis of common queries with bad results  
