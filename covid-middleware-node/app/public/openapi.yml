@@ -1,0 +1,5129 @@
+openapi: 3.0.1
+info:
+  description: ''
+  version: 4.0.0
+  title: Dig dis! API Documentation
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: mail@example.com
+servers:
+  - url: 'https://localhost:7001'
+    description: Local server
+  - url: 'https://api-v4.staging.digdis.app'
+    description: Staging
+  - url: 'https://api-v4.services.digdis.app'
+    description: Production
+tags:
+  - name: HealthCheck
+    description: Check service availability
+  - name: Contracts
+    description: Contracts
+  - name: Contents
+    description: News
+  - name: Catalog
+    description: 'Includes labels, tracks and products'
+  - name: User
+    description: User related routes
+  - name: Metadata
+    description: Metadata (readonly data)
+  - name: Api
+    description: Routes for service accounts
+  - name: Artists
+    description: Track artists
+  - name: Admin
+    description: Admin routes
+paths:
+  /:
+    get:
+      tags:
+        - HealthCheck
+      summary: Return service status and version
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+        '500':
+          description: Internal Server error
+  /alive:
+    get:
+      tags:
+        - HealthCheck
+      summary: Return service status and version
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+        '500':
+          description: Internal Server error
+  /user/info:
+    get:
+      tags:
+        - User
+      summary: Get user info
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+  /user/login:
+    post:
+      tags:
+        - User
+      summary: Login user and retrieve auth token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: jwtToken
+  /user/resetpassword:
+    post:
+      tags:
+        - User
+      summary: Send mail with new password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: john@example.com
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: email sent message
+  /user/forgotpassword:
+    post:
+      tags:
+        - User
+      summary: Send mail with new password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: john@example.com
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: email sent message
+  /user/changepassword:
+    post:
+      tags:
+        - User
+      summary: Update password for current user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldPassword:
+                  type: string
+                  example: qwerty
+                newPassword:
+                  type: string
+                  example: Qwerty12$
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  '/contracts/{id}/subscribe':
+    post:
+      tags:
+        - Contracts
+      summary: Subscribe contract to a plan
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscribeRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscribeResponse'
+  '/contracts/{id}/unsubscribe':
+    post:
+      tags:
+        - Contracts
+      summary: Subscribe contract to a plan
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnsubscribeResponse'
+  /contract/users:
+    get:
+      tags:
+        - Contracts
+      summary: Return all user contracts.
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractUser'
+    post:
+      tags:
+        - Contracts
+      summary: Invite user to a contract.
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  '/contract/users/{userId}':
+    put:
+      tags:
+        - Contracts
+      summary: Invite user to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - name: userId
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractUser'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+    delete:
+      tags:
+        - Contracts
+      summary: Remove user from the contract
+      parameters:
+        - $ref: '#/components/parameters/contractIdParam'
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /artists:
+    get:
+      tags:
+        - Artists
+      summary: Get all artists
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/searchParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoreArtist'
+    post:
+      tags:
+        - Artists
+      summary: Create new artist
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CoreArtistRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/artists/{id}':
+    get:
+      tags:
+        - Artists
+      summary: Return artist by id
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+        - $ref: '#/components/parameters/searchParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoreArtist'
+    put:
+      tags:
+        - Artists
+      summary: Update artist by id
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CoreArtistRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoreArtist'
+    delete:
+      tags:
+        - Artists
+      summary: Delete label by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  /news:
+    get:
+      tags:
+        - Contents
+      summary: Return content entities (news)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: objectId
+                  _created:
+                    type: string
+                    example: '2019-04-04T13:32:48.109Z'
+                  type:
+                    type: string
+                    example: news
+                  title:
+                    type: string
+                    example: content title
+                  translations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        titleTranslated:
+                          type: string
+                          example: translated title
+                        html:
+                          type: string
+                          example: html data
+                        idLanguage:
+                          type: string
+                          example: language ID
+        '500':
+          description: Internal Server error
+  /catalog/tracks:
+    get:
+      tags:
+        - Catalog
+      summary: Return all tracks by contract-id
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/searchParam'
+        - name: fields
+          in: query
+          description: See query-to-mongo. Comma separated projection fields
+          schema:
+            type: string
+            enum:
+              - owner
+              - previewPosition
+              - name
+              - duration
+              - isrc
+              - filename
+              - originalReleaseDate
+              - contract
+              - contract.id
+              - label
+              - product
+              - genres
+              - artists
+              - audio
+              - territory
+              - line
+              - version
+              - language
+              - composers
+              - publishers
+              - kompile
+              - status
+              - createdAt
+              - updatedAt
+        - name: owner
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: previewPosition
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: duration
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: isrc
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: filename
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: originalReleaseDate
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: label.id
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: product.id
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: version.name
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: version.type
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: language.name
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: language.code
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: updatedAt
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: createdAt
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - $ref: '#/components/parameters/catalogStatusField'
+        - name: sort
+          in: query
+          description: See query-to-mongo. Available sort fields
+          schema:
+            type: string
+            enum:
+              - createdAt
+              - updatedAt
+              - status
+              - name
+              - duration
+              - originalReleaseDate
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Track'
+    post:
+      tags:
+        - Catalog
+      summary: Create new track
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackCreate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/catalog/tracks/{id}':
+    get:
+      tags:
+        - Catalog
+      summary: Return track by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+        - $ref: '#/components/parameters/searchParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+    put:
+      tags:
+        - Catalog
+      summary: Update track by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Track'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+    delete:
+      tags:
+        - Catalog
+      summary: Delete track by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/catalog/tracks/{id}/upload':
+    post:
+      tags:
+        - Catalog
+      summary: Upload track
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                track:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    example: path to uploaded file
+  '/catalog/tracks/{id}/upload/check':
+    post:
+      tags:
+        - Catalog
+      summary: Check track
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                track:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+  /catalog/products:
+    get:
+      tags:
+        - Catalog
+      summary: Return all products by contract-id
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/searchParam'
+        - name: fields
+          in: query
+          description: See query-to-mongo. Comma separated projection fields
+          schema:
+            type: string
+            enum:
+              - title
+              - catNo
+              - contract
+              - contract.id
+              - upc
+              - customUpc
+              - serial
+              - genre
+              - tracks
+              - format
+              - display
+              - artists
+              - label
+              - description
+              - release
+              - line
+              - territorialRights
+              - cover
+              - createdAt
+              - updatedAt
+              - status
+        - name: title
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: catNo
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: upc
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: customUpc
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: serial
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: genre.id
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: genre.name
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: label.id
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: label.name
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: createdAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: updatedAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - $ref: '#/components/parameters/catalogStatusField'
+        - name: sort
+          in: query
+          description: See query-to-mongo. Available sort field
+          schema:
+            type: string
+            enum:
+              - createdAt
+              - updatedAt
+              - title
+              - genre.name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+    post:
+      tags:
+        - Catalog
+      summary: Create new product
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/catalog/products/{id}/transition/{action}':
+    post:
+      tags:
+        - Catalog
+      summary: Move product to review state
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+        - in: path
+          name: action
+          schema:
+            type: string
+            enum:
+              - submit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Please process till...
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  '/catalog/products/{id}':
+    get:
+      tags:
+        - Catalog
+      summary: Return product by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+        - $ref: '#/components/parameters/searchParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    put:
+      tags:
+        - Catalog
+      summary: Update product by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    delete:
+      tags:
+        - Catalog
+      summary: Delete product by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/catalog/products/{id}/history':
+    get:
+      tags:
+        - Catalog
+      summary: Returns review history list
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product exported
+                  status:
+                    type: string
+                    example: export
+                  createdAt:
+                    type: string
+                    example: '2019-07-15T12:57:31.188Z'
+                  invalid:
+                    $ref: '#/components/schemas/InvalidReviewFields'
+                  reviewedBy:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: user@example.org
+                      name:
+                        type: string
+                        example: John Doe
+                      id:
+                        type: string
+                        example: objectId
+  '/catalog/products/{id}/cover':
+    post:
+      tags:
+        - Catalog
+      summary: Upload product cover image
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cover:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    example: path to uploaded file
+  '/catalog/products/{id}/cover/check':
+    post:
+      tags:
+        - Catalog
+      summary: Check product image
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cover:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+  /catalog/labels:
+    get:
+      tags:
+        - Catalog
+      summary: Return all labels by contract-id
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/searchParam'
+        - name: fields
+          in: query
+          description: See query-to-mongo. Comma separated projection fields
+          schema:
+            type: string
+            enum:
+              - name
+              - lcCode
+              - description
+              - website
+              - kompile
+              - genres
+              - location.city
+              - location.country.code
+              - location.country.name
+              - kompile.processed
+              - kompile.processedDate
+              - kompile.status
+              - socialMedia
+              - file
+              - covers
+              - status
+              - createdAt
+              - updatedAt
+        - name: createdAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: updatedAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: lcCode
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: description
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: website
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: kompile
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - $ref: '#/components/parameters/catalogStatusField'
+        - name: sort
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+            enum:
+              - name
+              - lcCode
+              - createdAt
+              - updatedAt
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Label'
+    post:
+      tags:
+        - Catalog
+      summary: Create new label
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabelCreate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/catalog/labels/{id}':
+    get:
+      tags:
+        - Catalog
+      summary: Return label by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+        - $ref: '#/components/parameters/searchParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+    put:
+      tags:
+        - Catalog
+      summary: Update label by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Label'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+    delete:
+      tags:
+        - Catalog
+      summary: Delete label by id related to the contract
+      parameters:
+        - name: contract-id
+          in: header
+          required: true
+          schema:
+            type: string
+            example: 5c9b9239f1449405c952d457
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 5c9b9239f1449405c952d376
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/catalog/labels/{id}/cover':
+    post:
+      tags:
+        - Catalog
+      summary: Upload label cover image
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cover:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    example: path to uploaded file
+  '/catalog/labels/{id}/cover/check':
+    post:
+      tags:
+        - Catalog
+      summary: Check label image
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cover:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+  /catalog/statements:
+    get:
+      tags:
+        - Catalog
+      summary: Return all statements by contract-id
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+        - name: fields
+          in: query
+          description: See query-to-mongo. Comma separated projection fields
+          schema:
+            type: string
+            enum:
+              - name
+              - override
+              - description
+              - urlStatement
+              - amount
+              - internal
+              - paid
+              - month
+              - fromDate
+              - toDate
+              - contract.id
+              - year
+              - importedAt
+              - billDate
+              - statementDate
+              - revertedAt
+              - updatedBy
+              - createdAt
+              - updatedAt
+        - name: name
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: override
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: description
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: urlStatement
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: amount
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: internal
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: paid
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: month
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: fromDate
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: toDate
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: contract
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: year
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: importedAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: billDate
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: statementDate
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: revertedAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: updatedBy
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: createdAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: updatedAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+            enum:
+              - createdAt
+              - updatedAt
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Statement'
+    post:
+      tags:
+        - Catalog
+      summary: Create new statement
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatementCreate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/catalog/statements/{id}':
+    get:
+      tags:
+        - Catalog
+      summary: Return statement by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statement'
+    put:
+      tags:
+        - Catalog
+      summary: Update statement by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Statement'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statement'
+    delete:
+      tags:
+        - Catalog
+      summary: Delete statement by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  /catalog/userstatements:
+    get:
+      tags:
+        - Catalog
+      summary: Return all user statements by contract-id
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/searchParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserStatement'
+    post:
+      tags:
+        - Catalog
+      summary: Create new user statement
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserStatementCreate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/catalog/userstatements/{id}':
+    get:
+      tags:
+        - Catalog
+      summary: Return user statement by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+        - $ref: '#/components/parameters/searchParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserStatement'
+    put:
+      tags:
+        - Catalog
+      summary: Update user statement by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserStatementCreate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserStatement'
+    delete:
+      tags:
+        - Catalog
+      summary: Delete user statement by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  /metadata/countries:
+    get:
+      tags:
+        - Metadata
+      summary: Return all countries
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CountryMetadata'
+  /metadata/countrygroups:
+    get:
+      tags:
+        - Metadata
+      summary: Return all country groups
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CountryGroupMetadata'
+  /metadata/productformats:
+    get:
+      tags:
+        - Metadata
+      summary: Return all product formats
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductFormatMetadata'
+  /metadata/languages:
+    get:
+      tags:
+        - Metadata
+      summary: Return all languages
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LanguageMetadata'
+  /metadata/genres:
+    get:
+      tags:
+        - Metadata
+      summary: Return all genres
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GenreMetadata'
+  /metadata/shops:
+    get:
+      tags:
+        - Metadata
+      summary: Return all shops
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShopMetadata'
+  /api/products:
+    get:
+      tags:
+        - Api
+      summary: Return all products
+      parameters:
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+        - name: contract.id
+          in: query
+          description: Filter products by contract id
+          schema:
+            type: string
+        - name: release.date
+          in: query
+          description: >-
+            Filter products by release date. Also support query-to-mongo range
+            filtration
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+  '/api/products/{id}':
+    get:
+      tags:
+        - Api
+      summary: Return product by id
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+  /api/tracks:
+    get:
+      tags:
+        - Api
+      summary: Return all tracks
+      parameters:
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+        - name: contract.id
+          in: query
+          description: Filter products by contract id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Track'
+  '/api/tracks/{id}':
+    get:
+      tags:
+        - Api
+      summary: Return track by id
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+  '/api/contracts/{id}':
+    get:
+      tags:
+        - Api
+      summary: Return contract by id
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contract'
+  /api/fuga/products/ingestion/callback:
+    get:
+      tags:
+        - Api
+      summary: FUGA webhook that notifies if product was submitted successfully
+      parameters: null
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /admin/tracks:
+    get:
+      tags:
+        - Admin
+      summary: Return all tracks. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+        - name: fields
+          in: query
+          description: See query-to-mongo. Comma separated projection fields
+          schema:
+            type: string
+            enum:
+              - owner
+              - previewPosition
+              - name
+              - duration
+              - isrc
+              - filename
+              - originalReleaseDate
+              - contract
+              - contract.id
+              - label
+              - product
+              - genres
+              - artists
+              - audio
+              - territory
+              - line
+              - version
+              - language
+              - composers
+              - publishers
+              - kompile
+              - status
+              - createdAt
+              - updatedAt
+        - name: owner
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: previewPosition
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: duration
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: isrc
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: filename
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: originalReleaseDate
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: label.id
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: product.id
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: version.name
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: version.type
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: language.name
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: language.code
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: updatedAt
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: createdAt
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - $ref: '#/components/parameters/catalogStatusField'
+        - name: sort
+          in: query
+          description: See query-to-mongo. Available sort fields
+          schema:
+            type: string
+            enum:
+              - createdAt
+              - updatedAt
+              - status
+              - name
+              - duration
+              - originalReleaseDate
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Track'
+    post:
+      tags:
+        - Admin
+      summary: Create new track
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackCreateAdmin'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/admin/tracks/{id}':
+    get:
+      tags:
+        - Admin
+      summary: Return track by id. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+    put:
+      tags:
+        - Admin
+      summary: Update track by id
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Track'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+    delete:
+      tags:
+        - Admin
+      summary: Delete track by id
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  /admin/products:
+    get:
+      tags:
+        - Admin
+      summary: Return all products. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+        - name: fields
+          in: query
+          description: See query-to-mongo. Comma separated projection fields
+          schema:
+            type: string
+            enum:
+              - title
+              - catNo
+              - contract
+              - contract.id
+              - upc
+              - customUpc
+              - serial
+              - genre
+              - tracks
+              - format
+              - display
+              - artists
+              - label
+              - description
+              - release
+              - line
+              - territorialRights
+              - cover
+              - createdAt
+              - updatedAt
+              - status
+        - name: title
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: catNo
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: upc
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: customUpc
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: serial
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: genre.id
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: genre.name
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: label.id
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: label.name
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: createdAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: updatedAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - $ref: '#/components/parameters/catalogStatusField'
+        - name: sort
+          in: query
+          description: See query-to-mongo. Available sort field
+          schema:
+            type: string
+            enum:
+              - createdAt
+              - updatedAt
+              - title
+              - genre.name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+    post:
+      tags:
+        - Admin
+      summary: Create new product. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreateAdmin'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/admin/products/{id}':
+    get:
+      tags:
+        - Admin
+      summary: Return product by id. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    put:
+      tags:
+        - Admin
+      summary: Update product by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    delete:
+      tags:
+        - Admin
+      summary: Delete product by id related to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/admin/products/{id}/history':
+    get:
+      tags:
+        - Admin
+      summary: Returns review history list
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product exported
+                  status:
+                    type: string
+                    example: export
+                  createdAt:
+                    type: string
+                    example: '2019-07-15T12:57:31.188Z'
+                  invalid:
+                    $ref: '#/components/schemas/InvalidReviewFields'
+                  reviewedBy:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: user@example.org
+                      name:
+                        type: string
+                        example: John Doe
+                      id:
+                        type: string
+                        example: objectId
+  '/admin/products/{id}/transition/{action}':
+    post:
+      tags:
+        - Admin
+      summary: Move product to review state. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+        - in: path
+          name: action
+          schema:
+            type: string
+            enum:
+              - accept
+              - reject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Description reason
+                invalid:
+                  $ref: '#/components/schemas/InvalidReviewFields'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /admin/labels:
+    get:
+      tags:
+        - Admin
+      summary: Return all labels. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+        - name: fields
+          in: query
+          description: See query-to-mongo. Comma separated projection fields
+          schema:
+            type: string
+            enum:
+              - name
+              - lcCode
+              - description
+              - website
+              - kompile
+              - genres
+              - location.city
+              - location.country.code
+              - location.country.name
+              - kompile.processed
+              - kompile.processedDate
+              - kompile.status
+              - socialMedia
+              - file
+              - covers
+              - status
+              - createdAt
+              - updatedAt
+        - name: createdAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: updatedAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: lcCode
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: description
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: website
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: kompile
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - $ref: '#/components/parameters/catalogStatusField'
+        - name: sort
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+            enum:
+              - name
+              - lcCode
+              - createdAt
+              - updatedAt
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Label'
+    post:
+      tags:
+        - Admin
+      summary: Create new label
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabelCreateAdmin'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/admin/labels/{id}':
+    get:
+      tags:
+        - Admin
+      summary: Return label by id. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+    put:
+      tags:
+        - Catalog
+      summary: Update label by id
+      parameters:
+        - $ref: '#/components/parameters/contractIdParam'
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Label'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+    delete:
+      tags:
+        - Admin
+      summary: Delete label by id
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  /admin/statements:
+    get:
+      tags:
+        - Admin
+      summary: Return all statements. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+        - name: fields
+          in: query
+          description: See query-to-mongo. Comma separated projection fields
+          schema:
+            type: string
+            enum:
+              - name
+              - override
+              - description
+              - urlStatement
+              - amount
+              - internal
+              - paid
+              - month
+              - fromDate
+              - toDate
+              - contract.id
+              - year
+              - importedAt
+              - billDate
+              - statementDate
+              - revertedAt
+              - updatedBy
+              - createdAt
+              - updatedAt
+        - name: name
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: override
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: description
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: urlStatement
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: amount
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: internal
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: paid
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: month
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: fromDate
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: toDate
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: contract
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: year
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: importedAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: billDate
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: statementDate
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: revertedAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: updatedBy
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: createdAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: updatedAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+            enum:
+              - createdAt
+              - updatedAt
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Statement'
+    post:
+      tags:
+        - Admin
+      summary: Create new statement. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatementCreate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/admin/statements/{id}':
+    get:
+      tags:
+        - Admin
+      summary: Return statement by id
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statement'
+    put:
+      tags:
+        - Admin
+      summary: Update statement by id
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Statement'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statement'
+    delete:
+      tags:
+        - Admin
+      summary: Delete statement by id
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/admin/users/{id}/impersonate':
+    get:
+      tags:
+        - Admin
+      summary: Get user JWT token.
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: JWT token string
+  /admin/users:
+    get:
+      tags:
+        - Admin
+      summary: Return all users. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/searchParam'
+        - name: fields
+          in: query
+          description: See query-to-mongo. Comma separated projection fields
+          schema:
+            type: string
+            example: 'globalRights,email,security.contracts'
+        - name: globalRights.support
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: globalRights.admin
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: globalRights.service
+          in: query
+          description: See query-to-mongo. Available query fields
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: See query-to-mongo. Available sort fields
+          schema:
+            type: string
+            enum:
+              - email
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+  '/admin/users/{id}':
+    get:
+      tags:
+        - Admin
+      summary: Return user by id. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /admin/contracts:
+    get:
+      tags:
+        - Admin
+      summary: Return all contracts. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/lastIdParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/searchParam'
+        - name: fields
+          in: query
+          description: See query-to-mongo. Comma separated projection fields
+          schema:
+            type: string
+            enum:
+              - name
+              - category
+              - emails
+              - emails.kontakt
+              - emails.statements
+              - emails.labelmanager
+              - exploitation
+              - kompile
+              - createdAt
+              - updatedAt
+        - name: name
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: createdAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: updatedAt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: emails.kontakt
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: emails.statements
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - name: emails.labelmanager
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+        - $ref: '#/components/parameters/catalogStatusField'
+        - name: sort
+          in: query
+          description: See query-to-mongo. Available query field
+          schema:
+            type: string
+            enum:
+              - name
+              - createdAt
+              - updatedAt
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  entities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Contract'
+    post:
+      tags:
+        - Admin
+      summary: Create new contract. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contract'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateResponse'
+  '/admin/contracts/{id}':
+    get:
+      tags:
+        - Admin
+      summary: Return contract by id. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/fieldsParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contract'
+    put:
+      tags:
+        - Admin
+      summary: Update contract by id. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contract'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contract'
+  '/admin/contracts/{id}/files/upload':
+    post:
+      tags:
+        - Admin
+      summary: Upload file to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 5d110cf32fe10117521faad1
+                  url:
+                    type: string
+                    example: 'https://path/to/file'
+  '/admin/contracts/{id}/files/{fileId}':
+    delete:
+      tags:
+        - Admin
+      summary: Remove file from the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: fileId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  '/admin/contracts/{contractId}/users':
+    get:
+      tags:
+        - Admin
+      summary: Return all user contracts. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - name: contractId
+          in: path
+          description: Contract id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractUser'
+    post:
+      tags:
+        - Admin
+      summary: Invite user to a contract. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - name: contractId
+          in: path
+          description: Contract id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  '/admin/contracts/{contractId}/users/{userId}':
+    put:
+      tags:
+        - Admin
+      summary: Invite user to the contract
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - name: contractId
+          in: path
+          description: Contract id
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractUser'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+    delete:
+      tags:
+        - Admin
+      summary: Remove user from the contract
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /admin/products/export:
+    post:
+      tags:
+        - Admin
+      summary: Export all approved products to FUGA. Only accessible by support users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /admin/products/export/byUser:
+    post:
+      tags:
+        - Admin
+      summary: >-
+        Export all approved products by user to FUGA. Only accessible by support
+        users
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+components:
+  parameters:
+    limitParam:
+      in: query
+      name: limit
+      description: The number of returned entities per request. Defaults to 30
+      example: 30
+      schema:
+        type: number
+    lastIdParam:
+      name: lastId
+      in: query
+      description: Last processed id. Used for pagination
+      default: 0
+      schema:
+        type: string
+    searchParam:
+      name: search
+      in: query
+      description: Free text search. Pagination applied
+      default: 0
+      schema:
+        type: string
+    fieldsParam:
+      name: fields
+      in: query
+      description: See query-to-mongo. Comma separated projection fields
+      schema:
+        type: string
+    sortParam:
+      name: sort
+      in: query
+      description: See query-to-mongo. Sort fields and direction
+      schema:
+        type: string
+    catalogStatusField:
+      name: status
+      in: query
+      description: See query-to-mongo. Available query field
+      schema:
+        type: string
+        enum:
+          - draft
+          - review
+          - export
+          - approved
+          - delivered
+          - released
+          - error
+          - update
+          - takedown
+    idPathParam:
+      name: id
+      in: path
+      description: Record id
+      schema:
+        type: string
+    contractIdParam:
+      name: contract-id
+      in: header
+      required: true
+      description: Current contract id
+      schema:
+        type: string
+        example: 5c9b9239f1449405c952d457
+    authorization:
+      name: Authorization
+      in: header
+      required: true
+      description: JWT token
+      schema:
+        type: string
+        example: Bearer <JWT_Token>
+  schemas:
+    Artist:
+      required:
+        - position
+        - role
+        - id
+        - name
+        - primary
+      type: object
+      properties:
+        position:
+          type: integer
+          format: int32
+          example: 1
+        role:
+          type: string
+          example: performer
+        id:
+          type: string
+          example: 5c7f9de32e6d13b9867c2f8c
+        name:
+          type: string
+          example: Sven Wittekind
+        primary:
+          type: boolean
+          example: true
+    CoreArtist:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 5c9ddd7469565200646fbeew
+        name:
+          type: string
+          example: artist name
+        createdAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        updatedAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+    CoreArtistRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: artist name
+    Audio:
+      required:
+        - mp3
+        - wave
+      type: object
+      properties:
+        mp3:
+          type: string
+          example: path/to/audio.mp3
+        wave:
+          type: string
+          example: path/to/audio.wav
+        flac:
+          type: string
+          example: path/to/audio.flac
+    Version:
+      required:
+        - name
+        - type
+      type: object
+      properties:
+        name:
+          type: string
+          example: 1.0.0
+        type:
+          type: string
+          enum:
+            - Original
+            - Remix
+            - Radio-Edit
+            - Instrumental
+            - Dub
+            - Accapella
+            - DJ-Tool
+            - Karaoke-Mix/Beats
+            - Acoustic
+            - Live
+            - Rework
+            - Remastered
+            - Extended
+          example: Live
+    Language:
+      required:
+        - name
+        - code
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+    LanguageMetadata:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 5c9ddd7469565200646fbeew
+        name:
+          type: string
+          example: Ukrainian
+        code:
+          type: string
+          example: ua
+        createdAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        updatedAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+    Line:
+      required:
+        - pYear
+        - cYear
+        - pText
+        - cText
+      type: object
+      properties:
+        pYear:
+          type: integer
+          format: int32
+          example: 2017
+        cYear:
+          type: integer
+          format: int32
+          example: 2017
+        pText:
+          type: string
+          example: description
+        cText:
+          type: string
+          example: description
+    Composer:
+      required:
+        - id
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+          example: 5c9ddd7469565200646fbeed
+        name:
+          type: string
+          example: Awesome composer
+    Territory:
+      type: object
+      properties:
+        included:
+          type: array
+          items:
+            type: string
+            example: 5c9ddd7469565200646fbeew
+        excluded:
+          type: array
+          items:
+            type: string
+            example: 5c9ddd7469565200646fbeew
+        groupsIncluded:
+          type: array
+          items:
+            type: string
+            example: 5c9ddd7469565200646fbeew
+        groupsExcluded:
+          type: array
+          items:
+            type: string
+            example: 5c9ddd7469565200646fbeew
+    Publishers:
+      type: array
+      items:
+        type: object
+        properties:
+          publisher:
+            type: string
+            example: Inmedia house
+          composer:
+            type: string
+            example: Scott
+    Kompile:
+      type: object
+      properties:
+        available:
+          type: boolean
+          example: true
+        excludedReason:
+          type: string
+          example: Testing purposes
+        useCount:
+          type: number
+          example: 0
+        playCount:
+          type: number
+          example: 0
+    Track:
+      type: object
+      properties:
+        owner:
+          type: boolean
+          example: false
+        previewPosition:
+          type: integer
+          format: int32
+          example: 1
+        name:
+          type: string
+          example: Awesome track
+        duration:
+          type: integer
+          format: int32
+          example: 320000
+        isrc:
+          type: string
+          example: isrc
+        filename:
+          type: string
+          example: myAwesomeTrack
+        originalReleaseDate:
+          type: string
+          exapmple: '2018-08-09T18:31:42Z'
+        label:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: 5c9ddd7469565200646fbeef
+            name:
+              type: string
+              example: label name
+        productId:
+          type: string
+          example: 5c9ddd7469565200646fbeef
+        genreIds:
+          type: array
+          items:
+            type: string
+            example: 5c9ddd7469565200646fbeew
+        audio:
+          $ref: '#/components/schemas/Audio'
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/Artist'
+        line:
+          $ref: '#/components/schemas/Line'
+        version:
+          $ref: '#/components/schemas/Version'
+        language:
+          $ref: '#/components/schemas/Language'
+        publishers:
+          $ref: '#/components/schemas/Publishers'
+        kompile:
+          $ref: '#/components/schemas/Kompile'
+    TrackCreate:
+      type: object
+      properties:
+        owner:
+          type: boolean
+          example: false
+        previewPosition:
+          type: integer
+          format: int32
+          example: 1
+        name:
+          type: string
+          example: Awesome track
+        duration:
+          type: integer
+          format: int32
+          example: 320000
+        isrc:
+          type: string
+          example: isrc
+        filename:
+          type: string
+          example: myAwesomeTrack
+        originalReleaseDate:
+          type: string
+          exapmple: '2018-08-09T18:31:42Z'
+        label:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: 5c9ddd7469565200646fbeef
+            name:
+              type: string
+              example: label name
+        productId:
+          type: string
+          example: 5c9ddd7469565200646fbeef
+        genreIds:
+          type: array
+          items:
+            type: string
+            example: 5c9ddd7469565200646fbeew
+        audio:
+          $ref: '#/components/schemas/Audio'
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/Artist'
+        line:
+          $ref: '#/components/schemas/Line'
+        version:
+          $ref: '#/components/schemas/Version'
+        language:
+          $ref: '#/components/schemas/Language'
+        publishers:
+          $ref: '#/components/schemas/Publishers'
+        kompile:
+          $ref: '#/components/schemas/Kompile'
+    TrackCreateAdmin:
+      type: object
+      properties:
+        contractId:
+          type: string
+          example: ContractUuid
+        owner:
+          type: boolean
+          example: false
+        previewPosition:
+          type: integer
+          format: int32
+          example: 1
+        name:
+          type: string
+          example: Awesome track
+        duration:
+          type: integer
+          format: int32
+          example: 320000
+        isrc:
+          type: string
+          example: isrc
+        filename:
+          type: string
+          example: myAwesomeTrack
+        originalReleaseDate:
+          type: string
+          exapmple: '2018-08-09T18:31:42Z'
+        label:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: 5c9ddd7469565200646fbeef
+            name:
+              type: string
+              example: label name
+        productId:
+          type: string
+          example: 5c9ddd7469565200646fbeef
+        genreIds:
+          type: array
+          items:
+            type: string
+            example: 5c9ddd7469565200646fbeew
+        audio:
+          $ref: '#/components/schemas/Audio'
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/Artist'
+        line:
+          $ref: '#/components/schemas/Line'
+        version:
+          $ref: '#/components/schemas/Version'
+        language:
+          $ref: '#/components/schemas/Language'
+        publishers:
+          $ref: '#/components/schemas/Publishers'
+        kompile:
+          $ref: '#/components/schemas/Kompile'
+    HealthStatus:
+      type: object
+      properties:
+        name:
+          type: string
+          example: digdis
+        uptime:
+          type: string
+          example: '0 yrs 0 month 0 days 2:17:44'
+        build:
+          type: string
+          example: test
+        version:
+          type: string
+          example: 4.0.0
+    Pagination:
+      type: object
+      properties:
+        limit:
+          type: number
+        lastId:
+          type: string
+          example: 5c5d5ba647b04ac33778881f
+    CreateUpdateResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 5c5d5ba647b04ac33778881f
+    SubscribeRequest:
+      type: object
+      properties:
+        plan:
+          type: string
+          enum:
+            - pro
+            - proplus
+        type:
+          type: string
+          enum:
+            - monthly
+            - annually
+        token:
+          type: string
+          description: STRIPE token
+    SubscribeResponse:
+      type: object
+      properties:
+        plan:
+          type: string
+          enum:
+            - pro
+            - proplus
+        type:
+          type: string
+          enum:
+            - monthly
+            - annually
+        startDate:
+          type: string
+          example: '2019-03-22T09:51:52Z'
+          description: subscription start ISO date
+        dueDate:
+          type: string
+          example: '2019-03-22T09:51:52Z'
+          description: subscription end ISO date
+    UnsubscribeResponse:
+      type: object
+      properties:
+        cancelledDate:
+          type: string
+          example: '2019-03-22T09:51:52Z'
+          description: subscription start ISO date
+    Cover:
+      required:
+        - small
+        - medium
+        - full
+      type: object
+      properties:
+        small:
+          type: string
+        medium:
+          type: string
+        full:
+          type: string
+    CountryMetadata:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: UA
+        name:
+          type: string
+          example: Ukraine
+        showInKonnekt:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        updatedAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+    CountryGroupMetadata:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 5c9ddd7469565200646fbeew
+        name:
+          type: string
+          example: World
+        showInKonnekt:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        updatedAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+    Description:
+      required:
+        - long
+        - short
+      type: object
+      properties:
+        long:
+          type: string
+        short:
+          type: string
+    Display:
+      required:
+        - artist
+      type: object
+      properties:
+        artist:
+          type: string
+        fullArtist:
+          type: string
+    Format:
+      required:
+        - id
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+          example: 5c9ddd7469565200646fbeew
+        name:
+          type: string
+          example: World
+    ProductFormatMetadata:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 5c9ddd7469565200646fbeew
+        name:
+          type: string
+          example: Single
+        tracks:
+          type: object
+          properties:
+            min:
+              type: number
+              example: 7
+            max:
+              type: number
+              example: 100
+        createdAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        updatedAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+    ProductRelease:
+      type: object
+      required:
+        - originDate
+        - date
+        - dueDate
+      properties:
+        originDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        date:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        separateStart:
+          type: boolean
+          example: false
+        autoselect:
+          type: boolean
+          example: false
+        dueDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        pre:
+          type: array
+          items:
+            type: object
+            required:
+              - shop
+              - preReleaseDate
+              - preOrderDate
+              - releaseShift
+              - preSaleWeeks
+              - preReleaseWeeks
+            properties:
+              shop:
+                type: string
+                example: shopId
+              preReleaseDate:
+                type: string
+                example: '2018-08-09T18:31:42Z'
+              preOrderDate:
+                type: number
+                example: 23
+              releaseShift:
+                type: number
+                example: 23
+              preSaleWeeks:
+                type: number
+                example: 23
+              preReleaseWeeks:
+                type: number
+                example: 23
+    ProductTerritory:
+      type: object
+      properties:
+        included:
+          type: object
+          properties:
+            countries:
+              type: array
+              items:
+                type: string
+                example: 5c9ddd7469565200646fbeew
+            groups:
+              type: array
+              items:
+                type: string
+                example: 5c9ddd7469565200646fbeew
+        excluded:
+          type: object
+          properties:
+            countries:
+              type: array
+              items:
+                type: string
+                example: 5c9ddd7469565200646fbeew
+            groups:
+              type: array
+              items:
+                type: string
+                example: 5c9ddd7469565200646fbeew
+    Product:
+      type: object
+      properties:
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/Artist'
+        catNo:
+          type: string
+          example: NTD202
+        contract:
+          type: object
+          properties:
+            id:
+              type: string
+              example: Contract id
+            quote:
+              type: number
+              example: 10
+            category:
+              type: string
+              enum:
+                - A
+                - B
+                - C
+                - S
+            specialCategory:
+              type: boolean
+              example: true
+        createdBy:
+          type: object
+          properties:
+            id:
+              type: string
+              example: '5c9ddd7469565200646fbeew,'
+            name:
+              type: string
+              example: John Doe
+            email:
+              type: string
+              example: email@example.org
+        reviewedBy:
+          type: object
+          properties:
+            id:
+              type: string
+              example: '5c9ddd7469565200646fbeew,'
+            name:
+              type: string
+              example: John Doe
+            email:
+              type: string
+              example: email@example.org
+        reviewedAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        covers:
+          $ref: '#/components/schemas/Cover'
+        description:
+          $ref: '#/components/schemas/Description'
+        display:
+          $ref: '#/components/schemas/Display'
+        format:
+          $ref: '#/components/schemas/Format'
+        genres:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 5c9ddd7469565200646fbeew
+            name:
+              type: string
+              example: genre name
+        label:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 5c9ddd7469565200646fbeew
+            name:
+              type: string
+              example: label name
+        line:
+          $ref: '#/components/schemas/Line'
+        serial:
+          type: string
+          example: serialNumber
+        title:
+          type: string
+          example: Best product
+        tracks:
+          type: array
+          items:
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: string
+                example: 5c9ddd7469565200646fbeew
+              bundled:
+                type: boolean
+        release:
+          $ref: '#/components/schemas/ProductRelease'
+        territories:
+          $ref: '#/components/schemas/ProductTerritory'
+        upc:
+          type: string
+          example: upc
+        customUpc:
+          type: string
+          example: customUpc
+        releaseBundleStep:
+          type: string
+          enum:
+            - originals
+            - remixes
+            - tracklist
+            - productInfo
+            - coverUpload
+            - releaseDate
+            - summary
+    ProductCreate:
+      type: object
+      properties:
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/Artist'
+        catNo:
+          type: string
+          example: NTD202
+        covers:
+          $ref: '#/components/schemas/Cover'
+        description:
+          $ref: '#/components/schemas/Description'
+        display:
+          $ref: '#/components/schemas/Display'
+        format:
+          $ref: '#/components/schemas/Format'
+        genreId:
+          type: string
+          example: 5c9ddd7469565200646fbeew
+        labelId:
+          type: string
+          example: 5c9ddd7469565200646fbeew
+        line:
+          $ref: '#/components/schemas/Line'
+        serial:
+          type: string
+          example: serialNumber
+        title:
+          type: string
+          example: Best product
+        tracks:
+          type: array
+          items:
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: string
+                example: 5c9ddd7469565200646fbeew
+              bundled:
+                type: boolean
+        release:
+          $ref: '#/components/schemas/ProductRelease'
+        territorialRights:
+          $ref: '#/components/schemas/ProductTerritory'
+        upc:
+          type: string
+          example: upc
+        customUpc:
+          type: string
+          example: customUpc
+        releaseBundleStep:
+          type: string
+          enum:
+            - originals
+            - remixes
+            - tracklist
+            - productInfo
+            - coverUpload
+            - releaseDate
+            - summary
+    ProductCreateAdmin:
+      type: object
+      properties:
+        contractId:
+          type: string
+          example: contractUuid
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/Artist'
+        catNo:
+          type: string
+          example: NTD202
+        covers:
+          $ref: '#/components/schemas/Cover'
+        description:
+          $ref: '#/components/schemas/Description'
+        display:
+          $ref: '#/components/schemas/Display'
+        format:
+          $ref: '#/components/schemas/Format'
+        genreId:
+          type: string
+          example: 5c9ddd7469565200646fbeew
+        labelId:
+          type: string
+          example: 5c9ddd7469565200646fbeew
+        line:
+          $ref: '#/components/schemas/Line'
+        serial:
+          type: string
+          example: serialNumber
+        title:
+          type: string
+          example: Best product
+        tracks:
+          type: array
+          items:
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: string
+                example: 5c9ddd7469565200646fbeew
+              bundled:
+                type: boolean
+        release:
+          $ref: '#/components/schemas/ProductRelease'
+        territorialRights:
+          $ref: '#/components/schemas/ProductTerritory'
+        upc:
+          type: string
+          example: upc
+        customUpc:
+          type: string
+          example: customUpc
+        releaseBundleStep:
+          type: string
+          enum:
+            - originals
+            - remixes
+            - tracklist
+            - productInfo
+            - coverUpload
+            - releaseDate
+            - summary
+    LabelKompile:
+      type: object
+      properties:
+        processed:
+          type: boolean
+          example: false
+        processedDate:
+          type: string
+          example: '2019-03-22T09:51:52Z'
+        status:
+          type: string
+          enum:
+            - new
+            - optin
+            - optout
+          example: new
+    File:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          example: 'https://path/to/file'
+        path:
+          type: string
+    Location:
+      type: object
+      required:
+        - city
+        - country
+      properties:
+        city:
+          type: string
+          example: Kyiv
+        country:
+          type: object
+          required:
+            - code
+            - name
+          properties:
+            code:
+              type: string
+              example: UA
+            name:
+              type: string
+              example: Ukraine
+    SocialMedia:
+      type: object
+      required:
+        - name
+        - url
+      properties:
+        name:
+          type: string
+          example: facebook
+        url:
+          type: string
+          example: 'https://facebook.com'
+    Label:
+      type: object
+      properties:
+        name:
+          type: string
+          example: label name
+        lcCode:
+          type: string
+          example: lc code
+        description:
+          type: string
+          example: label description
+        website:
+          type: string
+          example: 'https://example.com'
+        kompile:
+          $ref: '#/components/schemas/LabelKompile'
+        covers:
+          $ref: '#/components/schemas/Cover'
+        genreIds:
+          type: array
+          items:
+            type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        socialMedia:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialMedia'
+    LabelCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: label name
+        lcCode:
+          type: string
+          example: lc code
+        description:
+          type: string
+          example: label description
+        website:
+          type: string
+          example: 'https://example.com'
+        kompile:
+          $ref: '#/components/schemas/LabelKompile'
+        covers:
+          $ref: '#/components/schemas/Cover'
+        genreIds:
+          type: array
+          items:
+            type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        socialMedia:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialMedia'
+    LabelCreateAdmin:
+      type: object
+      properties:
+        contractId:
+          type: string
+          example: contractUuid
+        name:
+          type: string
+          example: label name
+        lcCode:
+          type: string
+          example: lc code
+        description:
+          type: string
+          example: label description
+        website:
+          type: string
+          example: 'https://example.com'
+        kompile:
+          $ref: '#/components/schemas/LabelKompile'
+        covers:
+          $ref: '#/components/schemas/Cover'
+        genreIds:
+          type: array
+          items:
+            type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        socialMedia:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialMedia'
+    Contract:
+      type: object
+      properties:
+        newsletter:
+          type: boolean
+          example: false
+        contractModelId:
+          type: string
+          example: D50SM50M8TH0
+        active:
+          type: boolean
+          example: true
+        name:
+          type: string
+          example: Example contract
+        language:
+          type: string
+          example: Ukrainian
+        keyAccount:
+          type: object
+          properties:
+            id:
+              type: string
+              example: account id
+            name:
+              type: string
+              example: John Doe
+            email:
+              type: string
+              example: johndoe@example.com
+        quote:
+          type: number
+          example: 10
+        category:
+          type: string
+          enum:
+            - A
+            - B
+            - C
+            - S
+          example: A
+        specialCategory:
+          type: boolean
+          example: false
+        address:
+          type: object
+          properties:
+            country:
+              type: string
+              example: DE
+            city:
+              type: string
+              example: Kyiv
+            street:
+              type: string
+              example: streetname
+            house:
+              type: string
+              example: 10A
+            postcode:
+              type: string
+              example: 11111
+        contact:
+          type: object
+          properties:
+            firstName:
+              type: string
+              example: test
+            lastName:
+              type: string
+              example: test
+            phone:
+              type: string
+              example: '+380931231212'
+            mobile:
+              type: string
+              example: test
+        services:
+          type: string
+          enum:
+            - kompile
+            - kontrol
+            - konnekt
+            - kontakt
+            - insights
+            - charttool
+          example: kompile
+        subscription:
+          $ref: '#/components/schemas/ContractSubscription'
+        contractConditions:
+          $ref: '#/components/schemas/ContractConditions'
+        notifications:
+          type: object
+          properties:
+            newStatements:
+              type: boolean
+              example: false
+        emails:
+          type: object
+          properties:
+            kontakt:
+              type: string
+              example: example@example.com
+            statements:
+              type: string
+              example: example@example.com
+            labelmanager:
+              type: string
+              example: example@example.com
+        files:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                example: 'http://example.com/url'
+              size:
+                type: number
+                example: 329415
+              name:
+                type: string
+                example: contractConditions.pdf
+    ContractUser:
+      type: array
+      items:
+        type: object
+        properties:
+          services:
+            type: array
+            items:
+              type: string
+              enum:
+                - kompile
+                - kontrol
+                - konnekt
+                - kontakt
+                - insights
+          createdAt:
+            type: string
+            example: '2018-08-09T18:31:42Z'
+          active:
+            type: boolean
+            example: true
+          email:
+            type: string
+            example: user@example.com
+          id:
+            type: string
+            example: 5c9ddd7469565200646fbeew
+    ContractSubscription:
+      type: object
+      properties:
+        provider:
+          type: object
+          properties:
+            customerId:
+              type: string
+              example: 5c9ddd7469565200646fbeew
+            subscriptionId:
+              type: string
+              example: 5c9ddd7469565200646fbeew
+        plan:
+          type: string
+          enum:
+            - basic
+            - pro
+            - proplus
+        type:
+          type: string
+          enum:
+            - monthly
+            - annually
+        amount:
+          type: number
+          example: 10
+        autoRenewal:
+          type: boolean
+          example: true
+        startDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        dueDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        cancelledDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+    ContractConditions:
+      type: object
+      properties:
+        startDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        possibleEndDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        exclusive:
+          type: boolean
+          example: false
+        chargeServicefees:
+          type: boolean
+          example: false
+        template:
+          type: string
+          enum:
+            - 60/40
+            - 70/30
+            - 80/20
+            - Non-Exclusive
+            - YouTuber
+            - Third-Party License
+            - Custom
+        exploitation:
+          type: string
+          enum:
+            - Exclusive
+            - Non-Exclusive
+            - YouTuber
+            - Third-Party License
+        duration:
+          type: number
+          example: 6
+        renew:
+          type: number
+          example: 6
+        renewDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        dealShare:
+          type: number
+          example: 0
+        marketingShare:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - basis
+                - netto
+            amount:
+              type: number
+              example: 0
+        mechanicals:
+          type: number
+          example: 0
+        shopsExceptions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 123
+              amount:
+                type: number
+                example: 0
+        thirdPartyShare:
+          type: number
+          example: 0
+        shops:
+          type: object
+          properties:
+            mode:
+              type: string
+              enum:
+                - All
+                - included
+                - excluded
+            included:
+              type: array
+              items:
+                type: string
+            excluded:
+              type: array
+              items:
+                type: string
+        overridesContract:
+          type: object
+          properties:
+            id:
+              type: string
+              example: ObjectId
+            name:
+              type: string
+              example: contract name
+        overridesAmount:
+          type: number
+          example: 0
+        endDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        roles:
+          type: string
+          enum:
+            - exclusive
+            - kompiler
+            - youtube
+            - grm
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          example: user@example.com
+        invitedBy:
+          type: string
+          example: user id
+        createdBy:
+          type: string
+          example: user id
+        security:
+          type: object
+          properties:
+            contracts:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: contractId
+                  services:
+                    type: array
+                    items:
+                      type: string
+                      enum:
+                        - kompile
+                        - kontrol
+                        - konnekt
+                        - kontakt
+                        - insights
+                        - charttool
+                  isDefault:
+                    type: boolean
+                    example: true
+                  isOwner:
+                    type: boolean
+                    example: true
+                  createdAt:
+                    type: string
+                    example: invitation date
+                  active:
+                    type: boolean
+                    example: true
+            contact:
+              type: object
+              properties:
+                mobileCountrycode:
+                  type: string
+                  example: phone number
+                mobile:
+                  type: string
+                  example: phone number
+                phoneCountrycode:
+                  type: string
+                  example: phone number
+                phoneAreacode:
+                  type: string
+                  example: phone number
+                phone:
+                  type: string
+                  example: phone number
+            globalRights:
+              type: object
+              properties:
+                admin:
+                  type: boolean
+                  example: false
+                service:
+                  type: boolean
+                  example: false
+                support:
+                  type: boolean
+                  example: false
+            salutation:
+              type: string
+              example: Mr
+            nameLast:
+              type: string
+              example: Doe
+            nameFirst:
+              type: string
+              example: John
+            type:
+              type: string
+              example: customer
+    UserStatement:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Title
+        createdBy:
+          type: object
+          properties:
+            id:
+              type: string
+              example: ObjectId
+            name:
+              type: string
+              example: John Doe
+            email:
+              type: string
+              example: john@example.com
+        lastSubmissionAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        archived:
+          type: boolean
+          example: false
+        extendedData:
+          type: boolean
+          example: true
+        artistShare:
+          type: number
+          example: 0.2
+        platforms:
+          type: array
+          items:
+            type: string
+            example: ids
+        fromDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        toDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        timeframe:
+          type: string
+          example: basic
+          enum:
+            - basic
+            - repeated
+        autoSubmit:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              example: false
+            type:
+              type: string
+              example: monthly
+              enum:
+                - monthly
+                - quarterly
+                - half-yearly
+                - yearly
+            receiver:
+              type: string
+              example: john@example.com
+        sendingHistory:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                example: '2018-08-09T18:31:42Z'
+              sum:
+                type: number
+                example: 20
+              url:
+                type: string
+                example: 'https://pdflink'
+          contract:
+            type: object
+            properties:
+              id:
+                type: string
+                example: objectId
+          filter:
+            type: array
+            items:
+              type: object
+              properties:
+                type:
+                  type: string
+                  example: catNo
+                  enum:
+                    - isrc
+                    - artist
+                    - track
+                    - label
+                    - catalogNo
+                value:
+                  type: string
+                  example: Any value
+        customPositions:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+                example: position 1
+              value:
+                type: number
+                example: 20
+    UserStatementCreate:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Title
+        archived:
+          type: boolean
+          example: false
+        extendedData:
+          type: boolean
+          example: true
+        artistShare:
+          type: number
+          example: 0.2
+        platforms:
+          type: array
+          items:
+            type: string
+            example: ids
+        fromDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        toDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        timeframe:
+          type: string
+          example: basic
+          enum:
+            - basic
+            - repeated
+        autoSubmit:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              example: false
+            type:
+              type: string
+              example: monthly
+              enum:
+                - monthly
+                - quarterly
+                - half-yearly
+                - yearly
+            receiver:
+              type: string
+              example: john@example.com
+        sendingHistory:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                example: '2018-08-09T18:31:42Z'
+              sum:
+                type: number
+                example: 20
+              url:
+                type: string
+                example: 'https://pdflink'
+          filter:
+            type: array
+            items:
+              type: object
+              properties:
+                type:
+                  type: string
+                  example: catNo
+                  enum:
+                    - isrc
+                    - artist
+                    - track
+                    - label
+                    - catalogNo
+                value:
+                  type: array
+                  items:
+                    oneOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+                      - type: string
+        customPositions:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+                example: position 1
+              value:
+                type: number
+                example: 20
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 5c9ddd7469565200646fbeew
+        email:
+          type: string
+          example: example@example.com
+        contact:
+          type: object
+          properties:
+            mobileCountrycode:
+              type: string
+              example: 38
+            mobile:
+              type: string
+              example: 123456789
+            phoneCountrycode:
+              type: string
+              example: 093
+            phoneAreacode:
+              type: string
+              example: 12
+            phone:
+              type: string
+              example: 123456789
+        salutation:
+          type: string
+          example: Mr
+        nameLast:
+          type: string
+          example: Doe
+        nameFirst:
+          type: string
+          example: John
+        picturebase64:
+          type: string
+          example: 'https://path/to/avatar'
+        isAdmin:
+          type: boolean
+          example: true
+        contracts:
+          type: array
+          items:
+            type: object
+            properties:
+              contract:
+                type: object
+                properties:
+                  newsletter:
+                    type: boolean
+                    example: false
+                  contractModelId:
+                    type: string
+                    example: D50SM50M8TH0
+                  active:
+                    type: boolean
+                    example: true
+                  name:
+                    type: string
+                    example: Example contract
+                  language:
+                    type: string
+                    example: Ukrainian
+                  keyAccount:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: account id
+                      name:
+                        type: string
+                        example: John Doe
+                      email:
+                        type: string
+                        example: johndoe@example.com
+                  quote:
+                    type: number
+                    example: 10
+                  category:
+                    type: string
+                    enum:
+                      - A
+                      - B
+                      - C
+                      - S
+                    example: A
+                  specialCategory:
+                    type: boolean
+                    example: false
+                  address:
+                    type: object
+                    properties:
+                      country:
+                        type: string
+                        example: DE
+                      city:
+                        type: string
+                        example: Kyiv
+                      street:
+                        type: string
+                        example: streetname
+                      house:
+                        type: string
+                        example: 10A
+                      postcode:
+                        type: string
+                        example: 11111
+                  contact:
+                    type: object
+                    properties:
+                      firstName:
+                        type: string
+                        example: test
+                      lastName:
+                        type: string
+                        example: test
+                      phone:
+                        type: string
+                        example: '+380931231212'
+                      mobile:
+                        type: string
+                        example: test
+                  services:
+                    type: string
+                    enum:
+                      - kompile
+                      - kontrol
+                      - konnekt
+                      - kontakt
+                      - insights
+                      - charttool
+                    example: kompile
+                  subscription:
+                    $ref: '#/components/schemas/ContractSubscription'
+                  contractConditions:
+                    $ref: '#/components/schemas/ContractConditions'
+                  notifications:
+                    type: object
+                    properties:
+                      newStatements:
+                        type: boolean
+                        example: false
+                  emails:
+                    type: object
+                    properties:
+                      kontakt:
+                        type: string
+                        example: example@example.com
+                      statements:
+                        type: string
+                        example: example@example.com
+                      labelmanager:
+                        type: string
+                        example: example@example.com
+                  files:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                          example: 'http://example.com/url'
+                        size:
+                          type: number
+                          example: 329415
+                        name:
+                          type: string
+                          example: contractConditions.pdf
+              isOwner:
+                type: boolean
+                example: false
+              services:
+                type: array
+                items:
+                  type: string
+                  example: insights
+    UserLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          example: john@example.com
+        password:
+          type: string
+          example: qwerty
+    GenreMetadata:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 5c9ddd7469565200646fbeew
+        name:
+          type: string
+          example: Ukrainian
+        code:
+          type: string
+          example: ua
+        createdAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        updatedAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+    ShopMetadata:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 5c9ddd7469565200646fbeew
+        name:
+          type: string
+          example: Beatport
+        createdAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        updatedAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+    Statement:
+      type: object
+      properties:
+        override:
+          type: boolean
+          example: false
+        description:
+          type: string
+          example: some description
+        urlStatement:
+          type: string
+          example: 'http://'
+        amount:
+          type: number
+          example: 20
+        internal:
+          type: boolean
+          example: false
+        paid:
+          type: boolean
+          example: false
+        month:
+          type: number
+          example: 6
+        fromDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        toDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        contract:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 5c9ddd7469565200646fbeew
+        year:
+          type: string
+          example: 2006
+        importedAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        billDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        statementDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        revertedAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        updatedBy:
+          type: string
+          example: 5c9ddd7469565200646fbeew
+    StatementCreate:
+      type: object
+      properties:
+        override:
+          type: boolean
+          example: false
+        description:
+          type: string
+          example: some description
+        urlStatement:
+          type: string
+          example: 'http://'
+        amount:
+          type: number
+          example: 20
+        internal:
+          type: boolean
+          example: false
+        paid:
+          type: boolean
+          example: false
+        month:
+          type: number
+          example: 6
+        fromDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        toDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        contract:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 5c9ddd7469565200646fbeew
+        year:
+          type: string
+          example: 2006
+        importedAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        billDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        statementDate:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        revertedAt:
+          type: string
+          example: '2018-08-09T18:31:42Z'
+        updatedBy:
+          type: string
+          example: 5c9ddd7469565200646fbeew
+    InvalidReviewFields:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            example: ObjectId
+          type:
+            type: string
+            example: track
+            enum:
+              - track
+              - product
+              - label
+          fields:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: title
+                message:
+                  type: object
+                  properties:
+                    errorTitle:
+                      type: string
+                      example: Invalid definition
