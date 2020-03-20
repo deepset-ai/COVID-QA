@@ -38,15 +38,19 @@ Some next steps we see:
 - Integrate more data sources via scrapers
 - Handling of special non-FAQ questions via other APIs (e.g. “How many infections in Berlin?”)
 - Improve API to foster external integrations (e.g. Chatsystems) 
+- Logging & storage to foster analysis of common queries with bad results  
+- Support other languages (data collection)
 
-### Machine learning
+### Machine learning / NLP / IR
+- Evaluation dataset & pipeline to benchmark models
 - Improve NLP models for FAQ matching (better embeddings, e.g. sentence-bert trained on Quora duplicate questions dataset)
+- Add extractive QA Models
+- Support other languages (models)
+- Tune Elasticsearch + Embedding models
 
-### UI
-- Integrate user feedback mechanism for answers
-- Support other languages (data + models)
+### UI/UX/Design
+- Integrate user feedback mechanism for answers (flag as "correct", "not matching my question", "outdated", "fake news")
 - Tab to explore common queries and those with bad answers
-
-### UX/Design
-- Logos, icons, user flow ... 
-
+- Logos / icons
+- Intuitive displaying of search results
+- UX for adding/reviewing data sources by the crowd
