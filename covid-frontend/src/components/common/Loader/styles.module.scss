@@ -1,0 +1,20 @@
+@import '../../../assets/styles/_variables';
+
+.selfContained {
+  align-items: center;
+  height: 140px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.fullSized {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 99;
+}

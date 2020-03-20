@@ -1,0 +1,49 @@
+@import '../../../assets/styles/_variables';
+@import '../../../assets/styles/_mixins';
+
+.container {
+  display: inline-block;
+  position: relative;
+
+  & > label {
+    color: $primary-grey;
+    display: block;
+    @include text(tiny);
+    margin: 11px 0;
+    letter-spacing: $secondary-spacing;
+    text-transform: uppercase;
+  }
+
+  .error {
+    @include text(small);
+    color: $error;
+    display: block;
+    margin-top: 6px;
+  }
+
+  .info {
+    @include text(small);
+    color: $primary-grey;
+    display: block;
+    margin-top: 6px;
+  }
+
+  &.fluid {
+    display: block;
+    width: 100%;
+  }
+
+  &.withError {
+    textarea,
+    input {
+      @include border($error);
+    }
+    :global(.ant-input-number),
+    :global(.ant-select-selection) {
+      @include border($error);
+      input {
+        border: none;
+      }
+    }
+  }
+}

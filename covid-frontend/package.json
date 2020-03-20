@@ -1,0 +1,52 @@
+{
+  "name": "irda",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "antd": "^3.23.1",
+    "chart.js": "^2.8.0",
+    "classnames": "^2.2.6",
+    "env-cmd": "^9.0.3",
+    "history": "^4.9.0",
+    "less": "^2.7.2",
+    "less-plugin-clean-css": "^1.5.1",
+    "node-sass": "^4.12.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.10.2",
+    "react-chartjs-2": "^2.8.0",
+    "react-custom-scrollbars": "^4.2.1",
+    "react-dom": "^16.10.2",
+    "react-redux": "^6.0.0",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^5.0.0",
+    "react-scripts": "3.0.0",
+    "redux": "^4.0.1",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-saga": "^1.0.1",
+    "uuid": "^3.3.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "build:staging": "env-cmd -f .env.staging npm run build",
+    "build:production": "env-cmd -f .env.production npm run build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "antd-theme": "lessc --clean-css src/assets/styles/antd/antd-theme.less src/assets/styles/antd/antd.min.css"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

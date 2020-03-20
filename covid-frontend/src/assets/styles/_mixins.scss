@@ -1,0 +1,25 @@
+@import "variables";
+
+@mixin text($size: regular) {
+  $text-size: map-get($text, $size);
+
+  font-size: map-get($text-size, font-size);
+  line-height: map-get($text-size, line-height);
+}
+
+@mixin border($color: $border-grey, $radius: $base-radius) {
+  border: 1px solid $color;
+  border-radius: $radius;
+}
+
+@mixin outline($offset: 0, $width: 2px) {
+  outline-color: #80c0d8;
+  outline-offset: $offset;
+  outline-width: $width;
+}
+
+@mixin text-overflow() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,7 @@
+{
+  "extends": "react-app",
+  "rules": {
+    "semi": [2, "always"],
+    "indent": ["error", 2, { "SwitchCase": 1 }]
+  }
+}

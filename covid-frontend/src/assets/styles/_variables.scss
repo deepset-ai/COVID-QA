@@ -1,0 +1,78 @@
+// colors
+$primary: #081741;
+$dark: #333638;
+
+$contrast: #005da9;
+
+$accent: #70b2fc;
+$accent-light: #e7f2ff;
+$accent-light2: #d2ebff;
+$accent-light3: #b2d8f8;
+
+$success: #009c10;
+$success-light: #99d7a0;
+$success-light2: rgba(0, 156, 16, 0.1);
+
+$warning: #ed9700;
+$warning-light: #ffd387;
+$warning-light2: #fff4e0;
+
+$error: #be0000;
+$error-light: #ff9c9c;
+$error-light2: #ffdede;
+
+
+$primary-grey: #a3a9ad;
+$secondary-grey: #878b90;
+$border-grey: #d3dae0;
+$light-border-grey: #e4e9ed;
+$light-grey: #f7f8fa;
+
+$white: #ffffff;
+
+// shadows
+$base-shadow: 0 1px 3px 0 rgba(113, 118, 122, 0.35);
+$reversed-shadow: 0 -3px 5px 0 rgba(0, 0, 0, 0.1);
+
+// letter-spacing
+$base-spacing: 0.65px;
+$secondary-spacing: 1px;
+
+// radiuses
+$base-radius: 6px;
+
+// transitions
+$base-transition-speed: .3s;
+$fast-transition-speed: .15s;
+
+// text sizes
+$text: (
+  tiny: (
+    font-size: 11px,
+    line-height: 1
+  ),
+  small: (
+    font-size: 12px,
+    line-height: 1
+  ),
+  regular: (
+    font-size: 14px,
+    line-height: 1
+  ),
+  semiBig: (
+    font-size: 16px,
+    line-height: 1
+  ),
+  big: (
+    font-size: 20px,
+    line-height: 1
+  ),
+  huge: (
+    font-size: 24px,
+    line-height: 1
+  ),
+  jumbo: (
+    font-size: 32px,
+    line-height: 1
+  )
+);

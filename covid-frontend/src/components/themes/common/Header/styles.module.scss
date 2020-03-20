@@ -1,0 +1,39 @@
+@import '../../../../assets/styles/_variables';
+@import '../../../../assets/styles/_mixins';
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  z-index: 10;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 28px 30px;
+  width: 100%;
+}
+
+
+.homeLink {
+  display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+
+.logo {
+  display: inline-block;
+  position: relative;
+  width: 136px;
+
+  img {
+    display: block;
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+  }
+}

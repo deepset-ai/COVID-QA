@@ -1,0 +1,149 @@
+@import '../../assets/styles/_variables';
+@import '../../assets/styles/_mixins';
+
+.wrapper {
+  background-color: $white;
+  @include border();
+  box-shadow: $base-shadow;
+  min-height: 680px;
+  padding: 24px 24px 60px 24px;
+
+  .autocomplete {
+    width: 100%;
+
+    :global(.ant-select-selection) {
+      background-color: $accent-light;
+      border-color: $accent-light;
+
+      &::-webkit-input-placeholder { /* Edge */
+        color: $accent;
+      }
+
+      &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: $accent;
+      }
+
+      &::placeholder {
+        color: $accent;
+      }
+    }
+  }
+}
+
+.titleRow {
+  margin-bottom: 48px;
+}
+
+.loaderContainer {
+  padding: 60px 0;
+  text-align: center;
+
+  h2 {
+    font-weight: 600;
+    margin: 16px 0;
+  }
+
+  div {
+    color: $primary-grey;
+    font-weight: 600;
+    @include text(semiBig);
+  }
+}
+
+
+.topAnswerTitle {
+  background-color: $accent-light2;
+  @include border($accent-light3, 0);
+  border-left: none;
+  border-right: none;
+  color: $contrast;
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 26px;
+  line-height: 1;
+  letter-spacing: $secondary-spacing;
+  overflow: hidden;
+  padding: 6px 24px;
+  position: relative;
+  text-transform: uppercase;
+
+  &:before {
+    background-color: $white;
+    @include border($accent-light3, 0);
+    border-radius: 1px;
+    content: "";
+    display: inline-block;
+    height: 19px;
+    position: absolute;
+    width: 19px;
+    top: 8px;
+    transform: rotate(45deg) translateX(-50%);
+    left: -4px;
+  }
+  &:after {
+    background-color: $white;
+    @include border($accent-light3, 0);
+    border-radius: 1px;
+    content: "";
+    display: inline-block;
+    height: 19px;
+    position: absolute;
+    width: 19px;
+    top: 8px;
+    transform: rotate(45deg) translateX(-50%);
+    right: -17px;
+  }
+}
+
+.otherAnswersTitle {
+  color: $primary-grey;
+  margin: 56px 0 32px;
+  text-transform: uppercase;
+  letter-spacing: $secondary-spacing;
+  @include text(tiny);
+}
+
+.tag {
+  float: right;
+}
+
+.answerTitle {
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.answerText {
+  line-height: 1.5;
+  span {
+    color: $success;
+  }
+}
+
+.answerMeta {
+  margin: 8px 0;
+  
+  & > div {
+    margin: 2px 0;
+  }
+
+  span {
+    color: $primary-grey;
+    display: inline-block;
+    width: 65px;
+  }
+}
+
+.answerDocLink {
+  border: solid 1px;
+  border-radius: 50%;
+  display: inline-block;
+  height: 22px;
+  margin-left: 8px;
+  text-align: center;
+  vertical-align: middle;
+  width: 22px;
+  & > i {
+    vertical-align: middle;
+  }
+}

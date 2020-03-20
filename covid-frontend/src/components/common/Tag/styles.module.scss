@@ -1,0 +1,26 @@
+@import '../../../assets/styles/_variables';
+@import '../../../assets/styles/_mixins';
+
+.tag {
+  display: inline-block;
+  flex-grow: 0;
+  padding: 8px 12px;
+  text-align: center;
+  white-space: nowrap;
+
+  &.red {
+    background-color: $error-light2;
+    color: $error;
+    @include border($error-light, 4px);
+  }
+  &.orange {
+    background-color: $warning-light2;
+    color: $warning;
+    @include border($warning-light, 4px);
+  }
+  &.green {
+    background-color: $success-light2;
+    color: $success;
+    @include border($success-light, 4px);
+  }
+}

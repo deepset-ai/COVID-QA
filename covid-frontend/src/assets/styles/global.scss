@@ -1,0 +1,159 @@
+@import './_reset.css';
+@import './antd/antd.min.css';
+@import './_variables.scss';
+@import './_mixins.scss';
+
+// fonts
+/* gothic-a1-regular - latin */
+@font-face {
+  font-family: 'Gothic A1';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/gothic-a1-v8-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local('Gothic A1 Regular'), local('GothicA1-Regular'),
+       url('../fonts/gothic-a1-v8-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../fonts/gothic-a1-v8-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('../fonts/gothic-a1-v8-latin-regular.woff') format('woff'), /* Modern Browsers */
+       url('../fonts/gothic-a1-v8-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('../fonts/gothic-a1-v8-latin-regular.svg#GothicA1') format('svg'); /* Legacy iOS */
+}
+/* gothic-a1-500 - latin */
+@font-face {
+  font-family: 'Gothic A1';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../fonts/gothic-a1-v8-latin-500.eot'); /* IE9 Compat Modes */
+  src: local('Gothic A1 Medium'), local('GothicA1-Medium'),
+       url('../fonts/gothic-a1-v8-latin-500.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../fonts/gothic-a1-v8-latin-500.woff2') format('woff2'), /* Super Modern Browsers */
+       url('../fonts/gothic-a1-v8-latin-500.woff') format('woff'), /* Modern Browsers */
+       url('../fonts/gothic-a1-v8-latin-500.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('../fonts/gothic-a1-v8-latin-500.svg#GothicA1') format('svg'); /* Legacy iOS */
+}
+/* gothic-a1-600 - latin */
+@font-face {
+  font-family: 'Gothic A1';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/gothic-a1-v8-latin-600.eot'); /* IE9 Compat Modes */
+  src: local('Gothic A1 SemiBold'), local('GothicA1-SemiBold'),
+       url('../fonts/gothic-a1-v8-latin-600.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../fonts/gothic-a1-v8-latin-600.woff2') format('woff2'), /* Super Modern Browsers */
+       url('../fonts/gothic-a1-v8-latin-600.woff') format('woff'), /* Modern Browsers */
+       url('../fonts/gothic-a1-v8-latin-600.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('../fonts/gothic-a1-v8-latin-600.svg#GothicA1') format('svg'); /* Legacy iOS */
+}
+/* gothic-a1-700 - latin */
+@font-face {
+  font-family: 'Gothic A1';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/gothic-a1-v8-latin-700.eot'); /* IE9 Compat Modes */
+  src: local('Gothic A1 Bold'), local('GothicA1-Bold'),
+       url('../fonts/gothic-a1-v8-latin-700.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../fonts/gothic-a1-v8-latin-700.woff2') format('woff2'), /* Super Modern Browsers */
+       url('../fonts/gothic-a1-v8-latin-700.woff') format('woff'), /* Modern Browsers */
+       url('../fonts/gothic-a1-v8-latin-700.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('../fonts/gothic-a1-v8-latin-700.svg#GothicA1') format('svg'); /* Legacy iOS */
+}
+// fonts - end
+
+body {
+  font-weight: 500;
+}
+
+h1, .h1 {
+  @include text(jumbo);
+}
+
+h2, .h2 {
+  @include text(huge);
+}
+
+h3, .h3 {
+  @include text(big);
+}
+
+h4, .h4 {
+  @include text(semiBig);
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+  color: $dark;
+  font-weight: 700;
+  margin: 0;
+}
+
+.container {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+// loader
+.loader {
+  position: relative;
+  left: calc(50% - 31px);
+  width: 100px;
+  height: 100px;
+  margin: 32px 0;
+  perspective: 780px;
+}
+
+.loader-part {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border-radius: 50%;
+
+  &.l1 {
+    left: 0%;
+    top: 0%;
+    animation: cssload-rotate-one 1.15s linear infinite;
+    border-bottom: 3px solid #5C5EDC;
+  }
+
+  &.l2 {
+    right: 0%;
+    top: 0%;
+    animation: cssload-rotate-two 1.15s linear infinite;
+    border-right: 3px solid rgba(76, 70, 101, 0.99);
+  }
+  &.l3 {
+    right: 0%;
+    bottom: 0%;
+    animation: cssload-rotate-three 1.15s linear infinite;
+    border-top: 3px solid rgb(233, 144, 138);;
+  }
+}
+
+@keyframes cssload-rotate-one {
+  0% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+  }
+}
+
+@keyframes cssload-rotate-two {
+  0% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+  }
+}
+
+@keyframes cssload-rotate-three   {
+  0% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+  }
+}
+// loader - end

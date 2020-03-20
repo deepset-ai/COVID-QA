@@ -1,0 +1,74 @@
+@import '../../assets/styles/_variables';
+@import '../../assets/styles/_mixins';
+
+.content {
+  align-content: center;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  padding: 0 0 120px;
+  min-height: 100vh;
+}
+
+.form {
+  :global(.ant-form-explain) {
+    margin-top: 0;
+  }
+
+  :global(.ant-btn-lg) {
+    padding: 10px 15px;
+  }
+}
+
+.logoWrapper {
+  align-items: center;
+  justify-content: space-around;
+  display: flex;
+  margin: 0 16px 80px;
+}
+
+.logo {
+  position: relative;
+  width: 250px;
+
+  img {
+    display: block;
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+  }
+}
+
+.poweredBy {
+  float:right;
+  span {
+    color: #d80808;
+  }
+
+  img {
+    width: 300px;
+  }
+}
+
+
+
+.autocomplete {
+  width: 100%;
+
+  :global(.ant-select-selection) {
+    background-color: $accent-light;
+    border-color: $accent-light;
+
+    &::-webkit-input-placeholder { /* Edge */
+      color: $accent;
+    }
+
+    &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+      color: $accent;
+    }
+
+    &::placeholder {
+      color: $accent;
+    }
+  }
+}

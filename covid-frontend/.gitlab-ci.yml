@@ -1,0 +1,101 @@
+image: node:lts
+services:
+  - docker:18.09-dind
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+  - node_modules/
+
+stages:
+  - build
+  - nginx
+  - staging
+  - production
+
+variables:
+  DOCKER_HOST: tcp://localhost:2375
+
+build_app:staging:
+  stage: build
+  script:
+  - npm install
+  - npm run build:staging
+  artifacts:
+    paths:
+    - build/
+    expire_in: 1 day
+  except:
+    - master
+
+build_app:production:
+  stage: build
+  script:
+  - npm install
+  - npm run build:production
+  artifacts:
+    paths:
+    - build/
+    expire_in: 1 day
+  only:
+    - master
+
+build_nginx:staging:
+  stage: nginx
+  image: docker:18.09-dind
+  cache: {}
+  script:
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+  - docker build --pull -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF .
+  - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF
+  dependencies:
+    - build_app:staging
+  only:
+    - develop
+
+build_nginx:production:
+  stage: nginx
+  image: docker:18.09-dind
+  cache: {}
+  script:
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+  - docker build --pull -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF .
+  - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF
+  dependencies:
+    - build_app:production
+  only:
+    - master
+
+.kubectl: &kubectl
+  - echo "$CERTIFICATE_AUTHORITY_DATA" > ca-auth.pem
+  - kubectl config set-cluster deepannotate-eks --server="$SERVER"
+  - kubectl config set-cluster deepannotate-eks --embed-certs --certificate-authority=ca-auth.pem
+  - kubectl config set-credentials gitlab --token="$USER_TOKEN"
+  - kubectl config set-context default --cluster=deepannotate-eks --user=gitlab
+  - kubectl config use-context default
+
+.staging_deploy: &staging_deploy
+  image: dtzar/helm-kubectl
+  cache: {}
+  stage: staging
+  before_script: *kubectl
+  script:
+    - kubectl patch deployment covid-frontend -n covid-staging -p '{"spec":{"template":{"spec":{"containers":[{"name":"'"covid-frontend"'","image":"'"$CI_REGISTRY_IMAGE:$CI_BUILD_REF"'"}]}}}}'
+
+deploy to staging:
+  <<: *staging_deploy
+  only:
+    - develop
+
+.production_deploy: &production_deploy
+  image: dtzar/helm-kubectl
+  cache: {}
+  stage: production
+  before_script: *kubectl
+  script:
+    - kubectl patch deployment covid-frontend -n covid-production -p '{"spec":{"template":{"spec":{"containers":[{"name":"'"covid-frontend"'","image":"'"$CI_REGISTRY_IMAGE:$CI_BUILD_REF"'"}]}}}}'
+
+deploy to production:
+  <<: *production_deploy
+  only:
+    - master
