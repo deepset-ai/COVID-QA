@@ -29,29 +29,36 @@ Prod: https://covid.deepset.ai/
 - NodeJS / koa / eggjs middleware
 - React Frontend
 
+## Quick overview of current status
+
+1. Check out the [demo app](https://covid-staging.deepset.ai/) to get a basic idea 
+2. Data: At the moment we are using a [CSV with collected FAQs](https://github.com/deepset-ai/COVID-QA/blob/master/data/faqs/faq_covidbert.csv) that get's ingested into elasticsearch [here](https://github.com/deepset-ai/COVID-QA/blob/master/covid-qa/data_ingestion.py)
+3. Model: The NLP model to find answers is build via haystack. It's configured and exposed via this [API](https://github.com/deepset-ai/COVID-QA/blob/master/covid-qa/api.py).
+4. Frontend/middleware: TODO
+
 ## :heart: How you can help
 This project is build by the community for the community. We are really appreciating every kind of support! There's plenty of work on UX, Design, ML, Backend, Frontend, Middlewware, Data collection ... 
 
 We are also happy if you just report bugs, add documentation or flag useful/inappropriate answers returned by the model.
 
-Some next steps we see:
+Some next TODOs we see:
 ### Data / Backend
-- Integrate more data sources via scrapers
-- Handling of special non-FAQ questions via other APIs (e.g. “How many infections in Berlin?”)
-- Improve API to foster external integrations (e.g. Chatsystems) 
-- Logging & storage to foster analysis of common queries with bad results  
-- Support other languages (data collection)
+- [ ] Integrate more data sources via scrapers
+- [ ] Handling of special non-FAQ questions via other APIs (e.g. “How many infections in Berlin?”)
+- [ ] Improve API to foster external integrations (e.g. Chatsystems) 
+- [ ] Logging & storage to foster analysis of common queries with bad results  
+- [ ] Support other languages (data collection)
 
 ### Machine learning / NLP / IR
-- Evaluation dataset & pipeline to benchmark models
-- Improve NLP models for FAQ matching (better embeddings, e.g. sentence-bert trained on Quora duplicate questions dataset)
-- Add extractive QA Models
-- Support other languages (models)
-- Tune Elasticsearch + Embedding models
+- [ ] Evaluation dataset & pipeline to benchmark models
+- [ ] Improve NLP models for FAQ matching (better embeddings, e.g. sentence-bert trained on Quora duplicate questions dataset)
+- [ ] Add extractive QA Models
+- [ ] Support other languages (models)
+- [ ] Tune Elasticsearch + Embedding models
 
 ### UI/UX/Design
-- Integrate user feedback mechanism for answers (flag as "correct", "not matching my question", "outdated", "fake news")
-- Tab to explore common queries and those with bad answers
-- Logos / icons
-- Intuitive displaying of search results
-- UX for adding/reviewing data sources by the crowd
+- [ ] Integrate user feedback mechanism for answers (flag as "correct", "not matching my question", "outdated", "fake news")
+- [ ] Tab to explore common queries and those with bad answers
+- [ ] Logos / icons
+- [ ] Intuitive displaying of search results
+- [ ] UX for adding/reviewing data sources by the crowd
