@@ -8,9 +8,6 @@ if __name__ == "__main__":
     PATH = os.getcwd()
 
     crawler_files = [f for f in os.listdir(PATH) if os.path.isfile(os.path.join(PATH, f)) and "META" not in f]
-    print(PATH)
-    print(os.listdir(os.getcwd()))
-    print(crawler_files)
     process = CrawlerProcess({
             'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
         })
