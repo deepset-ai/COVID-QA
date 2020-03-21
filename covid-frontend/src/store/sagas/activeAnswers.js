@@ -35,21 +35,23 @@ export function* markAsCorrectAnswer({ question, answerDocumentId }) {
   }
 
   try {
-    yield api.post(`/bert/questionAnswered`, null, { correctAnswer: true, question: question.selectedValue, answerDocumentId });
+    const id = parseInt(answerDocumentId, 10);
+    yield api.post(`/feedback`, null, { question: question.selectedValue, document_id: id });
 
   } catch (error) {
     message.error(error.message);
   }
 }
 
-export function* markAsWrongAnswer({ question, answerDocumentId }) {
+export function* markAsWrongAnswer({ question, answerDocumentId, reason }) {
   if (!question.selectedValue || answerDocumentId <= 0) {
     // do nothing
     return;
   }
 
   try {
-    yield api.post(`/bert/questionAnswered`, null, { correctAnswer: false, question: question.selectedValue, answerDocumentId });
+    const id = parseInt(answerDocumentId, 10);
+    yield api.post(`/feedback`, null, { question: question.selectedValue, document_id: id, reason });
 
   } catch (error) {
     message.error(error.message);

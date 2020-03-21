@@ -14,6 +14,15 @@ export const setLoadingStatus = (status) => ({
   status
 });
 
+export const showUserFeedbackPanel = (payload) => ({
+  type: types.SHOW_USER_FEEDBACK_PANEL,
+  payload
+});
+
+export const hideUserFeedbackPanel = () => ({
+  type: types.HIDE_USER_FEEDBACK_PANEL
+});
+
 export const reset = () => ({
   type: types.RESET,
 });
