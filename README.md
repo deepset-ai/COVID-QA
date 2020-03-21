@@ -51,7 +51,8 @@ link, name, source, category, country, region, city, lang, last_update](https://
 - [ ] Support other languages (data collection)
 
 ### Machine learning / NLP / IR
-- [ ] Evaluation dataset & pipeline to benchmark models
+- [x] English evaluation dataset & pipeline to benchmark models
+- [ ] Benchmark baseline models
 - [ ] Improve NLP models for FAQ matching (better embeddings, e.g. sentence-bert trained on Quora duplicate questions dataset)
 - [ ] Add extractive QA Models
 - [ ] Support other languages (models)
