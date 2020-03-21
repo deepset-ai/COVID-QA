@@ -5,4 +5,9 @@
 
 .ant-row .ant-col span {
     color: #707070;    
-} 
+}
+
+.ant-col-19 {
+    /* TODO: Can layout be better controlled through ant-design col/row components? */
+    width: 100%;
+}
