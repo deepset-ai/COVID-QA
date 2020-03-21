@@ -1,8 +1,7 @@
 from haystack import Finder
 from haystack.database.elasticsearch import ElasticsearchDocumentStore
 
-from haystack.retriever.elasticsearch import ElasticsearchEmbeddingRetriever
-from haystack.utils import print_answers
+from haystack.retriever.elasticsearch import ElasticsearchRetriever
 import pandas as pd
 
 MODEL = "bert-base-uncased"
@@ -14,7 +13,7 @@ document_store = ElasticsearchDocumentStore(host="localhost", username="", passw
                                             embedding_dim=768,
                                             excluded_meta_data=["question_emb"])
 
-retriever = ElasticsearchEmbeddingRetriever(document_store=document_store, embedding_model=MODEL, gpu=GPU)
+retriever = ElasticsearchRetriever(document_store=document_store, embedding_model=MODEL, gpu=GPU)
 
 # Get dataframe with questions, answers and some metadata
 df = pd.read_csv("data/faqs/faq_covidbert.csv")

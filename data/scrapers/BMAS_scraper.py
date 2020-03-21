@@ -1,13 +1,12 @@
-# run 'scrapy runspider WHO_scraper.py' to scrape data
-
 from datetime import date
 import scrapy
 import pandas as pd
+from scrapy.crawler import CrawlerProcess
 
 
 class CovidScraper(scrapy.Spider):
-  name = "WHO_scraper"
-  start_urls = ["https://www.who.int/news-room/q-a-detail/q-a-coronaviruses"]
+  name = "BMAS_scraper"
+  start_urls = ["https://www.bmas.de/DE/Presse/Meldungen/2020/corona-virus-arbeitsrechtliche-auswirkungen.html"]
 
   def parse(self, response):
     columns = {
@@ -25,10 +24,10 @@ class CovidScraper(scrapy.Spider):
       "last_update" : [],
     }
 
-    QUESTION_ANSWER_SELECTOR = ".sf-accordion__panel"
-    QUESTION_SELECTOR = ".sf-accordion__link::text"
-    ANSWER_SELECTOR = ".sf-accordion__content ::text"
-    ANSWER_HTML_SELECTOR = ".sf-accordion__content"
+    QUESTION_ANSWER_SELECTOR = ".akkordeon"
+    QUESTION_SELECTOR = ".akkordeon-button button::text"
+    ANSWER_SELECTOR = ".collapse ::text"
+    ANSWER_HTML_SELECTOR = ".collapse"
 
     questions_answers = response.css(QUESTION_ANSWER_SELECTOR)
     for question_answer in questions_answers:
@@ -46,19 +45,24 @@ class CovidScraper(scrapy.Spider):
 
     today = date.today()
 
-    columns["link"] = ["https://www.who.int/news-room/q-a-detail/q-a-coronaviruses"] * len(columns["question"])
-    columns["name"] = ["Q&A on coronaviruses (COVID-19)"] * len(columns["question"])
-    columns["source"] = ["World Health Organization (WHO)"] * len(columns["question"])
+    columns["link"] = ["https://www.bmas.de/DE/Presse/Meldungen/2020/corona-virus-arbeitsrechtliche-auswirkungen.html"] * len(columns["question"])
+    columns["name"] = ["Arbeits- und arbeitsschutzrechtliche Fragen zum Coronavirus (SARS-CoV-2)"] * len(columns["question"])
+    columns["source"] = ["Bundesministerium für Arbeit und Soziales(BMAS)"] * len(columns["question"])
     columns["category"] = [""] * len(columns["question"])
-    columns["country"] = [""] * len(columns["question"])
+    columns["country"] = ["DE"] * len(columns["question"])
     columns["region"] = [""] * len(columns["question"])
     columns["city"] = [""] * len(columns["question"])
-    columns["lang"] = ["en"] * len(columns["question"])
+    columns["lang"] = ["de"] * len(columns["question"])
     columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
     dataframe = pd.DataFrame(columns)
 
-    dataframe.to_csv("who_en.tsv", sep="\t", index=False)
- 
+    dataframe.to_csv("bmas_de.tsv", sep="\t", index=False)
 
+if __name__ == "__main__":
+    process = CrawlerProcess({
+        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+    })
 
+    process.crawl(CovidScraper)
+    process.start()

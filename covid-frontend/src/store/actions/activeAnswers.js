@@ -14,6 +14,25 @@ export const setLoadingStatus = (status) => ({
   status
 });
 
+export const showUserFeedbackPanel = (payload) => ({
+  type: types.SHOW_USER_FEEDBACK_PANEL,
+  payload
+});
+
+export const hideUserFeedbackPanel = () => ({
+  type: types.HIDE_USER_FEEDBACK_PANEL
+});
+
 export const reset = () => ({
   type: types.RESET,
 });
+
+export const markAsCorrectAnswer = (payload) => ({
+  type: types.MARK_AS_CORRECT_ANSWER,
+  payload
+})
+
+export const markAsWrongAnswer = (payload) => ({
+  type: types.MARK_AS_WRONG_ANSWER,
+  payload
+})
