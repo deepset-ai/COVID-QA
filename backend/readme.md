@@ -20,5 +20,5 @@ make sure python3 is installed. In my case it's pip3 / python3
     brew install elastic/tap/elasticsearch-full
     elasticsearch
     
-    uvicorn covid-qa.api:app
+    uvicorn backend.api:app
     
