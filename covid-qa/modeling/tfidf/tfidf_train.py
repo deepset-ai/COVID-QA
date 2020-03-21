@@ -25,7 +25,7 @@ class TfidfTrainer():
 
     def train_model(self, corpus):
         # creating vocabulary using uni-gram and bi-gram
-        self.vectorizer = TfidfVectorizer(ngram_range=(1, 2))
+        self.vectorizer = TfidfVectorizer(min_df=2, max_df=.95, ngram_range=(1, 2))
         self.vectorizer.fit(corpus) # fit the vectorizer with the list of texts
         self.feature_vectors = self.vectorizer.transform(corpus) # list of tfidf vectors
 
