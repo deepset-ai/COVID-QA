@@ -7,10 +7,14 @@
     "chart.js": "^2.9.3",
     "classnames": "^2.2.6",
     "env-cmd": "^9.0.3",
+    "eslint-plugin-prettier": "^3.1.2",
     "history": "^4.9.0",
+    "husky": "^4.2.3",
     "less": "^2.7.2",
     "less-plugin-clean-css": "^1.5.1",
     "node-sass": "^4.13.1",
+    "prettier": "^2.0.0",
+    "pretty-quick": "^2.0.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-chartjs-2": "^2.9.0",
@@ -48,5 +52,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }
