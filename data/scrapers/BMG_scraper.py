@@ -1,6 +1,5 @@
 from datetime import date
 import scrapy
-import pandas as pd
 
 
 class CovidScraper(scrapy.Spider):
