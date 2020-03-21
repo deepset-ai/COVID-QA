@@ -1,0 +1,54 @@
+@import '../../assets/styles/_variables';
+@import '../../assets/styles/_mixins';
+
+.wrapper {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top:  0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 10;
+  backdrop-filter: blur(2px);
+
+  & > div {
+    background-color: $white;
+    @include border();
+    box-shadow: $base-shadow;
+    padding: 24px 24px 24px 24px;
+  
+    position: absolute;
+    width: auto;
+    height: auto;
+    max-height: 60vh;
+    z-index: 2;
+  }
+
+  h2 {
+    margin-bottom: 1em;
+  }
+
+  button {
+    display: block;
+    white-space: nowrap;
+    margin: 0.5em 0;
+    cursor: pointer;
+    background: $warning-light2;
+    border-radius: 12px;
+    margin-left: 12px;
+    outline: 1px;
+
+    &:last-child {
+      background: $accent-light;
+    }
+
+    & > i {
+      margin-top: 3px;
+      margin-right: 5px;
+    }
+  }
+}
