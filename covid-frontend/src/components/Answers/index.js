@@ -113,17 +113,24 @@ class Answers extends PureComponent {
               {
                 topAnswer.hasOwnProperty('probability') ? (
                   <Fragment>
-                    <Row>
+                    {/* <Row>
                       <Col>
                         <div className={styles.topAnswerTitle + ' top-answer-box'}>
                           Top answer
                         </div>
                       </Col>
-                    </Row>
+                    </Row> */}
                     <Row gutter={[24, 40]}>
                       <Col span={19}>
-                        <div
-                          className={styles.answerTitle}>{topAnswer.question}</div>
+                        <div className={styles.topAnswerTitle + ' top-answer-box'}>
+                          Top answer
+                        </div> 
+                        <div className={styles.answerTitle + ' headline-faq-match'}>
+                          {topAnswer.question}
+                        </div>
+                        <div className='headline-faq-match-confidence'>
+                          {this.renderTag(topAnswer.probability)}
+                        </div>
                         <div className={styles.answerText}>
                           {
                             topAnswer.answer ? (
@@ -151,9 +158,9 @@ class Answers extends PureComponent {
 
                         </div>
                       </Col>
-                      <Col span={5}>
+                      {/* <Col span={5}>
                         {this.renderTag(topAnswer.probability)}
-                      </Col>
+                      </Col> */}
                     </Row>
                   </Fragment>
                 ) : (
@@ -178,7 +185,10 @@ class Answers extends PureComponent {
                   return (
                     <Row gutter={[24, 40]} key={i}>
                       <Col span={19}>
-                        <div className={styles.answerTitle}>{item.question}</div>
+                        <div className={styles.answerTitle + ' headline-faq-match' + ' other-answer-index-' + i}>{item.question}</div>
+                        <div className="headline-faq-match-confidence">
+                          {this.renderTag(item.probability)}
+                        </div>
                         <div className={styles.answerText}>
                           {
                             item.answer ? (
@@ -205,9 +215,9 @@ class Answers extends PureComponent {
 
                         </div>
                       </Col>
-                      <Col span={5}>
+                      {/* <Col span={5}>
                         {this.renderTag(item.probability)}
-                      </Col>
+                      </Col> */}
                     </Row>
                   );
                 })
