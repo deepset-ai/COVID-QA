@@ -17,3 +17,13 @@ export const setLoadingStatus = (status) => ({
 export const reset = () => ({
   type: types.RESET,
 });
+
+export const markAsCorrectAnswer = (payload) => ({
+  type: types.MARK_AS_CORRECT_ANSWER,
+  payload
+})
+
+export const markAsWrongAnswer = (payload) => ({
+  type: types.MARK_AS_WRONG_ANSWER,
+  payload
+})

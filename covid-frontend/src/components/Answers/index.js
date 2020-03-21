@@ -32,6 +32,26 @@ class Answers extends PureComponent {
     }
   }
 
+  onFeedbackPositive = (answerDocumentId, event) => {
+    event.preventDefault()
+    this.props.answersActions.markAsCorrectAnswer({
+      question: this.props.globalSearch,
+      answerDocumentId
+    });
+
+    return false;
+  }
+
+  onFeedbackNegative = (answerDocumentId, event) => {
+    event.preventDefault()
+    this.props.answersActions.markAsWrongAnswer({
+      question: this.props.globalSearch,
+      answerDocumentId
+    });
+
+    return false;
+  }
+
   renderTag = (probability) => {
     const value = probability * 100;
     const theme = value >= 80 ? Tag.themes.GREEN : value >= 30 ? Tag.themes.ORANGE : Tag.themes.RED;
@@ -148,7 +168,18 @@ class Answers extends PureComponent {
                               )
                             }
                           </div>
-
+                          <div>
+                            <span>Feedback:</span>
+                          
+                            <a href='#upvote' target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}
+                              onClick={this.onFeedbackPositive.bind(this, topAnswerMeta.document_id)}>
+                              <Icon type="like" />
+                            </a>
+                            <a href='#downvote' target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}
+                              onClick={this.onFeedbackNegative.bind(this, topAnswerMeta.document_id)}>
+                              <Icon type="dislike" />
+                            </a>
+                          </div>
                         </div>
                       </Col>
                       <Col span={5}>
@@ -201,6 +232,18 @@ class Answers extends PureComponent {
                                 </a>
                               )
                             }
+                          </div>
+                          <div>
+                            <span>Feedback:</span>
+                          
+                            <a href='#upvote' target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}
+                              onClick={this.onFeedbackPositive.bind(this, itemMeta.document_id)}>
+                              <Icon type="like" />
+                            </a>
+                            <a href='#downvote' target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}
+                              onClick={this.onFeedbackNegative.bind(this, itemMeta.document_id)}>
+                              <Icon type="dislike" />
+                            </a>
                           </div>
 
                         </div>

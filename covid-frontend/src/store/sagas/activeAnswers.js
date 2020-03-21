@@ -28,8 +28,38 @@ export function* get() {
   yield put(actions.setLoadingStatus(false));
 }
 
+export function* markAsCorrectAnswer({ question, answerDocumentId }) {
+  if (!question.selectedValue || answerDocumentId !== 0 && !answerDocumentId) {
+    // do nothing
+    return;
+  }
+
+  try {
+    yield api.post(`/bert/questionAnswered`, null, { correctAnswer: true, question: question.selectedValue, answerDocumentId });
+
+  } catch (error) {
+    message.error(error.message);
+  }
+}
+
+export function* markAsWrongAnswer({ question, answerDocumentId }) {
+  if (!question.selectedValue || answerDocumentId !== 0 && !answerDocumentId) {
+    // do nothing
+    return;
+  }
+
+  try {
+    yield api.post(`/bert/questionAnswered`, null, { correctAnswer: false, question: question.selectedValue, answerDocumentId });
+
+  } catch (error) {
+    message.error(error.message);
+  }
+}
+
 export default function* () {
   yield all([
     takeLatest([types.GET, globalSearchTypes.SET_SELECTED_VALUE], get),
+    takeLatest([types.MARK_AS_CORRECT_ANSWER], ({ payload }) => markAsCorrectAnswer(payload)),
+    takeLatest([types.MARK_AS_WRONG_ANSWER], ({ payload }) => markAsWrongAnswer(payload)),
   ]);
 }
