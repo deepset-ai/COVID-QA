@@ -1,2 +1,4 @@
+#crawler
+Scrapy
 # haystack
 -e git://github.com/deepset-ai/haystack.git@master#egg=farm-haystack

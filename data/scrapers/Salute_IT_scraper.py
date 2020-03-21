@@ -3,7 +3,9 @@
 from datetime import date
 import scrapy
 import pandas as pd
-from bs4 import BeautifulSoup
+
+
+from scrapy.crawler import CrawlerProcess
 
 class Salute_IT_Scrapper(scrapy.Spider):
     name = "Salute_IT_Scraper"
@@ -54,6 +56,13 @@ class Salute_IT_Scrapper(scrapy.Spider):
         columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
         dataframe = pd.DataFrame(columns)
-
         dataframe.to_csv("salute_it.tsv", sep="\t", index=False)
 
+
+if __name__ == "__main__":
+    process = CrawlerProcess({
+        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+    })
+
+    process.crawl(Salute_IT_Scrapper)
+    process.start()
