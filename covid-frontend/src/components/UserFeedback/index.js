@@ -52,7 +52,7 @@ class UserFeedback extends PureComponent {
     return (
       <div className={styles.wrapper}>
         <div>
-          <h1>Thank you for giving us feedback.</h1>
+          <h2>Thank you for giving us feedback.</h2>
           <p>What was wrong with the answer?</p>
           <button rel="noopener noreferrer" className={styles.answerDocLink}
             onClick={this.onFeedbackNegative.bind(this, topAnswerMeta.document_id, 'fake')}>

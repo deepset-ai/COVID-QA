@@ -3,8 +3,12 @@
 
 .wrapper {
   position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   width: 100vw;
-  height: 100vw;
+  height: 100vh;
   left: 0;
   top:  0;
   background-color: rgba(0, 0, 0, 0.7);
@@ -18,15 +22,13 @@
     padding: 24px 24px 24px 24px;
   
     position: absolute;
-    width: 40vw;
+    width: auto;
     height: auto;
     max-height: 60vh;
     z-index: 2;
-    left: 30vw;
-    top: 20vh;
   }
 
-  h1 {
+  h2 {
     margin-bottom: 1em;
   }
 
