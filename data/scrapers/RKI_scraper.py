@@ -12,18 +12,18 @@ class CovidScraper(scrapy.Spider):
 
 	def parse(self, response):
 		columns = {
-			"question" : [], 
-			"answer" : [], 
-			"answer_html" : [], 
-			"link" : [], 
-			"name" : [], 
-			"source" : [], 
-			"category" : [], 
-			"country" : [], 
-			"region" : [], 
-			"city" : [], 
-			"lang" : [], 
-			"last_update" : [], 
+			"question" : [],
+			"answer" : [],
+			"answer_html" : [],
+			"link" : [],
+			"name" : [],
+			"source" : [],
+			"category" : [],
+			"country" : [],
+			"region" : [],
+			"city" : [],
+			"lang" : [],
+			"last_update" : [],
 			}
 
 		for x in response.xpath('//div[@class="alt-accordion-box-box"]/@id').extract():
@@ -33,7 +33,7 @@ class CovidScraper(scrapy.Spider):
 
 			columns['question'].append(question_text)
 			columns['answer'].append(answer_text)
-		
+
 		today = date.today()
 
 		columns["link"] = ["https://www.who.int/news-room/q-a-detail/q-a-coronaviruses"] * len(columns["question"])
@@ -47,8 +47,7 @@ class CovidScraper(scrapy.Spider):
 		columns["answer_html"] = [""] * len(columns["question"])
 		columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
-		dataframe = pd.DataFrame(columns)
-		dataframe.to_csv("rki_de.tsv", sep="\t", index=False)
+		return columns
 
 
 if __name__ == "__main__":
@@ -58,5 +57,3 @@ if __name__ == "__main__":
 
     process.crawl(CovidScraper)
     process.start()
-
-

@@ -10,7 +10,8 @@ RESULTS = []
 
 class Pipeline(object):
     def process_item(self, item, spider):
-        RESULTS.append(dict(item))
+        print(type(item))
+        RESULTS.append(pd.DataFrame.from_dict(item))
 
 if __name__ == "__main__":
     crawler_files = [f for f in os.listdir(PATH) if os.path.isfile(os.path.join(PATH, f)) and "META" not in f]
@@ -25,5 +26,5 @@ if __name__ == "__main__":
         CovidScraper = scraper.CovidScraper()
         process.crawl(CovidScraper)
     process.start()
-    dataframe = pd.DataFrame(RESULTS)
+    dataframe = pd.concat(RESULTS)
     dataframe.to_csv("complete.tsv", sep="\t", index=False)
