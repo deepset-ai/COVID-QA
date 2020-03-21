@@ -217,7 +217,7 @@ class Answers extends PureComponent {
                   return (
                     <Row gutter={[24, 40]} key={i}>
                       <Col span={19}>
-                        <div className={styles.answerTitle + ' headline-faq-match' + ' other-answer-index-' + i}>{item.question}</div>
+                        <div className={styles.answerTitle + ' headline-faq-match other-answer-index-' + i}>{item.question}</div>
                         <div className="headline-faq-match-confidence">
                           {this.renderTag(item.probability)}
                         </div>
