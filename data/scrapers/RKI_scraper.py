@@ -29,10 +29,11 @@ class CovidScraper(scrapy.Spider):
 		for x in response.xpath('//div[@class="alt-accordion-box-box"]/@id').extract():
 			question_text = response.xpath(str('//*[@id="'+x+'"]/h2/text()')).extract()[0]
 			answer_text = " ".join(response.xpath(str('//*[@id="'+x+'"]/div/p')).xpath('string()').extract())
-
+			answer_html = " ".join(response.xpath(str('//*[@id="'+x+'"]/div/p')).extract())
 
 			columns['question'].append(question_text)
 			columns['answer'].append(answer_text)
+			columns['answer_html'].append(answer_html)
 
 		today = date.today()
 
@@ -44,7 +45,6 @@ class CovidScraper(scrapy.Spider):
 		columns["region"] = [""] * len(columns["question"])
 		columns["city"] = [""] * len(columns["question"])
 		columns["lang"] = ["de"] * len(columns["question"])
-		columns["answer_html"] = [""] * len(columns["question"])
 		columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
 		return columns
