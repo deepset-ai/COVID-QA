@@ -1,2 +1,2 @@
-# haystack (currently from FAQ branch)
--e git://github.com/deepset-ai/haystack.git@faq_style_qa#egg=haystack
+# haystack
+-e git://github.com/deepset-ai/haystack.git@master#egg=farm-haystack
