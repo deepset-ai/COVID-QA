@@ -3,9 +3,9 @@
 from datetime import date
 import scrapy
 import pandas as pd
+from scrapy.crawler import CrawlerProcess
 
-
-class WHOScraper(scrapy.Spider):
+class CovidScraper(scrapy.Spider):
   name = "BZgA_scraper"
   start_urls = ["https://www.infektionsschutz.de/coronavirus/faqs-coronaviruscovid-19.html"]
 
@@ -58,7 +58,13 @@ class WHOScraper(scrapy.Spider):
 
     dataframe = pd.DataFrame(columns)
 
-    dataframe.to_csv("bzga.tsv", sep="\t", index=False)
+    dataframe.to_csv("bzga_de.tsv", sep="\t", index=False)
  
 
+if __name__ == "__main__":
+    process = CrawlerProcess({
+        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+    })
 
+    process.crawl(CovidScraper)
+    process.start()

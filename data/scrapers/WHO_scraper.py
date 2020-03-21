@@ -5,7 +5,7 @@ import scrapy
 import pandas as pd
 
 
-class WHOScraper(scrapy.Spider):
+class CovidScraper(scrapy.Spider):
   name = "WHO_scraper"
   start_urls = ["https://www.who.int/news-room/q-a-detail/q-a-coronaviruses"]
 
@@ -58,7 +58,7 @@ class WHOScraper(scrapy.Spider):
 
     dataframe = pd.DataFrame(columns)
 
-    dataframe.to_csv("who.tsv", sep="\t", index=False)
+    dataframe.to_csv("who_en.tsv", sep="\t", index=False)
  
 
 

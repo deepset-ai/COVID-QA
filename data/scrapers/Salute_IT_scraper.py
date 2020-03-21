@@ -7,7 +7,7 @@ import pandas as pd
 
 from scrapy.crawler import CrawlerProcess
 
-class Salute_IT_Scrapper(scrapy.Spider):
+class CovidScraper(scrapy.Spider):
     name = "Salute_IT_Scraper"
     start_urls = ["http://www.salute.gov.it/portale/nuovocoronavirus/dettaglioFaqNuovoCoronavirus.jsp?id=228"]
 
@@ -64,5 +64,5 @@ if __name__ == "__main__":
         'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
     })
 
-    process.crawl(Salute_IT_Scrapper)
+    process.crawl(CovidScraper)
     process.start()
