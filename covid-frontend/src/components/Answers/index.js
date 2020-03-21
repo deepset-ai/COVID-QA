@@ -40,7 +40,7 @@ class Answers extends PureComponent {
       <Tag
         text={`Confidence: ${roundedValue}%`}
         theme={theme}
-        className={styles.tag}
+        className={styles.tag + " result-confidence-box"}
       />
     );
   }
