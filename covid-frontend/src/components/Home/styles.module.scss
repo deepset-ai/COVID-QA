@@ -40,7 +40,9 @@
 }
 
 .poweredBy {
-  float:right;
+  margin-right: 20px;
+  position: absolute;
+  right: 10px;
   span {
     color: #d80808;
   }
