@@ -43,8 +43,17 @@
   margin-right: 20px;
   position: absolute;
   right: 10px;
-  span {
-    color: #d80808;
+  color: $secondary-grey;
+  a {
+    text-decoration: underline;
+    color: $secondary-grey;
+  }
+  &:hover span {
+    color: $strong-emotion;
+  }
+  &:hover a {
+    color: $strong-emotion;
+    text-decoration: underline;
   }
 
   img {
