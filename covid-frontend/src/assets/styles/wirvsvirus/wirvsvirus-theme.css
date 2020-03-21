@@ -1,0 +1,8 @@
+/* Custom CSS styles for Hackathon WirVsVirus */
+.ant-col .result-confidence-box {
+    color: #707070;
+}
+
+.ant-row .ant-col span {
+    color: #707070;    
+} 
