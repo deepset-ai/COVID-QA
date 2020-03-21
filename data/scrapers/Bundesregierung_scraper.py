@@ -1,9 +1,5 @@
-# run 'scrapy runspider WHO_scraper.py' to scrape data
-
 from datetime import date
 import scrapy
-import pandas as pd
-
 
 class CovidScraper(scrapy.Spider):
   name = "Bundesregierung_scraper"
@@ -34,13 +30,15 @@ class CovidScraper(scrapy.Spider):
       question = " ".join(question).strip()
 
       # all paragraphs till the next question header are considert to be the answer
-      following_siblings = question_elm.xpath('following-sibling::p[not(@class)]')
+      following_siblings = question_elm.xpath('following-sibling::*')
       answer = []
       answer_html = []
       for elm in following_siblings:
-        if elm.root.tag != 'h2':
+        if elm.root.tag == 'p' and 'navToTop' not in elm.root.classes:
           answer += elm.css("::text").getall()
           answer_html += [elm.get()]
+        else:
+            break
       answer = "".join(answer).replace('\n', '').strip()
       answer_html = " ".join(answer_html).strip()
 
