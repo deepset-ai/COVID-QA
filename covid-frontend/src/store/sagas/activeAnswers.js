@@ -29,7 +29,7 @@ export function* get() {
 }
 
 export function* markAsCorrectAnswer({ question, answerDocumentId }) {
-  if (!question.selectedValue || answerDocumentId !== 0 && !answerDocumentId) {
+  if (!question.selectedValue || answerDocumentId <= 0) {
     // do nothing
     return;
   }
@@ -43,7 +43,7 @@ export function* markAsCorrectAnswer({ question, answerDocumentId }) {
 }
 
 export function* markAsWrongAnswer({ question, answerDocumentId }) {
-  if (!question.selectedValue || answerDocumentId !== 0 && !answerDocumentId) {
+  if (!question.selectedValue || answerDocumentId <= 0) {
     // do nothing
     return;
   }
