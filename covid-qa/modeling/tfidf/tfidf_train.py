@@ -4,12 +4,6 @@ import re
 import pickle
 import os
 
-import nltk
-from nltk import word_tokenize
-from nltk.corpus import stopwords
-import string
-
-
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -17,13 +11,16 @@ from preprocess import Preprocessor
 
 class TfidfTrainer():
 
-    def __init__(self):
-        self.preprocessor = Preprocessor()
+    def __init__(self, instream = None):
+        self.preprocessor = Preprocessor(instream = instream)
         self.feature_vectors = None
         self.vectorizer = None
 
-    def preprocess_corpus(self):
-        pcorpus = self.preprocessor.sentencepiece_apply(self.preprocessor.corpus)
+    def preprocess_corpus(self, corpus = None):
+        if corpus:
+            pcorpus = self.preprocessor.preprocess_sp(corpus)
+        else:
+            pcorpus = self.preprocessor.sentencepiece_apply(self.preprocessor.corpus)
         return pcorpus
 
     def train_model(self, corpus):
@@ -47,8 +44,11 @@ class TfidfTrainer():
             self.vectorizer = pickle.load(infile)
 
 
-if __name__ == "__main__":
+def main():
     trainer = TfidfTrainer()
     corpus = trainer.preprocess_corpus()
     trainer.train_model(corpus)
     trainer.save_model()
+ 
+if __name__ == "__main__":
+    main()
