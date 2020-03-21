@@ -10,7 +10,6 @@ RESULTS = []
 
 class Pipeline(object):
     def process_item(self, item, spider):
-        print(type(item))
         RESULTS.append(pd.DataFrame.from_dict(item))
 
 if __name__ == "__main__":
