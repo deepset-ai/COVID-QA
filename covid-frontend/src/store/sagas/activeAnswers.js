@@ -4,7 +4,7 @@ import * as api from 'store/sagas/api';
 import * as globalSearchTypes from 'store/types/globalSearch';
 import * as types from 'store/types/activeAnswers';
 import * as actions from 'store/actions/activeAnswers';
-
+const MODEL_ID = 1;
 
 export function* get() {
   const { selectedValue } = yield select(state => state.globalSearch);
@@ -18,9 +18,16 @@ export function* get() {
 
   yield put(actions.setLoadingStatus(true));
   try {
-    const data = yield api.post(`/bert/question`, null, { question: selectedValue });
+    const question = selectedValue;
+    const query = {
+      questions: [ question ],
+      top_k_retriever: 5,
+    };
 
-    yield put(actions.set(data.answers));
+    const data = yield api.post(`/models/${MODEL_ID}/faq-qa`, null, query);
+
+    const answers = data.results[0].answers
+    yield put(actions.set(answers));
 
   } catch (error) {
     message.error(error.message);
@@ -33,12 +40,15 @@ export function* markAsCorrectAnswer({ question, answerDocumentId }) {
     // do nothing
     return;
   }
-
+  const id = parseInt(answerDocumentId, 10);
   try {
-    const id = parseInt(answerDocumentId, 10);
-    const feedback = 'relevant';
-    yield api.post(`/feedback`, null, { question: question.selectedValue, document_id: id, feedback });
-
+    const requestbody = {
+      question:  question.selectedValue,
+      answer: '',
+      feedback: 'relevant',
+      document_id: id
+    }
+    yield api.post(`/models/${MODEL_ID}/feedback`, null, requestbody);
   } catch (error) {
     message.error(error.message);
   }
@@ -49,10 +59,16 @@ export function* markAsWrongAnswer({ question, answerDocumentId, feedback }) {
     // do nothing
     return;
   }
-
   try {
     const id = parseInt(answerDocumentId, 10);
-    yield api.post(`/feedback`, null, { question: question.selectedValue, document_id: id, feedback });
+
+    const requestbody = {
+      question:  question.selectedValue,
+      answer: '',
+      feedback,
+      document_id: id
+    }
+    yield api.post(`/models/${MODEL_ID}/feedback`, null, requestbody);
 
   } catch (error) {
     message.error(error.message);

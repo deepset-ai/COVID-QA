@@ -12,7 +12,7 @@ export function* getOptions(value) {
   if (!currentString.length) {
     yield put(actions.updateSearchOptions([]));
     yield put(actions.updateLastSearchValue(''));
-    
+
     return;
   }
 
@@ -22,13 +22,14 @@ export function* getOptions(value) {
   }
 
   yield put(actions.setLoadingStatus(true));
-  
+
   try {
     yield put(actions.updateLastSearchValue(value));
-    
+
     yield delay(400);
 
-    const data = yield api.get(`/questions/autocomplete`, { search: currentString });
+
+    const data = yield api.get(`/query/autocomplete`, { search: currentString });
 
     yield put(actions.updateSearchOptions(data));
 
