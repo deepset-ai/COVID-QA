@@ -68,32 +68,32 @@
   position: relative;
   text-transform: uppercase;
 
-  &:before {
-    background-color: $white;
-    @include border($accent-light3, 0);
-    border-radius: 1px;
-    content: "";
-    display: inline-block;
-    height: 19px;
-    position: absolute;
-    width: 19px;
-    top: 8px;
-    transform: rotate(45deg) translateX(-50%);
-    left: -4px;
-  }
-  &:after {
-    background-color: $white;
-    @include border($accent-light3, 0);
-    border-radius: 1px;
-    content: "";
-    display: inline-block;
-    height: 19px;
-    position: absolute;
-    width: 19px;
-    top: 8px;
-    transform: rotate(45deg) translateX(-50%);
-    right: -17px;
-  }
+  // &:before {
+  //   background-color: $white;
+  //   @include border($accent-light3, 0);
+  //   border-radius: 1px;
+  //   content: "";
+  //   display: inline-block;
+  //   height: 19px;
+  //   position: absolute;
+  //   width: 19px;
+  //   top: 8px;
+  //   transform: rotate(45deg) translateX(-50%);
+  //   left: -4px;
+  // }
+  // &:after {
+  //   background-color: $white;
+  //   @include border($accent-light3, 0);
+  //   border-radius: 1px;
+  //   content: "";
+  //   display: inline-block;
+  //   height: 19px;
+  //   position: absolute;
+  //   width: 19px;
+  //   top: 8px;
+  //   transform: rotate(45deg) translateX(-50%);
+  //   right: -17px;
+  // }
 }
 
 .otherAnswersTitle {

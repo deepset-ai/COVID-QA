@@ -115,7 +115,7 @@ class Answers extends PureComponent {
                   <Fragment>
                     <Row>
                       <Col>
-                        <div className={styles.topAnswerTitle}>
+                        <div className={styles.topAnswerTitle + ' top-answer-box'}>
                           Top answer
                         </div>
                       </Col>
