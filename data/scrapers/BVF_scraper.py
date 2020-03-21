@@ -1,6 +1,7 @@
 from datetime import date
 import scrapy
 import pandas as pd
+from scrapy.crawler import CrawlerProcess
 
 
 class CovidScraper(scrapy.Spider):
@@ -44,7 +45,7 @@ class CovidScraper(scrapy.Spider):
     today = date.today()
 
     columns["link"] = ["https://www.bvf.de/aktuelles/fachliche-meldungen/artikel/news/faq-fuer-schwangere-frauen-und-ihre-familien-zu-spezifischen-risiken-der-covid-19-virusinfektion/"] * len(columns["question"])
-    columns["name"] = ["FAQ FÜR SCHWANGERE FRAUEN UND IHRE FAMILIEN ZU SPEZIFISCHEN RISIKEN DER COVID-19-VIRUSINFEKTION"] * len(columns["question"])
+    columns["name"] = ["FAQ für schwangere Frauen und ihre Familien zu spezifischen Risiken der COVID-19-Virusinfektion"] * len(columns["question"])
     columns["source"] = ["Berufsverband der Frauenärzte(BvF)"] * len(columns["question"])
     columns["category"] = [""] * len(columns["question"])
     columns["country"] = ["DE"] * len(columns["question"])
@@ -56,3 +57,12 @@ class CovidScraper(scrapy.Spider):
     dataframe = pd.DataFrame(columns)
 
     dataframe.to_csv("bvf_de.tsv", sep="\t", index=False)
+
+
+if __name__ == "__main__":
+    process = CrawlerProcess({
+        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+    })
+
+    process.crawl(CovidScraper)
+    process.start()
