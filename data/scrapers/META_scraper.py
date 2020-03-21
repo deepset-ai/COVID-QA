@@ -1,4 +1,4 @@
-import scrapy
+import scrapy"
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 import os
@@ -25,5 +25,5 @@ if __name__ == "__main__":
         CovidScraper = scraper.CovidScraper()
         process.crawl(CovidScraper)
     process.start()
-    pd.DataFrame(RESULTS)
-    pd.to_csv(RESULTS)
+    dataframe = pd.DataFrame(RESULTS)
+    dataframe.to_csv("complete.tsv", sep="\t", index=False)
