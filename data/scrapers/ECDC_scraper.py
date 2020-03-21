@@ -63,7 +63,7 @@ class ECDCScraper(scrapy.Spider):
     columns["country"] = [""] * len(columns["question"])
     columns["region"] = [""] * len(columns["question"])
     columns["city"] = [""] * len(columns["question"])
-    columns["lang"] = ["de"] * len(columns["question"])
+    columns["lang"] = ["en"] * len(columns["question"])
     columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
     dataframe = pd.DataFrame(columns)
