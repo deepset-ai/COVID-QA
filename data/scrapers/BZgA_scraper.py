@@ -56,10 +56,8 @@ class CovidScraper(scrapy.Spider):
     columns["lang"] = ["de"] * len(columns["question"])
     columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
-    dataframe = pd.DataFrame(columns)
+    return columns
 
-    dataframe.to_csv("bzga_de.tsv", sep="\t", index=False)
- 
 
 if __name__ == "__main__":
     process = CrawlerProcess({
