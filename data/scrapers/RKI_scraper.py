@@ -4,8 +4,9 @@ import scrapy
 import numpy as np
 from datetime import date
 import pandas as pd
+from scrapy.crawler import CrawlerProcess
 
-class rki_infos(scrapy.Spider):
+class CovidScraper(scrapy.Spider):
 	name = 'rki_spyder'
 	start_urls = ['https://www.rki.de/SharedDocs/FAQ/NCOV2019/FAQ_Liste.html']
 
@@ -26,7 +27,7 @@ class rki_infos(scrapy.Spider):
 			}
 
 		for x in response.xpath('//div[@class="alt-accordion-box-box"]/@id').extract():
-			question_text = response.xpath(str('//*[@id="'+x+'"]/h2/text()')).extract()
+			question_text = response.xpath(str('//*[@id="'+x+'"]/h2/text()')).extract()[0]
 			answer_text = " ".join(response.xpath(str('//*[@id="'+x+'"]/div/p')).xpath('string()').extract())
 
 
@@ -47,9 +48,15 @@ class rki_infos(scrapy.Spider):
 		columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
 		dataframe = pd.DataFrame(columns)
-		dataframe.to_csv("rki.tsv", sep="\t", index=False)
+		dataframe.to_csv("rki_de.tsv", sep="\t", index=False)
 
 
+if __name__ == "__main__":
+    process = CrawlerProcess({
+        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+    })
 
+    process.crawl(CovidScraper)
+    process.start()
 
 
