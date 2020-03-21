@@ -13,27 +13,17 @@ class UserFeedback extends PureComponent {
     answersActions: PropTypes.object
   }
 
-  onFeedbackPositive = (answerDocumentId, event) => {
-    event.preventDefault()
-    this.props.answersActions.markAsCorrectAnswer({
-      question: this.props.globalSearch,
-      answerDocumentId
-    });
-
-    return false;
-  }
-
   closeHandler = () => {
     this.props.answersActions.hideUserFeedbackPanel();
   }
 
-  onFeedbackNegative = (answerDocumentId, reason, event) => {
+  onFeedbackNegative = (feedback, event) => {
     event.preventDefault()
 
     this.props.answersActions.markAsWrongAnswer({
       question: this.props.globalSearch,
-      answerDocumentId,
-      reason
+      answerDocumentId: this.props.answers.userFeedbackPopup && this.props.answers.userFeedbackPopup.answerDocumentId,
+      feedback
     });
 
     this.props.answersActions.hideUserFeedbackPanel();
@@ -43,27 +33,21 @@ class UserFeedback extends PureComponent {
 
 
   render() {
-    const { entries } = this.props.answers;
-    const sortedAnswers = entries.sort((a1, a2) => a2.probability - a1.probability);
-
-    const topAnswer = sortedAnswers.length ? sortedAnswers[0] : { context: '', answer: '' };
-    const topAnswerMeta = topAnswer.meta || {};
-
     return (
       <div className={styles.wrapper}>
         <div>
           <h2>Thank you for giving us feedback.</h2>
           <p>What was wrong with the answer?</p>
           <button rel="noopener noreferrer" className={styles.answerDocLink}
-            onClick={this.onFeedbackNegative.bind(this, topAnswerMeta.document_id, 'fake')}>
+            onClick={this.onFeedbackNegative.bind(this, 'fake')}>
             <Icon type="warning" /> The stated facts were inaccurate or wrong.
           </button>
           <button rel="noopener noreferrer" className={styles.answerDocLink}
-            onClick={this.onFeedbackNegative.bind(this, topAnswerMeta.document_id, 'outdated')}>
+            onClick={this.onFeedbackNegative.bind(this, 'outdated')}>
             <Icon type="clock-circle" /> The information were outdated.
           </button>
           <button rel="noopener noreferrer" className={styles.answerDocLink}
-            onClick={this.onFeedbackNegative.bind(this, topAnswerMeta.document_id, 'irrelevant')}>
+            onClick={this.onFeedbackNegative.bind(this, 'irrelevant')}>
             <Icon type="question" /> The answer had nothing to do with my question.
           </button>
           <button rel="noopener noreferrer" className={styles.answerDocLink} onClick={this.closeHandler}>

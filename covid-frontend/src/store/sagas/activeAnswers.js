@@ -36,14 +36,15 @@ export function* markAsCorrectAnswer({ question, answerDocumentId }) {
 
   try {
     const id = parseInt(answerDocumentId, 10);
-    yield api.post(`/feedback`, null, { question: question.selectedValue, document_id: id });
+    const feedback = 'relevant';
+    yield api.post(`/feedback`, null, { question: question.selectedValue, document_id: id, feedback });
 
   } catch (error) {
     message.error(error.message);
   }
 }
 
-export function* markAsWrongAnswer({ question, answerDocumentId, reason }) {
+export function* markAsWrongAnswer({ question, answerDocumentId, feedback }) {
   if (!question.selectedValue || answerDocumentId <= 0) {
     // do nothing
     return;
@@ -51,7 +52,7 @@ export function* markAsWrongAnswer({ question, answerDocumentId, reason }) {
 
   try {
     const id = parseInt(answerDocumentId, 10);
-    yield api.post(`/feedback`, null, { question: question.selectedValue, document_id: id, reason });
+    yield api.post(`/feedback`, null, { question: question.selectedValue, document_id: id, feedback });
 
   } catch (error) {
     message.error(error.message);

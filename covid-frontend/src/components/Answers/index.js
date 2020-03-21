@@ -180,15 +180,6 @@ class Answers extends PureComponent {
                                 onClick={this.onFeedbackNegative.bind(this, topAnswerMeta.document_id)}>
                                 <Icon type="dislike" />
                               </a>}
-                            {/* {
-                              showUserFeedbackPanel && (<>
-                                <label htmlFor={`fbs--${topAnswerMeta.document_id}`}>Can you give us a reason?</label>
-                                  <a value="outdated">The information is outdated.</a>
-                                  <a value="wrong">The stated facts are incorrect.</a>
-                                  <a value="unrelated">Not related to my question</a>
-                                <button>send feedback</button>
-                              </>
-                            )} */}
                           </div>
                         </div>
                       </Col>
@@ -250,10 +241,11 @@ class Answers extends PureComponent {
                               onClick={this.onFeedbackPositive.bind(this, itemMeta.document_id)}>
                               <Icon type="like" />
                             </a>
-                            <a href='#downvote' target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}
-                              onClick={this.onFeedbackNegative.bind(this, itemMeta.document_id)}>
-                              <Icon type="dislike" />
-                            </a>
+                            { !showUserFeedbackPanel && 
+                              <a href='#downvote' rel="noopener noreferrer" className={styles.answerDocLink}
+                                onClick={this.onFeedbackNegative.bind(this, itemMeta.document_id)}>
+                                <Icon type="dislike" />
+                              </a>}
                           </div>
 
                         </div>
