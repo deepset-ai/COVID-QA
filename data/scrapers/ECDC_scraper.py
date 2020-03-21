@@ -66,9 +66,7 @@ class ECDCScraper(scrapy.Spider):
     columns["lang"] = ["en"] * len(columns["question"])
     columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
-    dataframe = pd.DataFrame(columns)
-
-    dataframe.to_csv("ecdc_en.tsv", sep="\t", index=False)
+    return columns
  
 
 if __name__ == "__main__":
