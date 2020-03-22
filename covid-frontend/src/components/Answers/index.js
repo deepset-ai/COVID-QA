@@ -9,7 +9,6 @@ import * as answersActions from 'store/actions/activeAnswers';
 import { InputContainer, Tag } from 'components/common';
 import styles from './styles.module.scss';
 import UserFeedback from 'components/UserFeedback';
-
 class Answers extends PureComponent {
 
   static propTypes = {
@@ -56,7 +55,7 @@ class Answers extends PureComponent {
     const roundedValue = parseFloat(value).toFixed(2);
     return (
       <Tag
-        text={`Confidence: ${roundedValue}%`}
+        text={`Relevanz: ${roundedValue}%`}
         theme={theme}
         className={styles.tag + " result-confidence-box"}
       />
@@ -134,7 +133,7 @@ class Answers extends PureComponent {
                 <div className="loader-part l3" />
               </div>
               <h2>The BERT is working</h2>
-              <div>Please Wait</div>
+              <div>Please Wait – Bitte warten...</div>
             </div>
           ) : (
             <div className={styles.list + ' all-answers-wrapper'}>
@@ -205,7 +204,7 @@ class Answers extends PureComponent {
                 !!otherAnswers.length && (
                   <Row>
                     <Col>
-                      <div className={styles.otherAnswersTitle}>Other answers</div>
+                      <div className={styles.otherAnswersTitle}>Weitere Antworten</div>
                     </Col>
                   </Row>
                 )
@@ -216,7 +215,7 @@ class Answers extends PureComponent {
                   const answerParts = item.context.split(item.answer);
                   const itemMeta = item.meta || {};
                   return (
-                    <Row gutter={[24, 40]} key={i}>
+                    <Row gutter={[24, 40]} key={i} className={`other-answer-row row_${i}`}>
                       <Col span={19}>
                         <div className={styles.answerTitle + ' headline-faq-match other-answer-index-' + i}>{item.question}</div>
                         <div className="headline-faq-match-confidence">
