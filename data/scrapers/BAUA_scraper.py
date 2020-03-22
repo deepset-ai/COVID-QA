@@ -47,7 +47,7 @@ class CovidScraper(scrapy.Spider):
 
     columns["link"] = ["https://www.baua.de/DE/Themen/Arbeitsgestaltung-im-Betrieb/Biostoffe/FAQ/FAQ_node.html"] * len(columns["question"])
     columns["name"] = ["Antworten auf häufig gestellte Fragen zu beruflichen Tätigkeiten mit SARS-CoV-2"] * len(columns["question"])
-    columns["source"] = ["Bundesanstalt für Arbeitsschutz und Arbeitsmedizin(BAuA)"] * len(columns["question"])
+    columns["source"] = ["Bundesanstalt für Arbeitsschutz und Arbeitsmedizin (BAuA)"] * len(columns["question"])
     columns["category"] = [""] * len(columns["question"])
     columns["country"] = ["DE"] * len(columns["question"])
     columns["region"] = [""] * len(columns["question"])

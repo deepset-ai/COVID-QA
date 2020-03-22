@@ -23,7 +23,7 @@ class Home extends PureComponent {
   }
 
   render() {
-    const { currentString, options } = this.props.globalSearch.search;
+    const { currentString, options, filters } = this.props.globalSearch.search;
     return (
       <div className={styles.wrapper}>
         <Row>
@@ -39,6 +39,7 @@ class Home extends PureComponent {
               <SearchForm
                 value={currentString}
                 options={options}
+                filters={filters}
                 onSearch={this.props.actions.updateSearchValue}
                 onSubmit={this.handleSubmit}
               />

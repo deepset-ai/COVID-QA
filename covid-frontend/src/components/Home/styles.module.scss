@@ -40,27 +40,33 @@
 }
 
 .poweredBy {
-  margin-right: 20px;
-  position: absolute;
-  right: 10px;
+  text-align: right;
   color: $secondary-grey;
+  span {
+    color:#d80808 !important;
+  }
   a {
-    text-decoration: underline;
-    color: $secondary-grey;
-  }
-  &:hover span {
-    color: $strong-emotion;
-  }
-  &:hover a {
-    color: $strong-emotion;
-    text-decoration: underline;
-  }
+    text-decoration: none;
 
+    &:hover {
+      color: $strong-emotion;
+      text-decoration: underline;
+    }
+  }
   img {
     width: 300px;
   }
+  p {
+    text-align: right;
+  }
+  div {
+    text-align: center;
+    margin-top: 2em;
+    img {
+      height: 70px;
+    }
+  }
 }
-
 
 
 .autocomplete {
@@ -82,4 +88,19 @@
       color: $accent;
     }
   }
+}
+
+.detectedLanguage {
+  text-align: right;
+  color: $primary-grey;
+}
+.projectLogo {
+  padding-top:50px;
+  width:100%;
+  a,img {
+    width:180px;
+    margin:0 auto;
+    display: block;
+  }
+
 }

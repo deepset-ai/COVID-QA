@@ -37,7 +37,7 @@ class CovidScraper(scrapy.Spider):
 
 		today = date.today()
 
-		columns["link"] = ["https://www.who.int/news-room/q-a-detail/q-a-coronaviruses"] * len(columns["question"])
+		columns["link"] = ["https://www.rki.de/SharedDocs/FAQ/NCOV2019/FAQ_Liste.html"] * len(columns["question"])
 		columns["name"] = ["Q&A on coronaviruses (COVID-19)"] * len(columns["question"])
 		columns["source"] = ["Robert Koch Institute (RKI)"] * len(columns["question"])
 		columns["category"] = [""] * len(columns["question"])
