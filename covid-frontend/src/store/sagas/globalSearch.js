@@ -25,13 +25,15 @@ export function* getOptions(value) {
 
   try {
     yield put(actions.updateLastSearchValue(value));
-
     yield delay(400);
-
-
     const data = yield api.get(`/query/autocomplete`, { search: currentString });
+    let i = 0;
+    const searchResults = data.results.map(question =>{
+      return {question, id: i++ };
+    });
+    console.log('language detection from autocomplete: ', data.language)
 
-    yield put(actions.updateSearchOptions(data));
+    yield put(actions.updateSearchOptions(searchResults));
 
   } catch (error) {
     message.error(error.message);
