@@ -51,21 +51,10 @@
 }
 
 .topAnswerTitle {
-  background-color: $accent-light2;
-  @include border($accent-light3, 0);
-  border-left: none;
-  border-right: none;
-  color: $contrast;
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 700;
-  margin-bottom: 26px;
-  line-height: 1;
-  letter-spacing: $secondary-spacing;
-  overflow: hidden;
-  padding: 6px 24px;
-  position: relative;
   text-transform: uppercase;
+  text-align: center;
+  color: white;
+  margin-bottom: 1em;;
 }
 
 .otherAnswersTitle {
