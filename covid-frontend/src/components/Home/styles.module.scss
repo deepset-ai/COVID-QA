@@ -44,23 +44,29 @@
   position: absolute;
   right: 10px;
   color: $secondary-grey;
+  width: 100%;
   a {
     text-decoration: underline;
     color: $secondary-grey;
+    &:hover {
+      color: $strong-emotion;
+      text-decoration: underline;
+    }
   }
-  &:hover span {
-    color: $strong-emotion;
-  }
-  &:hover a {
-    color: $strong-emotion;
-    text-decoration: underline;
-  }
-
   img {
     width: 300px;
   }
+  p {
+    text-align: right;
+  }
+  div {
+    text-align: center;
+    margin-top: 2em;
+    img {
+      height: 70px;
+    }
+  }
 }
-
 
 
 .autocomplete {
