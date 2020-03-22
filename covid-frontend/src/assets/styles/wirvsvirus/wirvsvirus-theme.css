@@ -1,10 +1,6 @@
 /* Custom CSS styles for Hackathon WirVsVirus */
 /* TODO: Evaluate removal of ant-design. At least get rid of those arbitrary CSS scoping hashes from class names :( */
 
-.ant-col .result-confidence-box {
-    color: #707070;
-}
-
 .ant-row .ant-col span {
     color: #707070;    
 }
@@ -34,4 +30,12 @@
 
 .answer-meta-info.top-answer {
     margin-top: 0;
+}
+
+.headline-faq-match-confidence {
+    color: white;
+}
+
+.other-answer-row .headline-faq-match-confidence {
+    color: black;
 }

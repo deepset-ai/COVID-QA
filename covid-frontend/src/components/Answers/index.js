@@ -9,6 +9,7 @@ import * as answersActions from 'store/actions/activeAnswers';
 import { InputContainer, Tag } from 'components/common';
 import styles from './styles.module.scss';
 import UserFeedback from 'components/UserFeedback';
+import {CheckCircleOutlined} from '@ant-design/icons';
 class Answers extends PureComponent {
 
   static propTypes = {
@@ -149,6 +150,7 @@ class Answers extends PureComponent {
                           {topAnswer.question}
                         </div>
                         <div className='headline-faq-match-confidence'>
+                          <CheckCircleOutlined style={{ color: 'white' }}/>
                           {this.renderTag(topAnswer.probability)}
                         </div>
                         <div className={styles.answerText + ' answer-text'}>
@@ -219,6 +221,7 @@ class Answers extends PureComponent {
                       <Col span={19}>
                         <div className={styles.answerTitle + ' headline-faq-match other-answer-index-' + i}>{item.question}</div>
                         <div className="headline-faq-match-confidence">
+                          <CheckCircleOutlined style={{ color: 'black' }}/>
                           {this.renderTag(item.probability)}
                         </div>
                         <div className={styles.answerText + ' answer-text'}>
