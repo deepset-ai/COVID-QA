@@ -19,6 +19,7 @@ export function* get() {
   yield put(actions.setLoadingStatus(true));
   try {
     const question = selectedValue;
+
     const query = {
       questions: [ question ],
       top_k_retriever: 5,

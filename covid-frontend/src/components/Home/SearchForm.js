@@ -9,6 +9,7 @@ class SearchForm extends PureComponent {
     form: PropTypes.object,
     value: PropTypes.string,
     options: PropTypes.array,
+    filters: PropTypes.object,
     onSearch: PropTypes.func,
     onSubmit: PropTypes.func,
   }
@@ -35,8 +36,11 @@ class SearchForm extends PureComponent {
   }
 
   render() {
-    const { form, options } = this.props;
+    const { form, options, filters } = this.props;
     const { getFieldDecorator } = form;
+    const suggestions = options || [];
+    const displayLanguages = {'de' : 'Deutsch', 'en': 'English'};
+    const language = filters && filters.language;
 
     return (
       <Form className={styles.form}>
@@ -61,7 +65,7 @@ class SearchForm extends PureComponent {
                   onInputKeyDown={this.onKeyDown}
                 >
                   {
-                    options.map(item =>
+                    suggestions.map(item =>
                       <AutoComplete.Option key={item.id}>{item.question}</AutoComplete.Option>
                     )
                   }
@@ -70,17 +74,23 @@ class SearchForm extends PureComponent {
             </Form.Item>
           </Col>
         </Row>
-
-        <Row gutter={32}>
-          <Col>
+    <Row gutter={32}>
+        <Col>
+        { language ?
+              <p className={styles.detectedLanguage}>Fragesprache {displayLanguages[language]}</p>
+            :
             <div className={styles.poweredBy}>
-              <p className="made-by">Made with <span className="heart">❤</span> and <a href="https://github.com/deepset-ai/haystack">open source</a></p>
-              <div className="project-logo">
-                <a href="https://wirvsvirushackathon.org/" target="_blank" rel="noopener noreferrer">
-                  <img src={logoHackathon} alt="Logo WirVsVirus Hackathon" />
-                </a>
-              </div>
+                  <p className="made-by">Made with <span className="heart">❤</span> and <a href="https://github.com/deepset-ai/haystack">open source</a></p>
             </div>
+        }
+    </Col></Row>
+    <Row> <Col>
+            <div className={styles.projectLogo}>
+              <a href="https://wirvsvirushackathon.org/" target="_blank" rel="noopener noreferrer">
+                <img src={logoHackathon} alt="Logo WirVsVirus Hackathon" />
+              </a>
+            </div>
+
           </Col>
         </Row>
 
