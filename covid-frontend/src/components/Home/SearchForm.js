@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Form, AutoComplete } from 'antd';
 import styles from './styles.module.scss';
+import logoHackathon from 'assets/images/logo-wirs-vs-virus-projekt-black-font.svg';
 
 class SearchForm extends PureComponent {
   static propTypes = {
@@ -73,7 +74,12 @@ class SearchForm extends PureComponent {
         <Row gutter={32}>
           <Col>
             <div className={styles.poweredBy}>
-              Made with <span>❤</span> and <a href="https://github.com/deepset-ai/haystack">open source</a>
+              <p className="madeBy">Made with <span>❤</span> and <a href="https://github.com/deepset-ai/haystack">open source</a></p>
+              <div className="project-logo">
+                <a href="https://wirvsvirushackathon.org/" target="_blank" rel="noopener noreferrer">
+                  <img src={logoHackathon} alt="Logo WirVsVirus Hackathon" />
+                </a>
+              </div>
             </div>
           </Col>
         </Row>
