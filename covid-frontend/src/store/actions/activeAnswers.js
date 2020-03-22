@@ -41,3 +41,7 @@ export const markAsFeedbackGiven = (payload) => ({
   type: types.MARK_AS_FEEDBACK_GIVEN,
   payload
 });
+
+export const clearFeedbackGiven = () => ({
+  type: types.CLEAR_FEEDBACK_GIVEN
+});

@@ -29,6 +29,9 @@ export function* get() {
     const answers = data.results[0].answers
     yield put(actions.set(answers));
 
+    // reset the feedbackGiven on each search
+    yield put(actions.clearFeedbackGiven());
+
   } catch (error) {
     message.error(error.message);
   }

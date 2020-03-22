@@ -47,6 +47,12 @@ export default (state = initialState, action) => {
         feedbackGiven: { ...state.feedbackGiven, ...action.payload }
       };
 
+    case types.CLEAR_FEEDBACK_GIVEN:
+      return {
+        ...state,
+        feedbackGiven: { ...initialState.feedbackGiven }
+      };
+
     case types.RESET:
       return {
         ...initialState
