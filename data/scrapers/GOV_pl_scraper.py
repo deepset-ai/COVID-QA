@@ -1,4 +1,4 @@
-# run 'scrapy runspider GOV_scraper.py' to scrape data
+# run 'scrapy runspider GOV_pl_scraper.py' to scrape data
 
 import scrapy
 from datetime import date
@@ -37,7 +37,7 @@ class CovidScraper(scrapy.Spider):
 
 		columns["link"] = ["https://www.gov.pl/web/koronawirus/pytania-i-odpowiedzi"] * len(columns["question"])
 		columns["name"] = ["Pytania i odpowiedzi (COVID-19)"] * len(columns["question"])
-		columns["source"] = ["GOV Polska (COVID-19)"] * len(columns["question"])
+		columns["source"] = ["GOV Polska"] * len(columns["question"])
 		columns["category"] = [""] * len(columns["question"])
 		columns["country"] = ["PL"] * len(columns["question"])
 		columns["region"] = [""] * len(columns["question"])

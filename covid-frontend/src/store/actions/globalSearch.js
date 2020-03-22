@@ -19,6 +19,10 @@ export const updateSearchOptions = (payload) => ({
   type: types.UPDATE_SEARCH_OPTIONS,
   payload
 });
+export const updateSearchFilters = (payload) => ({
+  type: types.UPDATE_SEARCH_FILTERS,
+  payload
+});
 
 export const setLoadingStatus = (status) => ({
   type: types.SET_LOADING_STATUS,

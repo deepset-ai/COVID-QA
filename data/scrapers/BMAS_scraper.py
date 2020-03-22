@@ -47,7 +47,7 @@ class CovidScraper(scrapy.Spider):
 
     columns["link"] = ["https://www.bmas.de/DE/Presse/Meldungen/2020/corona-virus-arbeitsrechtliche-auswirkungen.html"] * len(columns["question"])
     columns["name"] = ["Arbeits- und arbeitsschutzrechtliche Fragen zum Coronavirus (SARS-CoV-2)"] * len(columns["question"])
-    columns["source"] = ["Bundesministerium für Arbeit und Soziales(BMAS)"] * len(columns["question"])
+    columns["source"] = ["Bundesministerium für Arbeit und Soziales (BMAS)"] * len(columns["question"])
     columns["category"] = [""] * len(columns["question"])
     columns["country"] = ["DE"] * len(columns["question"])
     columns["region"] = [""] * len(columns["question"])

@@ -38,13 +38,17 @@ class CovidScraper(scrapy.Spider):
               answer += " ".join(selector.css(ANSWER_SELECTOR).getall()).strip() + "\n"
               answer_html += " ".join(selector.css(ANSWER_HTML_SELECTOR).getall()).strip()
 
-      return columns
+      columns['question'].append(question)
+      columns['answer'].append(answer)
+      columns['answer_html'].append(answer_html)
+
+
 
     today = date.today()
 
     columns["link"] = ["https://www.bvf.de/aktuelles/fachliche-meldungen/artikel/news/faq-fuer-schwangere-frauen-und-ihre-familien-zu-spezifischen-risiken-der-covid-19-virusinfektion/"] * len(columns["question"])
     columns["name"] = ["FAQ für schwangere Frauen und ihre Familien zu spezifischen Risiken der COVID-19-Virusinfektion"] * len(columns["question"])
-    columns["source"] = ["Berufsverband der Frauenärzte(BvF)"] * len(columns["question"])
+    columns["source"] = ["Berufsverband der Frauenärzte (BvF)"] * len(columns["question"])
     columns["category"] = [""] * len(columns["question"])
     columns["country"] = ["DE"] * len(columns["question"])
     columns["region"] = [""] * len(columns["question"])
@@ -52,9 +56,7 @@ class CovidScraper(scrapy.Spider):
     columns["lang"] = ["de"] * len(columns["question"])
     columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
-    dataframe = pd.DataFrame(columns)
-
-    dataframe.to_csv("bvf_de.tsv", sep="\t", index=False)
+    return columns
 
 
 if __name__ == "__main__":

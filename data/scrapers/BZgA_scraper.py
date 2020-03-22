@@ -48,9 +48,9 @@ class CovidScraper(scrapy.Spider):
 
     columns["link"] = ["https://www.infektionsschutz.de/coronavirus/faqs-coronaviruscovid-19.html"] * len(columns["question"])
     columns["name"] = ["FAQs Coronavirus/Covid-19"] * len(columns["question"])
-    columns["source"] = ["Bundeszentrale für gesundheitliche Aufklärung"] * len(columns["question"])
+    columns["source"] = ["Bundeszentrale für gesundheitliche Aufklärung (BZgA)"] * len(columns["question"])
     columns["category"] = [""] * len(columns["question"])
-    columns["country"] = [""] * len(columns["question"])
+    columns["country"] = ["DE"] * len(columns["question"])
     columns["region"] = [""] * len(columns["question"])
     columns["city"] = [""] * len(columns["question"])
     columns["lang"] = ["de"] * len(columns["question"])
