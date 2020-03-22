@@ -100,7 +100,7 @@ class Answers extends PureComponent {
 
         <Row gutter={24} className={styles.titleRow}>
           <Col span={24}>
-            <InputContainer label="Question" fluid>
+            <InputContainer label="Ihre Frage" fluid>
               <AutoComplete
                 className={styles.autocomplete}
                 size="large"
@@ -144,7 +144,7 @@ class Answers extends PureComponent {
                     <Row gutter={[24, 40]} className="top-answer-wrapper">
                       <Col span={19}>
                         <div className={styles.topAnswerTitle + ' top-answer-box'}>
-                          Top answer
+                          Beste Antwort
                         </div> 
                         <div className={styles.answerTitle + ' headline-faq-match'}>
                           {topAnswer.question}
@@ -172,7 +172,7 @@ class Answers extends PureComponent {
                         <div className={styles.answerMeta + ' answer-meta-info top-answer'}>
                           <div><span>Stand:</span> {this.formattedDateDE(topAnswerMeta.last_update) || '–'}</div>
                           <div>
-                            <span>Source:</span> {topAnswerMeta.source || '–'}
+                            <span>Quelle:</span> {topAnswerMeta.source || '–'}
                             {
                               topAnswerMeta.link && (
                                 <a href={topAnswerMeta.link} target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}>
