@@ -3,6 +3,7 @@
 from datetime import date
 import scrapy
 import pandas as pd
+from scrapy.crawler import CrawlerProcess
 
 class CovidScraper(scrapy.Spider):
   name = "CDC_Scraper"
@@ -68,3 +69,11 @@ class CovidScraper(scrapy.Spider):
     columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
     return columns
+
+
+if __name__ == "__main__":
+	process = CrawlerProcess({
+		'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+    })
+	process.crawl(CovidScraper)
+	process.start()

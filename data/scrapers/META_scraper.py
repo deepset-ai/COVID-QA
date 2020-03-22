@@ -25,5 +25,7 @@ if __name__ == "__main__":
         CovidScraper = scraper.CovidScraper
         process.crawl(CovidScraper)
     process.start()
-    dataframe = pd.concat(RESULTS)
-    dataframe.to_csv("complete.tsv", sep="\t", index=False)
+    df = pd.concat(RESULTS)
+    df.drop_duplicates(inplace=True)
+
+    #df.to_csv("../faqs/faq_200322_16.tsv", sep="\t", index=False)
