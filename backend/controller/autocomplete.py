@@ -35,4 +35,4 @@ def ask(request: Request):
 	else:
 		for i in range(10):
 			result.append(interim['hits']['hits'][i]['_source']['phrase'])
-	return result
+	return {"results":result}
