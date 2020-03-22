@@ -180,4 +180,8 @@ def ask(model_id: int, request: Query):
         resp_time = round(time.time() - t1, 2)
         logger.info({"time": resp_time, "request": request.json(), "results": results})
 
+        # remember questions with result in the autocomplete
+        if len(results) > 0:
+            addQuestionToAutocomplete(question)
+
         return {"results": results}
