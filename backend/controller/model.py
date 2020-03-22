@@ -59,9 +59,13 @@ document_store = ElasticsearchDocumentStore(
     excluded_meta_data=EXCLUDE_META_DATA_FIELDS,
 )
 
+# multilingual baseline retriever (=BM25)
+retriever = ElasticsearchRetriever(document_store=document_store, embedding_model=None, gpu=USE_GPU)
 
-retriever = ElasticsearchRetriever(document_store=document_store, embedding_model=EMBEDDING_MODEL_PATH, gpu=USE_GPU,
+# english_retriever
+english_retriever = ElasticsearchRetriever(document_store=document_store, embedding_model=EMBEDDING_MODEL_PATH, gpu=USE_GPU,
                                    pooling_strategy=EMBEDDING_POOLING_STRATEGY, emb_extraction_layer=EMBEDDING_EXTRACTION_LAYER)
+
 
 if READER_MODEL_PATH:
     # needed for extractive QA
@@ -80,9 +84,9 @@ else:
     # don't need one for pure FAQ matching
     reader = None
 
-FINDERS = {1: Finder(reader=reader, retriever=retriever)}
-
-logger.info(f"Initialized Finder (ID=1) with model '{READER_MODEL_PATH}'")
+# TODO we should switch this later to use "en" / "de" etc in the endpoint than plain model ids
+FINDERS = {1: Finder(reader=reader, retriever=retriever),
+           2: Finder(reader=reader, retriever=english_retriever)}
 
 
 #############################################
@@ -167,6 +171,7 @@ def ask_faq(model_id: int, request: Query):
             request.filters = {key: [value] for key, value in request.filters.items() if value is not None}
             logger.info(f" [{datetime.now()}] Request: {request}")
 
+        # temporary routing of requests by language
         result = finder.get_answers_via_similar_questions(
             question=question, top_k_retriever=request.top_k_retriever, filters=request.filters,
         )

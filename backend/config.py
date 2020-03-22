@@ -2,7 +2,7 @@ import ast
 import os
 
 # Resources / Computation
-USE_GPU = os.getenv("USE_GPU", "False").lower() == "true"
+USE_GPU = os.getenv("USE_GPU", "True").lower() == "true"
 MAX_PROCESSES = int(os.getenv("MAX_PROCESSES", 4))
 BATCHSIZE = int(os.getenv("BATCHSIZE", 50))
 
