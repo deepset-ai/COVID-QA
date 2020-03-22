@@ -17,7 +17,9 @@ MAX_SEQ_LEN = int(os.getenv("MAX_SEQ_LEN", 256))
 
 # Retriever
 DEFAULT_TOP_K_RETRIEVER = int(os.getenv("DEFAULT_TOP_K_RETRIEVER", 10))
-EMBEDDING_MODEL_PATH = os.getenv("EMBEDDING_MODEL_PATH", None)
+EMBEDDING_MODEL_PATH = os.getenv("EMBEDDING_MODEL_PATH", "deepset/sentence_bert")
+EMBEDDING_POOLING_STRATEGY = os.getenv("EMBEDDING_POOLING_STRATEGY", "reduce_mean")
+EMBEDDING_EXTRACTION_LAYER = int(os.getenv("EMBEDDING_EXTRACTION_LAYER", -2))
 
 # Database access
 DB_HOST = os.getenv("DB_HOST", "localhost")
@@ -26,11 +28,11 @@ DB_PW = os.getenv("DB_PW", "")
 DB_INDEX = os.getenv("DB_INDEX", "document")
 DB_INDEX_FEEDBACK = os.getenv("DB_INDEX", "feedback")
 ES_CONN_SCHEME = os.getenv("ES_CONN_SCHEME", "http")
-TEXT_FIELD_NAME = os.getenv("TEXT_FIELD_NAME", "text")
-SEARCH_FIELD_NAME = os.getenv("SEARCH_FIELD_NAME", "text")
-EMBEDDING_FIELD_NAME = os.getenv("EMBEDDING_FIELD_NAME", None)
+TEXT_FIELD_NAME = os.getenv("TEXT_FIELD_NAME", "answer")
+SEARCH_FIELD_NAME = os.getenv("SEARCH_FIELD_NAME", "question")
+EMBEDDING_FIELD_NAME = os.getenv("EMBEDDING_FIELD_NAME", "question_emb")
 EMBEDDING_DIM = os.getenv("EMBEDDING_DIM", None)
-EXCLUDE_META_DATA_FIELDS = os.getenv("EXCLUDE_META_DATA_FIELDS", None)
+
+EXCLUDE_META_DATA_FIELDS = os.getenv("EXCLUDE_META_DATA_FIELDS", "['question_emb']")
 if EXCLUDE_META_DATA_FIELDS:
     EXCLUDE_META_DATA_FIELDS = ast.literal_eval(EXCLUDE_META_DATA_FIELDS)
-EMBEDDING_MODEL_PATH = os.getenv("EMBEDDING_MODEL_PATH", None)
