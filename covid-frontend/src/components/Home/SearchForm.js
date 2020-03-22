@@ -38,7 +38,6 @@ class SearchForm extends PureComponent {
     const { form, options } = this.props;
     const { getFieldDecorator } = form;
 
-    console.log({options});
     return (
       <Form className={styles.form}>
         <Row>

@@ -11,6 +11,8 @@ from haystack.reader.farm import FARMReader
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
 from pydantic import BaseModel
 
+from backend.controller.autocomplete import addQuestionToAutocomplete
+
 from backend.config import (
     DB_HOST,
     DB_USER,
@@ -118,6 +120,8 @@ class Response(BaseModel):
 #############################################
 # Endpoints
 #############################################
+
+# CURL example: curl --request POST --url 'http://127.0.0.1:8000/models/1/doc-qa' --data '{"questions": ["Who is the father of Arya Starck?"]}
 @router.post("/models/{model_id}/doc-qa", response_model=Response, response_model_exclude_unset=True)
 def ask(model_id: int, request: Query):
     t1 = time.time()
@@ -144,6 +148,10 @@ def ask(model_id: int, request: Query):
 
         resp_time = round(time.time() - t1, 2)
         logger.info({"time": resp_time, "request": request.json(), "results": results})
+
+        # remember questions with result in the autocomplete
+        if len(results) > 0:
+            addQuestionToAutocomplete(question)
 
         return {"results": results}
 
