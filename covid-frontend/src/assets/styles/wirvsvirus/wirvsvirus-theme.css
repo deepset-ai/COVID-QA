@@ -1,4 +1,6 @@
 /* Custom CSS styles for Hackathon WirVsVirus */
+/* TODO: Remove ant-design, at least get rid of those arbitrary scoping hashes from class names :( */
+
 .ant-col .result-confidence-box {
     color: #707070;
 }
@@ -10,4 +12,9 @@
 .ant-col-19 {
     /* TODO: Can layout be better controlled through ant-design col/row components? */
     width: 100%;
+}
+
+.top-answer-wrapper {
+  background-color: #59A4B7;
+  color: white;
 }
