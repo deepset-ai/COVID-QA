@@ -130,18 +130,11 @@ class Answers extends PureComponent {
               <div>Please Wait</div>
             </div>
           ) : (
-            <div className={styles.list}>
+            <div className={styles.list + ' all-answers-wrapper'}>
               {
                 topAnswer.hasOwnProperty('probability') ? (
                   <Fragment>
-                    {/* <Row>
-                      <Col>
-                        <div className={styles.topAnswerTitle + ' top-answer-box'}>
-                          Top answer
-                        </div>
-                      </Col>
-                    </Row> */}
-                    <Row gutter={[24, 40]}>
+                    <Row gutter={[24, 40]} className="top-answer-wrapper">
                       <Col span={19}>
                         <div className={styles.topAnswerTitle + ' top-answer-box'}>
                           Top answer
@@ -152,12 +145,12 @@ class Answers extends PureComponent {
                         <div className='headline-faq-match-confidence'>
                           {this.renderTag(topAnswer.probability)}
                         </div>
-                        <div className={styles.answerText}>
+                        <div className={styles.answerText + ' answer-text'}>
                           {
                             topAnswer.answer ? (
                               <Fragment>
                                 {topAnswerParts[0]}
-                                <span>{topAnswer.answer}</span>
+                                  {topAnswer.answer}
                                 {topAnswerParts[1]}
                               </Fragment>
                             ) : topAnswer.context || '-'
@@ -176,7 +169,7 @@ class Answers extends PureComponent {
                               )
                             }
                           </div>
-                          <div>
+                          <div className="wrapper-feedback">
                             <span>Feedback:</span>
                             <a href='#upvote' rel="noopener noreferrer" className={styles.answerDocLink}
                               onClick={this.onFeedbackPositive.bind(this, topAnswerMeta.document_id)}>
@@ -190,9 +183,6 @@ class Answers extends PureComponent {
                           </div>
                         </div>
                       </Col>
-                      {/* <Col span={5}>
-                        {this.renderTag(topAnswer.probability)}
-                      </Col> */}
                     </Row>
                   </Fragment>
                 ) : (
@@ -221,12 +211,12 @@ class Answers extends PureComponent {
                         <div className="headline-faq-match-confidence">
                           {this.renderTag(item.probability)}
                         </div>
-                        <div className={styles.answerText}>
+                        <div className={styles.answerText + ' answer-text'}>
                           {
                             item.answer ? (
                               <Fragment>
                                 {answerParts[0]}
-                                <span>{item.answer}</span>
+                                  {item.answer}
                                 {answerParts[1]}
                               </Fragment>
                             ) : item.context || '-'
@@ -244,7 +234,7 @@ class Answers extends PureComponent {
                               )
                             }
                           </div>
-                          <div>
+                          <div className="wrapper-feedback">
                             <span>Feedback:</span>
                           
                             <a href='#upvote' target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}
@@ -260,9 +250,6 @@ class Answers extends PureComponent {
 
                         </div>
                       </Col>
-                      {/* <Col span={5}>
-                        {this.renderTag(item.probability)}
-                      </Col> */}
                     </Row>
                   );
                 })
