@@ -176,17 +176,11 @@ class Answers extends PureComponent {
               {
                 topAnswer.hasOwnProperty('probability') ? (
                   <Fragment>
-                    <Row gutter={[24, 40]} className="top-answer-wrapper">
+                    <Row gutter={[24, 20]} className="top-answer-wrapper-old">
                       <Col span={19}>
-                        <div className={styles.topAnswerTitle + ' top-answer-box'}>
-                          Beste Antwort
-                        </div>
+
                         <div className={styles.answerTitle + ' headline-faq-match'}>
                           {topAnswer.question}
-                        </div>
-                        <div className='headline-faq-match-confidence'>
-                          <CheckCircleOutlined style={{ color: 'white' }}/>
-                          {this.renderTag(topAnswer.probability)}
                         </div>
                         <div className={styles.answerText + ' answer-text'}>
                           {
@@ -199,15 +193,19 @@ class Answers extends PureComponent {
                             ) : topAnswer.context || '-'
                           }
                         </div>
-                      </Col>
+                        <div className='headline-faq-match-confidence'>
+                            <CheckCircleOutlined />
+                            {this.renderTag(topAnswer.probability)}
+                        </div>
+                    </Col>
                     </Row>
 
                     <Row gutter={[24, 40]} className="top-answer-meta-wrapper">
                       <Col span={19}>
                         <div className={styles.answerMeta + ' answer-meta-info top-answer'}>
-                          <div><span>Stand:</span> {this.formattedDateDE(topAnswerMeta.last_update) || '–'}</div>
+                          <div><span>Stand</span> {this.formattedDateDE(topAnswerMeta.last_update) || '–'}</div>
                           <div>
-                            <span>Quelle:</span> {topAnswerMeta.source || '–'}
+                            <span>Quelle</span> {topAnswerMeta.source || '–'}
                             {
                               topAnswerMeta.link && (
                                 <a href={topAnswerMeta.link} target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}>
@@ -217,7 +215,8 @@ class Answers extends PureComponent {
                             }
                           </div>
                           <div className="feedback-buttons">
-                            <span>Feedback:</span>
+
+                            <span>Feedback</span>
 
                           { this.renderFeedbackLink(topAnswerMeta, true) }
                           { this.renderFeedbackLink(topAnswerMeta, false) }
@@ -260,10 +259,6 @@ class Answers extends PureComponent {
                     <Row gutter={[24, 40]} key={i} className={`other-answer-row row_${i}`}>
                       <Col span={19}>
                         <div className={styles.answerTitle + ' headline-faq-match other-answer-index-' + i}>{item.question}</div>
-                        <div className="headline-faq-match-confidence">
-                          <CheckCircleOutlined style={{ color: 'black' }}/>
-                          {this.renderTag(item.probability)}
-                        </div>
                         <div className={styles.answerText + ' answer-text'}>
                           {
                             item.answer ? (
@@ -275,10 +270,15 @@ class Answers extends PureComponent {
                             ) : item.context || '-'
                           }
                         </div>
-                        <div className={styles.answerMeta + ' answer-meta-info'}>
-                          <div><span>Stand:</span> {this.formattedDateDE(topAnswerMeta.last_update) || '–'}</div>
+                    <div className="headline-faq-match-confidence">
+                        <CheckCircleOutlined style={{ color: 'black' }}/>
+                    {this.renderTag(item.probability)}
+                </div>
+
+                    <div className={styles.answerMeta + ' answer-meta-info'}>
+                          <div><span>Stand</span> {this.formattedDateDE(topAnswerMeta.last_update) || '–'}</div>
                           <div>
-                            <span>Source:</span> {itemMeta.source || '–'}
+                            <span>Quelle</span> {itemMeta.source || '–'}
                             {
                               itemMeta.link && (
                                 <a href={itemMeta.link} target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}>
@@ -288,7 +288,7 @@ class Answers extends PureComponent {
                             }
                           </div>
                           <div className="feedback-buttons">
-                            <span>Feedback:</span>
+                            <span>Feedback</span>
 
                             { this.renderFeedbackLink(itemMeta, true) }
                             { this.renderFeedbackLink(itemMeta, false) }
