@@ -1,0 +1,45 @@
+/* Custom CSS styles for Hackathon WirVsVirus */
+/* TODO: Evaluate removal of ant-design. At least get rid of those arbitrary CSS scoping hashes from class names :( */
+
+.ant-row .ant-col span {
+    color: #707070;    
+}
+
+.ant-col-19 {
+    /* TODO: Can layout be better controlled through ant-design col/row components? */
+    width: 100%;
+}
+
+.all-answers-wrapper .ant-col.ant-col-19 {
+    padding: 2rem;
+}
+
+.top-answer-wrapper {
+  background-color: #59A4B7;
+  color: white;
+  padding: 0 20px;
+}
+
+.headline-faq-match {
+    font-size: 1.25rem;
+}
+
+.answer-text {
+    line-height: 1.75rem;
+}
+
+.answer-meta-info.top-answer {
+    margin-top: 0;
+}
+
+.headline-faq-match-confidence {
+    color: white;
+}
+
+.other-answer-row .headline-faq-match-confidence {
+    color: black;
+}
+
+.result-confidence-box {
+    font-style: italic;
+}

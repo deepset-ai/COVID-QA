@@ -22,7 +22,7 @@ if __name__ == "__main__":
         scraper_spec = importlib.util.spec_from_file_location("CovidScraper", crawler)
         scraper = importlib.util.module_from_spec(scraper_spec)
         scraper_spec.loader.exec_module(scraper)
-        CovidScraper = scraper.CovidScraper()
+        CovidScraper = scraper.CovidScraper
         process.crawl(CovidScraper)
     process.start()
     dataframe = pd.concat(RESULTS)

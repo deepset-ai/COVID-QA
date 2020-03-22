@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "antd": "^3.26.13",
+    "@ant-design/icons": "latest",
     "chart.js": "^2.9.3",
     "classnames": "^2.2.6",
     "env-cmd": "^9.0.3",
