@@ -42,8 +42,8 @@ class CovidScraper(scrapy.Spider):
             for respParaPath in responseParagraphPaths:
                 response += " ".join(respParaPath.xpath('.//text()').getall()) + "\n\n"
             response = response.strip()
-            columns["question"].append(current_question)
-            columns["answer"].append(current_answer)
+            columns["question"].append(question)
+            columns["answer"].append(response)
             columns["answer_html"].append(responseParagraphPaths.getall())
 
     today = date.today()
