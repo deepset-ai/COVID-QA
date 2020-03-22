@@ -63,6 +63,11 @@ class Answers extends PureComponent {
     );
   }
 
+  formattedDateDE = (dateString) => {
+    // input 2020/03/17, output 17.03.2020
+    return dateString.split(/[\.\-\/]/)[2] + '.' + dateString.split(/[\.\-\/]/)[1] + '.' + dateString.split(/[\.\-\/]/)[0];
+  }
+
   componentDidMount () {
     const { selectedValue } = this.props.globalSearch;
 
@@ -162,7 +167,7 @@ class Answers extends PureComponent {
                     <Row gutter={[24, 40]} className="top-answer-meta-wrapper">
                       <Col span={19}>
                         <div className={styles.answerMeta + ' answer-meta-info top-answer'}>
-                          <div><span>Updated:</span>{topAnswerMeta.last_update || '–'}</div>
+                          <div><span>Stand:</span> {this.formattedDateDE(topAnswerMeta.last_update) || '–'}</div>
                           <div>
                             <span>Source:</span> {topAnswerMeta.source || '–'}
                             {
@@ -227,7 +232,7 @@ class Answers extends PureComponent {
                           }
                         </div>
                         <div className={styles.answerMeta + ' answer-meta-info'}>
-                          <div><span>Updated:</span> {itemMeta.last_update || '–'}</div>
+                          <div><span>Stand:</span> {this.formattedDateDE(topAnswerMeta.last_update) || '–'}</div>
                           <div>
                             <span>Source:</span> {itemMeta.source || '–'}
                             {
