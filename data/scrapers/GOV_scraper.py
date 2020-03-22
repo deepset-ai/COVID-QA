@@ -26,7 +26,7 @@ class CovidScraper(scrapy.Spider):
 
 		for x in range(0, len(response.xpath('//summary/text()').extract())):
 			question_text = response.xpath('//summary/text()').extract()[x]
-			answer_text = "".join(response.xpath('//summary[text()="'+question_text+'"]/following-sibling::node()/descendant-or-self::text()').extract())
+			answer_text = "".join(response.xpath('//summary[text()="'+question_text+'"]/following-sibling::node()').extract())
 			answer_html = None
 
 			columns['question'].append(question_text)
