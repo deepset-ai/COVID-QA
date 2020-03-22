@@ -51,9 +51,8 @@ if __name__ == "__main__":
     docs_to_index = []
     doc_id = 1
 
-    for idx, row in list(dataframe.iterrows())[:10]:
+    for idx, row in list(dataframe.iterrows()):
         d = row.to_dict()
-        document_store.query("")
         d = {k: v.strip() for k, v in d.items()}
         d["document_id"] = idx
         # add embedding
