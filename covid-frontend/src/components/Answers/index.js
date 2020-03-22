@@ -64,8 +64,10 @@ class Answers extends PureComponent {
   }
 
   formattedDateDE = (dateString) => {
-    // input 2020/03/17, output 17.03.2020
-    return dateString.split(/[\.\-\/]/)[2] + '.' + dateString.split(/[\.\-\/]/)[1] + '.' + dateString.split(/[\.\-\/]/)[0];
+    // input 2020/03/17, output 17.03.2020 (German date format)
+    const splitStringArray = dateString.split(/[.\-/]/);
+    return `${splitStringArray[2]}.${splitStringArray[1]}.${splitStringArray[0]}`;
+
   }
 
   componentDidMount () {
