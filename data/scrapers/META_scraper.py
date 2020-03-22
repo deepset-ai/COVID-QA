@@ -11,8 +11,34 @@ RESULTS = []
 
 
 class Pipeline(object):
+
+    questionsOnly = True
+
+    def filter(self, item, index):
+        question = item['question'][index].strip()
+        if self.questionsOnly and not question.endswith("?"):
+            return False
+        if len(item['answer'][index].strip()) == 0:
+            return False
+        return True
+
     def process_item(self, item, spider):
-        RESULTS.append(pd.DataFrame.from_dict(item))
+        if len(item['question']) == 0:
+            print("WARNING: Scraper '"+spider.name+"' provided zero results!")
+            return
+        validatedItems = {}
+        for key, values in item.items():
+            validatedItems[key] = []
+        for i in range(len(item['question'])):
+            if not self.filter(item, i):
+                continue
+            for key, values in item.items():
+                validatedItems[key].append(values[i])
+        if len(validatedItems['question']) == 0:
+            print("WARNING: Scraper '"+spider.name+"' provided zero results after filtering!")
+            return
+        df = pd.DataFrame.from_dict(validatedItems)
+        RESULTS.append(df)
 
 
 if __name__ == "__main__":
