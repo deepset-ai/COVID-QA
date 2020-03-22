@@ -37,6 +37,14 @@ export default (state = initialState, action) => {
           lastString: action.payload
         }
       };
+    case types.UPDATE_SEARCH_FILTERS:
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          filters: action.payload
+        }
+      };
     case types.UPDATE_SEARCH_OPTIONS:
       return {
         ...state,

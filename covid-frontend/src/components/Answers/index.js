@@ -9,7 +9,7 @@ import * as answersActions from 'store/actions/activeAnswers';
 import { InputContainer, Tag } from 'components/common';
 import styles from './styles.module.scss';
 import UserFeedback from 'components/UserFeedback';
-
+import {CheckCircleOutlined} from '@ant-design/icons';
 class Answers extends PureComponent {
 
   static propTypes = {
@@ -56,11 +56,18 @@ class Answers extends PureComponent {
     const roundedValue = parseFloat(value).toFixed(2);
     return (
       <Tag
-        text={`Confidence: ${roundedValue}%`}
+        text={`Relevanz: ${roundedValue}%`}
         theme={theme}
-        className={styles.tag}
+        className={styles.tag + " result-confidence-box"}
       />
     );
+  }
+
+  formattedDateDE = (dateString) => {
+    // input 2020/03/17, output 17.03.2020 (German date format)
+    const splitStringArray = dateString.split(/[.\-/]/);
+    return `${splitStringArray[2]}.${splitStringArray[1]}.${splitStringArray[0]}`;
+
   }
 
   componentDidMount () {
@@ -87,19 +94,20 @@ class Answers extends PureComponent {
 
     const otherAnswers = sortedAnswers.slice(1);
 
+    const suggestions = search.options.suggestions || [];
     return (
       <div className={styles.wrapper}>
         { showUserFeedbackPanel && <UserFeedback></UserFeedback> }
 
         <Row gutter={24} className={styles.titleRow}>
           <Col span={24}>
-            <InputContainer label="Question" fluid>
+            <InputContainer label="Ihre Frage" fluid>
               <AutoComplete
                 className={styles.autocomplete}
                 size="large"
                 value={search.currentString}
                 defaultActiveFirstOption={false}
-                placeholder="Ask any question about Corona..."
+                placeholder="Stellen Sie eine Frage zu Covid-19 (Corona-Virus)"
                 filterOption={(value, option) =>
                   option.props.children.toLowerCase().startsWith(value.toLowerCase())
                   // option.props.children.toLowerCase().indexOf(value.toLowerCase()) !== -1 // to show all options with substring
@@ -109,7 +117,7 @@ class Answers extends PureComponent {
                 onInputKeyDown={this.onKeyDown}
               >
                 {
-                  search.options.map(item =>
+                  suggestions.map(item =>
                     <AutoComplete.Option key={item.id}>{item.question}</AutoComplete.Option>
                   )
                 }
@@ -127,40 +135,45 @@ class Answers extends PureComponent {
                 <div className="loader-part l3" />
               </div>
               <h2>The BERT is working</h2>
-              <div>Please Wait</div>
+              <div>Please Wait – Bitte warten...</div>
             </div>
           ) : (
-            <div className={styles.list}>
+            <div className={styles.list + ' all-answers-wrapper'}>
               {
                 topAnswer.hasOwnProperty('probability') ? (
                   <Fragment>
-                    <Row>
-                      <Col>
-                        <div className={styles.topAnswerTitle}>
-                          Top answer
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row gutter={[24, 40]}>
+                    <Row gutter={[24, 40]} className="top-answer-wrapper">
                       <Col span={19}>
-                        <div
-                          className={styles.answerTitle}>{topAnswer.question}</div>
-                        <div className={styles.answerText}>
+                        <div className={styles.topAnswerTitle + ' top-answer-box'}>
+                          Beste Antwort
+                        </div>
+                        <div className={styles.answerTitle + ' headline-faq-match'}>
+                          {topAnswer.question}
+                        </div>
+                        <div className='headline-faq-match-confidence'>
+                          <CheckCircleOutlined style={{ color: 'white' }}/>
+                          {this.renderTag(topAnswer.probability)}
+                        </div>
+                        <div className={styles.answerText + ' answer-text'}>
                           {
                             topAnswer.answer ? (
                               <Fragment>
                                 {topAnswerParts[0]}
-                                <span>{topAnswer.answer}</span>
+                                  {topAnswer.answer}
                                 {topAnswerParts[1]}
                               </Fragment>
                             ) : topAnswer.context || '-'
                           }
-
                         </div>
-                        <div className={styles.answerMeta}>
-                          <div><span>Updated:</span>{topAnswerMeta.last_update || '–'}</div>
+                      </Col>
+                    </Row>
+
+                    <Row gutter={[24, 40]} className="top-answer-meta-wrapper">
+                      <Col span={19}>
+                        <div className={styles.answerMeta + ' answer-meta-info top-answer'}>
+                          <div><span>Stand:</span> {this.formattedDateDE(topAnswerMeta.last_update) || '–'}</div>
                           <div>
-                            <span>Source:</span> {topAnswerMeta.source || '–'}
+                            <span>Quelle:</span> {topAnswerMeta.source || '–'}
                             {
                               topAnswerMeta.link && (
                                 <a href={topAnswerMeta.link} target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}>
@@ -169,22 +182,19 @@ class Answers extends PureComponent {
                               )
                             }
                           </div>
-                          <div>
+                          <div className="feedback-buttons">
                             <span>Feedback:</span>
                             <a href='#upvote' rel="noopener noreferrer" className={styles.answerDocLink}
                               onClick={this.onFeedbackPositive.bind(this, topAnswerMeta.document_id)}>
                               <Icon type="like" />
                             </a>
-                            { !showUserFeedbackPanel && 
+                            { !showUserFeedbackPanel &&
                               <a href='#downvote' rel="noopener noreferrer" className={styles.answerDocLink}
                                 onClick={this.onFeedbackNegative.bind(this, topAnswerMeta.document_id)}>
                                 <Icon type="dislike" />
                               </a>}
                           </div>
                         </div>
-                      </Col>
-                      <Col span={5}>
-                        {this.renderTag(topAnswer.probability)}
                       </Col>
                     </Row>
                   </Fragment>
@@ -197,7 +207,7 @@ class Answers extends PureComponent {
                 !!otherAnswers.length && (
                   <Row>
                     <Col>
-                      <div className={styles.otherAnswersTitle}>Other answers</div>
+                      <div className={styles.otherAnswersTitle}>Weitere Antworten</div>
                     </Col>
                   </Row>
                 )
@@ -208,22 +218,26 @@ class Answers extends PureComponent {
                   const answerParts = item.context.split(item.answer);
                   const itemMeta = item.meta || {};
                   return (
-                    <Row gutter={[24, 40]} key={i}>
+                    <Row gutter={[24, 40]} key={i} className={`other-answer-row row_${i}`}>
                       <Col span={19}>
-                        <div className={styles.answerTitle}>{item.question}</div>
-                        <div className={styles.answerText}>
+                        <div className={styles.answerTitle + ' headline-faq-match other-answer-index-' + i}>{item.question}</div>
+                        <div className="headline-faq-match-confidence">
+                          <CheckCircleOutlined style={{ color: 'black' }}/>
+                          {this.renderTag(item.probability)}
+                        </div>
+                        <div className={styles.answerText + ' answer-text'}>
                           {
                             item.answer ? (
                               <Fragment>
                                 {answerParts[0]}
-                                <span>{item.answer}</span>
+                                  {item.answer}
                                 {answerParts[1]}
                               </Fragment>
                             ) : item.context || '-'
                           }
                         </div>
-                        <div className={styles.answerMeta}>
-                          <div><span>Updated:</span> {itemMeta.last_update || '–'}</div>
+                        <div className={styles.answerMeta + ' answer-meta-info'}>
+                          <div><span>Stand:</span> {this.formattedDateDE(topAnswerMeta.last_update) || '–'}</div>
                           <div>
                             <span>Source:</span> {itemMeta.source || '–'}
                             {
@@ -234,14 +248,14 @@ class Answers extends PureComponent {
                               )
                             }
                           </div>
-                          <div>
+                          <div className="feedback-buttons">
                             <span>Feedback:</span>
-                          
+
                             <a href='#upvote' target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}
                               onClick={this.onFeedbackPositive.bind(this, itemMeta.document_id)}>
                               <Icon type="like" />
                             </a>
-                            { !showUserFeedbackPanel && 
+                            { !showUserFeedbackPanel &&
                               <a href='#downvote' rel="noopener noreferrer" className={styles.answerDocLink}
                                 onClick={this.onFeedbackNegative.bind(this, itemMeta.document_id)}>
                                 <Icon type="dislike" />
@@ -249,9 +263,6 @@ class Answers extends PureComponent {
                           </div>
 
                         </div>
-                      </Col>
-                      <Col span={5}>
-                        {this.renderTag(item.probability)}
                       </Col>
                     </Row>
                   );

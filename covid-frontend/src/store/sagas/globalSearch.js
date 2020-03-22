@@ -11,6 +11,7 @@ export function* getOptions(value) {
   // return and reset fields if string is empty
   if (!currentString.length) {
     yield put(actions.updateSearchOptions([]));
+    yield put(actions.updateSearchFilters({}));
     yield put(actions.updateLastSearchValue(''));
 
     return;
@@ -25,13 +26,16 @@ export function* getOptions(value) {
 
   try {
     yield put(actions.updateLastSearchValue(value));
-
     yield delay(400);
-
-
     const data = yield api.get(`/query/autocomplete`, { search: currentString });
+    let i = 0;
+    const searchResults = data.results.map(question =>{
+      return {question, id: i++ };
+    });
+    console.log({searchResults});
 
-    yield put(actions.updateSearchOptions(data));
+    yield put(actions.updateSearchOptions(searchResults));
+    yield put(actions.updateSearchFilters({language:data.language}));
 
   } catch (error) {
     message.error(error.message);
