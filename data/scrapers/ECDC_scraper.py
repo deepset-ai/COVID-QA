@@ -5,7 +5,7 @@ import scrapy
 import pandas as pd
 from scrapy.crawler import CrawlerProcess
 
-class ECDCScraper(scrapy.Spider):
+class CovidScraper(scrapy.Spider):
   name = "ECDCS_scraper"
   start_urls = ["https://www.ecdc.europa.eu/en/novel-coronavirus-china/questions-answers"]
 
@@ -66,6 +66,8 @@ class ECDCScraper(scrapy.Spider):
     columns["lang"] = ["en"] * len(columns["question"])
     columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
+
+    #df = pd.DataFrame(columns)
     return columns
  
 
