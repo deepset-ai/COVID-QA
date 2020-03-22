@@ -59,7 +59,7 @@ class CovidScraper(scrapy.Spider):
           current_answer += " ".join(answer_part).strip()
           answer_part_html = node.getall()
           current_answer_html += " ".join(answer_part_html).strip()
-      
+
       else:
         columns["question"].append(current_question)
         columns["answer"].append(current_answer)
@@ -78,7 +78,4 @@ class CovidScraper(scrapy.Spider):
     columns["lang"] = ["en"] * len(columns["question"])
     columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
-    dataframe = pd.DataFrame(columns)
-
-    dataframe.to_csv("cdc_children_en.tsv", sep="\t", index=False)
-
+    return columns

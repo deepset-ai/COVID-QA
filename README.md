@@ -32,8 +32,8 @@ Prod: https://covid.deepset.ai/
 ## Quick overview of current status 
 
 1. Check out the [demo app](https://covid.deepset.ai/) to get a basic idea 
-2. Data: At the moment we are using a [CSV with collected FAQs](https://github.com/deepset-ai/COVID-QA/blob/master/data/faqs/faq_covidbert.csv) that get's ingested into elasticsearch [here](https://github.com/deepset-ai/COVID-QA/blob/master/covid-qa/data_ingestion.py)
-3. Model: The NLP model to find answers is build via haystack. It's configured and exposed via this [API](https://github.com/deepset-ai/COVID-QA/blob/master/covid-qa/api.py).
+2. Data: At the moment we are using [scrapers](https://github.com/deepset-ai/COVID-QA/tree/master/data/scrapers) to create a CSV that get's ingested into elasticsearch
+3. Model: The NLP model to find answers is build via haystack. It's configured and exposed via this [API](https://github.com/deepset-ai/COVID-QA/tree/master/backend).
 4. Frontend/middleware: TODO
 
 ## :heart: How you can help

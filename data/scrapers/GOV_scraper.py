@@ -1,12 +1,11 @@
 # run 'scrapy runspider GOV_scraper.py' to scrape data
 
 import scrapy
-import numpy as np
 from datetime import date
-import pandas as pd
+from scrapy.crawler import CrawlerProcess
 
-class rki_infos(scrapy.Spider):
-	name = 'rki_spyder'
+class CovidScraper(scrapy.Spider):
+	name = 'polish_GOV_spyder'
 	start_urls = ['https://www.gov.pl/web/koronawirus/pytania-i-odpowiedzi']
 
 	def parse(self, response):
@@ -28,9 +27,12 @@ class rki_infos(scrapy.Spider):
 		for x in range(0, len(response.xpath('//summary/text()').extract())):
 			question_text = response.xpath('//summary/text()').extract()[x]
 			answer_text = "".join(response.xpath('//summary[text()="'+question_text+'"]/following-sibling::node()/descendant-or-self::text()').extract())
+			answer_html = None
+
 			columns['question'].append(question_text)
 			columns['answer'].append(answer_text)
-		
+			columns['answer_html'].append(answer_html)
+
 		today = date.today()
 
 		columns["link"] = ["https://www.gov.pl/web/koronawirus/pytania-i-odpowiedzi"] * len(columns["question"])
@@ -41,11 +43,17 @@ class rki_infos(scrapy.Spider):
 		columns["region"] = [""] * len(columns["question"])
 		columns["city"] = [""] * len(columns["question"])
 		columns["lang"] = ["pl"] * len(columns["question"])
-		columns["answer_html"] = [""] * len(columns["question"])
 		columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
-		dataframe = pd.DataFrame(columns)
-		dataframe.to_csv("gov_pl.tsv", sep="\t", index=False)
+		return columns
+
+if __name__ == "__main__":
+	process = CrawlerProcess({
+		'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+    })
+	process.crawl(CovidScraper)
+	process.start()
+
 
 
 

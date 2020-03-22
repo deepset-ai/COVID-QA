@@ -1,17 +1,21 @@
+import pandas as pd
 from haystack import Finder
 from haystack.database.elasticsearch import ElasticsearchDocumentStore
-
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
-import pandas as pd
 
 MODEL = "bert-base-uncased"
 GPU = False
 
-document_store = ElasticsearchDocumentStore(host="localhost", username="", password="",
-                                            index="document", text_field="answer",
-                                            embedding_field="question_emb",
-                                            embedding_dim=768,
-                                            excluded_meta_data=["question_emb"])
+document_store = ElasticsearchDocumentStore(
+    host="localhost",
+    username="",
+    password="",
+    index="document",
+    text_field="answer",
+    embedding_field="question_emb",
+    embedding_dim=768,
+    excluded_meta_data=["question_emb"],
+)
 
 retriever = ElasticsearchRetriever(document_store=document_store, embedding_model=MODEL, gpu=GPU)
 
@@ -25,7 +29,7 @@ if document_store.get_document_count() == 0:
     doc_id = 1
     for idx, row in df.iterrows():
         d = row.to_dict()
-        d = {k:v.strip() for k, v in d.items()}
+        d = {k: v.strip() for k, v in d.items()}
         d["document_id"] = idx
         # add embedding
         question_embedding = retriever.create_embedding(row["question"])

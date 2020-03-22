@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, f1_score
 from farm.utils import MLFlowLogger
 
 
@@ -9,7 +9,8 @@ def eval_question_similarity(y_true, y_pred, lang, model_name, params, user=None
     # basic metrics
     mean_diff = np.mean(np.abs(y_true - y_pred))
     roc_auc = roc_auc_score(y_true, y_pred)
-    metrics = {"roc_auc": roc_auc, "mean_abs_diff": mean_diff}
+    f1 = f1_score(y_true, y_pred.round(0))
+    metrics = {"roc_auc": roc_auc, "mean_abs_diff": mean_diff, "f1_score": f1}
     print(metrics)
 
     # log experiment results to MLFlow (visit https://public-mlflow.deepset.ai/)
