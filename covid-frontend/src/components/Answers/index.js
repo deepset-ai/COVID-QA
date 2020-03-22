@@ -155,9 +155,13 @@ class Answers extends PureComponent {
                               </Fragment>
                             ) : topAnswer.context || '-'
                           }
-
                         </div>
-                        <div className={styles.answerMeta}>
+                      </Col>
+                    </Row>
+
+                    <Row gutter={[24, 40]} className="top-answer-meta-wrapper">
+                      <Col span={19}>
+                        <div className={styles.answerMeta + ' answer-meta-info top-answer'}>
                           <div><span>Updated:</span>{topAnswerMeta.last_update || '–'}</div>
                           <div>
                             <span>Source:</span> {topAnswerMeta.source || '–'}
@@ -169,7 +173,7 @@ class Answers extends PureComponent {
                               )
                             }
                           </div>
-                          <div className="wrapper-feedback">
+                          <div className="feedback-buttons">
                             <span>Feedback:</span>
                             <a href='#upvote' rel="noopener noreferrer" className={styles.answerDocLink}
                               onClick={this.onFeedbackPositive.bind(this, topAnswerMeta.document_id)}>
@@ -222,7 +226,7 @@ class Answers extends PureComponent {
                             ) : item.context || '-'
                           }
                         </div>
-                        <div className={styles.answerMeta}>
+                        <div className={styles.answerMeta + ' answer-meta-info'}>
                           <div><span>Updated:</span> {itemMeta.last_update || '–'}</div>
                           <div>
                             <span>Source:</span> {itemMeta.source || '–'}
@@ -234,7 +238,7 @@ class Answers extends PureComponent {
                               )
                             }
                           </div>
-                          <div className="wrapper-feedback">
+                          <div className="feedback-buttons">
                             <span>Feedback:</span>
                           
                             <a href='#upvote' target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}
