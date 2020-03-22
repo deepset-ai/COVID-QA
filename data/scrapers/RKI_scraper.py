@@ -47,26 +47,14 @@ class CovidScraper(scrapy.Spider):
 		columns["lang"] = ["de"] * len(columns["question"])
 		columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
-<<<<<<< HEAD
-		dataframe = pd.DataFrame(columns)
-		dataframe.to_csv("rki_de.tsv", sep="\t", index=False)
-=======
+
 		return columns
->>>>>>> 5a7ddacc2b852d45993045ecfbe022cdbcff60fb
+
 
 
 if __name__ == "__main__":
 	process = CrawlerProcess({
 		'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
     })
-<<<<<<< HEAD
-
-    process.crawl(CovidScraper)
-    process.start()
-    
-
-
-=======
 	process.crawl(CovidScraper)
 	process.start()
->>>>>>> 5a7ddacc2b852d45993045ecfbe022cdbcff60fb
