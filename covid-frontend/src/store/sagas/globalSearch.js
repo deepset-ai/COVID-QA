@@ -33,7 +33,8 @@ export function* getOptions(value) {
     });
     console.log('language detection from autocomplete: ', data.language)
 
-    yield put(actions.updateSearchOptions(searchResults));
+    yield put(actions.updateSearchOptions({suggestions: searchResults, language: data.language}));
+
 
   } catch (error) {
     message.error(error.message);

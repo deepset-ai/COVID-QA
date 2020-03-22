@@ -94,6 +94,7 @@ class Answers extends PureComponent {
 
     const otherAnswers = sortedAnswers.slice(1);
 
+    const suggestions = search.options.suggestions || [];
     return (
       <div className={styles.wrapper}>
         { showUserFeedbackPanel && <UserFeedback></UserFeedback> }
@@ -116,7 +117,7 @@ class Answers extends PureComponent {
                 onInputKeyDown={this.onKeyDown}
               >
                 {
-                  search.options.map(item =>
+                  suggestions.map(item =>
                     <AutoComplete.Option key={item.id}>{item.question}</AutoComplete.Option>
                   )
                 }
@@ -145,7 +146,7 @@ class Answers extends PureComponent {
                       <Col span={19}>
                         <div className={styles.topAnswerTitle + ' top-answer-box'}>
                           Beste Antwort
-                        </div> 
+                        </div>
                         <div className={styles.answerTitle + ' headline-faq-match'}>
                           {topAnswer.question}
                         </div>
@@ -187,7 +188,7 @@ class Answers extends PureComponent {
                               onClick={this.onFeedbackPositive.bind(this, topAnswerMeta.document_id)}>
                               <Icon type="like" />
                             </a>
-                            { !showUserFeedbackPanel && 
+                            { !showUserFeedbackPanel &&
                               <a href='#downvote' rel="noopener noreferrer" className={styles.answerDocLink}
                                 onClick={this.onFeedbackNegative.bind(this, topAnswerMeta.document_id)}>
                                 <Icon type="dislike" />
@@ -249,12 +250,12 @@ class Answers extends PureComponent {
                           </div>
                           <div className="feedback-buttons">
                             <span>Feedback:</span>
-                          
+
                             <a href='#upvote' target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}
                               onClick={this.onFeedbackPositive.bind(this, itemMeta.document_id)}>
                               <Icon type="like" />
                             </a>
-                            { !showUserFeedbackPanel && 
+                            { !showUserFeedbackPanel &&
                               <a href='#downvote' rel="noopener noreferrer" className={styles.answerDocLink}
                                 onClick={this.onFeedbackNegative.bind(this, itemMeta.document_id)}>
                                 <Icon type="dislike" />

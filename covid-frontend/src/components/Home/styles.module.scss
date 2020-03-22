@@ -40,14 +40,14 @@
 }
 
 .poweredBy {
-  margin-right: 20px;
-  position: absolute;
-  right: 10px;
+  text-align: right;
   color: $secondary-grey;
-  width: 100%;
+  span {
+    color:#d80808 !important;
+  }
   a {
-    text-decoration: underline;
-    color: $secondary-grey;
+    text-decoration: none;
+
     &:hover {
       color: $strong-emotion;
       text-decoration: underline;
@@ -88,4 +88,19 @@
       color: $accent;
     }
   }
+}
+
+.detectedLanguage {
+  text-align: right;
+  color: $primary-grey;
+}
+.projectLogo {
+  padding-top:50px;
+  width:100%;
+  a,img {
+    width:180px;
+    margin:0 auto;
+    display: block;
+  }
+
 }

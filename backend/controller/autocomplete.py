@@ -3,6 +3,9 @@ from typing import List
 from fastapi import APIRouter
 from pydantic import BaseModel
 
+import langid
+langid.set_languages(['de', 'en'])  # ISO 639-1 codes
+
 #
 # not a good idea to work with global variables like this.
 #
@@ -58,9 +61,12 @@ def ask(search: str):
     for i in range(resultCount):
         result.append(interim['hits']['hits'][i]['_source']['phrase'])
 
+
+    lang, score = langid.classify(search)
+
     return {
             "results":result,
-            "language": "en"
+            "language": lang
         }
 
 

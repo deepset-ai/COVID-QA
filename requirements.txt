@@ -2,3 +2,4 @@
 Scrapy==2.0.1
 # haystack
 -e git://github.com/deepset-ai/haystack.git@master#egg=farm-haystack
+langid===1.1.6
