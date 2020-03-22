@@ -29,10 +29,14 @@ export function* getOptions(value) {
     yield delay(400);
     const data = yield api.get(`/query/autocomplete`, { search: currentString });
     let i = 0;
-    const searchResults = data.results.map(question =>{
+
+    // filter duplicates
+    let results = data.results;
+    results = results.filter((v,i) => results.indexOf(v) === i)
+
+    const searchResults = results.map(question =>{
       return {question, id: i++ };
     });
-    console.log({searchResults});
 
     yield put(actions.updateSearchOptions(searchResults));
     yield put(actions.updateSearchFilters({language:data.language}));
