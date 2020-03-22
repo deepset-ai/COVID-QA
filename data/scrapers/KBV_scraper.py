@@ -63,12 +63,15 @@ class CovidScraper(scrapy.Spider):
 					continue
 				questionId = questionId[0]
 				question = " ".join(path.xpath('./text()').getall()).strip()
+				if self.questionsOnly and "?" != question[-1]:
+					continue
 				responsePath = path.xpath("./following-sibling::dd[1]")
 				response = self.transformContent(responsePath)
 				columns['category'].append(categoryName)
 				columns['question'].append(question)
 				columns['answer'].append(response)
 				columns['answer_html'].append(responsePath.getall())
+				print(question)
 			
 		today = date.today()
 
