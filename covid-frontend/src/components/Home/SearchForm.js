@@ -9,6 +9,7 @@ class SearchForm extends PureComponent {
     form: PropTypes.object,
     value: PropTypes.string,
     options: PropTypes.array,
+    filters: PropTypes.object,
     onSearch: PropTypes.func,
     onSubmit: PropTypes.func,
   }
@@ -35,11 +36,12 @@ class SearchForm extends PureComponent {
   }
 
   render() {
-    const { form, options } = this.props;
+    const { form, options, filters } = this.props;
     const { getFieldDecorator } = form;
-    const suggestions = options.suggestions || [];
-    console.log({suggestions, options})
+    const suggestions = options || [];
     const displayLanguages = {'de' : 'Deutsch', 'en': 'English'};
+    const language = filters && filters.language;
+
     return (
       <Form className={styles.form}>
         <Row>
@@ -74,8 +76,8 @@ class SearchForm extends PureComponent {
         </Row>
     <Row gutter={32}>
         <Col>
-        { options.language ?
-              <p className={styles.detectedLanguage}>Fragesprache {displayLanguages[options.language]}</p>
+        { language ?
+              <p className={styles.detectedLanguage}>Fragesprache {displayLanguages[language]}</p>
             :
             <div className={styles.poweredBy}>
                   <p className="made-by">Made with <span className="heart">❤</span> and <a href="https://github.com/deepset-ai/haystack">open source</a></p>

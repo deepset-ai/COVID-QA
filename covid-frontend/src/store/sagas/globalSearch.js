@@ -11,6 +11,7 @@ export function* getOptions(value) {
   // return and reset fields if string is empty
   if (!currentString.length) {
     yield put(actions.updateSearchOptions([]));
+    yield put(actions.updateSearchFilters({}));
     yield put(actions.updateLastSearchValue(''));
 
     return;
@@ -31,10 +32,10 @@ export function* getOptions(value) {
     const searchResults = data.results.map(question =>{
       return {question, id: i++ };
     });
-    console.log('language detection from autocomplete: ', data.language)
+    console.log({searchResults});
 
-    yield put(actions.updateSearchOptions({suggestions: searchResults, language: data.language}));
-
+    yield put(actions.updateSearchOptions(searchResults));
+    yield put(actions.updateSearchFilters({language:data.language}));
 
   } catch (error) {
     message.error(error.message);
