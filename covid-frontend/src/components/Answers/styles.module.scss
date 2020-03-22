@@ -1,5 +1,5 @@
-@import '../../assets/styles/_variables';
-@import '../../assets/styles/_mixins';
+@import "../../assets/styles/_variables";
+@import "../../assets/styles/_mixins";
 
 .wrapper {
   background-color: $white;
@@ -15,11 +15,13 @@
       background-color: $accent-light;
       border-color: $accent-light;
 
-      &::-webkit-input-placeholder { /* Edge */
+      &::-webkit-input-placeholder {
+        /* Edge */
         color: $accent;
       }
 
-      &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+      &:-ms-input-placeholder {
+        /* Internet Explorer 10-11 */
         color: $accent;
       }
 
@@ -79,7 +81,7 @@
 
 .answerMeta {
   margin: 8px 0;
-  
+
   & > div {
     margin: 2px 0;
   }
@@ -103,4 +105,16 @@
   & > i {
     vertical-align: middle;
   }
+}
+
+.answerDocLinkPositive {
+  @extend .answerDocLink;
+
+  color: $success;
+}
+
+.answerDocLinkNegative {
+  @extend .answerDocLink;
+
+  color: $strong-emotion;
 }

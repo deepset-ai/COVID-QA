@@ -50,6 +50,40 @@ class Answers extends PureComponent {
     return false;
   }
 
+  feedbackGiven = (answerDocumentId, feedbackPositive) => {
+    const feedback = feedbackPositive ? ['relevant'] : ['irrelevant', 'outdated', 'fake']
+    return feedback.indexOf(this.props.answers.feedbackGiven[answerDocumentId]) >= 0;
+  }
+
+  renderFeedbackLink = ({document_id}, feedbackPositive) => {
+    const contraryFeedbackAlreadyGiven = this.feedbackGiven(document_id, !feedbackPositive);
+
+    // hide the button if the contrary feedback has been given
+    if (contraryFeedbackAlreadyGiven) {
+      return '';
+    }
+
+    const feedbackAlreadyGiven = this.feedbackGiven(document_id, feedbackPositive);
+    const theme = feedbackAlreadyGiven ? 'filled' : 'outlined';
+    const clazz = feedbackPositive ? styles.answerDocLinkPositive : styles.answerDocLinkNegative;
+    const className = feedbackAlreadyGiven ? clazz : styles.answerDocLink;
+    const icon = feedbackPositive ? 'like' : 'dislike'
+    let onClickHandler = (e) => e.preventDefault();
+
+    if (!feedbackAlreadyGiven) {
+      onClickHandler = feedbackPositive
+        ? this.onFeedbackPositive.bind(this, document_id)
+        : this.onFeedbackNegative.bind(this, document_id);
+    }
+
+    return (
+      <a href='#upvote' rel="noopener noreferrer" className={className} 
+        onClick={onClickHandler}>
+        <Icon type={icon} theme={theme}/>
+      </a>
+    );
+  }
+
   renderTag = (probability) => {
     const value = probability * 100;
     const theme = value >= 80 ? Tag.themes.GREEN : value >= 30 ? Tag.themes.ORANGE : Tag.themes.RED;
@@ -184,15 +218,20 @@ class Answers extends PureComponent {
                           </div>
                           <div className="feedback-buttons">
                             <span>Feedback:</span>
-                            <a href='#upvote' rel="noopener noreferrer" className={styles.answerDocLink}
-                              onClick={this.onFeedbackPositive.bind(this, topAnswerMeta.document_id)}>
-                              <Icon type="like" />
-                            </a>
-                            { !showUserFeedbackPanel &&
-                              <a href='#downvote' rel="noopener noreferrer" className={styles.answerDocLink}
-                                onClick={this.onFeedbackNegative.bind(this, topAnswerMeta.document_id)}>
-                                <Icon type="dislike" />
-                              </a>}
+
+                          { this.renderFeedbackLink(topAnswerMeta, true) }
+                          { this.renderFeedbackLink(topAnswerMeta, false) }
+
+//                             <a href='#upvote' rel="noopener noreferrer" className={styles.answerDocLink}
+//                               onClick={this.onFeedbackPositive.bind(this, topAnswerMeta.document_id)}>
+//                               <Icon type="like" />
+//                             </a>
+//                             { !showUserFeedbackPanel &&
+//                               <a href='#downvote' rel="noopener noreferrer" className={styles.answerDocLink}
+//                                 onClick={this.onFeedbackNegative.bind(this, topAnswerMeta.document_id)}>
+//                                 <Icon type="dislike" />
+//                               </a>}
+
                           </div>
                         </div>
                       </Col>
@@ -251,15 +290,19 @@ class Answers extends PureComponent {
                           <div className="feedback-buttons">
                             <span>Feedback:</span>
 
-                            <a href='#upvote' target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}
-                              onClick={this.onFeedbackPositive.bind(this, itemMeta.document_id)}>
-                              <Icon type="like" />
-                            </a>
-                            { !showUserFeedbackPanel &&
-                              <a href='#downvote' rel="noopener noreferrer" className={styles.answerDocLink}
-                                onClick={this.onFeedbackNegative.bind(this, itemMeta.document_id)}>
-                                <Icon type="dislike" />
-                              </a>}
+                            { this.renderFeedbackLink(itemMeta, true) }
+                            { this.renderFeedbackLink(itemMeta, false) }
+
+//                             <a href='#upvote' target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}
+//                               onClick={this.onFeedbackPositive.bind(this, itemMeta.document_id)}>
+//                               <Icon type="like" />
+//                             </a>
+//                             { !showUserFeedbackPanel &&
+//                               <a href='#downvote' rel="noopener noreferrer" className={styles.answerDocLink}
+//                                 onClick={this.onFeedbackNegative.bind(this, itemMeta.document_id)}>
+//                                 <Icon type="dislike" />
+//                               </a>}
+
                           </div>
 
                         </div>

@@ -30,9 +30,18 @@ export const reset = () => ({
 export const markAsCorrectAnswer = (payload) => ({
   type: types.MARK_AS_CORRECT_ANSWER,
   payload
-})
+});
 
 export const markAsWrongAnswer = (payload) => ({
   type: types.MARK_AS_WRONG_ANSWER,
   payload
-})
+});
+
+export const markAsFeedbackGiven = (payload) => ({
+  type: types.MARK_AS_FEEDBACK_GIVEN,
+  payload
+});
+
+export const clearFeedbackGiven = () => ({
+  type: types.CLEAR_FEEDBACK_GIVEN
+});
