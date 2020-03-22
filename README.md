@@ -5,8 +5,9 @@
 Provide trustworthy questions to COVID-19 via NLP
 
 Staging: https://covid-staging.deepset.ai/
-
 Prod: https://covid.deepset.ai/
+
+We've also developed a Telegram bot named, **🤖 Corona Scholar Bot**, which can be added to your telegram account via [@corona_scholar_bot](https://t.me/corona_scholar_bot)
 
 ## :zap: Problem
 - People have many questions about COVID-19
