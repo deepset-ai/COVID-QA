@@ -43,7 +43,7 @@ We are also happy if you just report bugs, add documentation or flag useful/inap
 
 Some next TODOs we see:
 ### Data / Backend
-- [ ] Integrate more data sources via scrapers that return a csv with fields: [question,	answer, answer_html, 
+- [x] Integrate more data sources via scrapers that return a csv with fields: [question,	answer, answer_html, 
 link, name, source, category, country, region, city, lang, last_update](https://github.com/deepset-ai/COVID-QA/blob/master/docs/img/example-data-format.png)
 - [ ] Handling of special non-FAQ questions via other APIs (e.g. “How many infections in Berlin?”)
 - [ ] Improve API to foster external integrations (e.g. Chatsystems) 
@@ -59,7 +59,7 @@ link, name, source, category, country, region, city, lang, last_update](https://
 - [ ] Tune Elasticsearch + Embedding models
 
 ### UI/UX/Design
-- [ ] Integrate user feedback mechanism for answers (flag as "correct", "not matching my question", "outdated", "fake news")
+- [x] Integrate user feedback mechanism for answers (flag as "correct", "not matching my question", "outdated", "fake news")
 - [ ] Tab to explore common queries and those with bad answers
 - [ ] Logos / icons
 - [ ] Intuitive displaying of search results
