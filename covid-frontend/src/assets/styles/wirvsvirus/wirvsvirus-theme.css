@@ -39,3 +39,7 @@
 .other-answer-row .headline-faq-match-confidence {
     color: black;
 }
+
+.result-confidence-box {
+    font-style: italic;
+}
