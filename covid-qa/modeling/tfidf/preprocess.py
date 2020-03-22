@@ -23,8 +23,9 @@ class Preprocessor():
 
     def preprocess(self, corpus_list):
         preproc_corpus_list = []
-        #stopset = stopwords.words(self.language) + list(string.punctuation)
-        stopset = list(string.punctuation)
+        question_words = set(['how', 'what', 'which', 'when', 'where', 'who', 'why'])
+        stopset = stopwords.words(self.language) + list(string.punctuation)
+        stopset = list(set(stopset) - question_words)
         for corpus in corpus_list:
             corpus = corpus.lower()
             corpus = " ".join([ i for i in word_tokenize(corpus) if i not in stopset ])
