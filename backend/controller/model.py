@@ -23,6 +23,8 @@ from backend.config import (
     EMBEDDING_FIELD_NAME,
     EXCLUDE_META_DATA_FIELDS,
     EMBEDDING_MODEL_PATH,
+    EMBEDDING_POOLING_STRATEGY,
+    EMBEDDING_EXTRACTION_LAYER,
     READER_MODEL_PATH,
     BATCHSIZE,
     USE_GPU,
@@ -58,7 +60,8 @@ document_store = ElasticsearchDocumentStore(
 )
 
 
-retriever = ElasticsearchRetriever(document_store=document_store, embedding_model=EMBEDDING_MODEL_PATH, gpu=USE_GPU)
+retriever = ElasticsearchRetriever(document_store=document_store, embedding_model=EMBEDDING_MODEL_PATH, gpu=USE_GPU,
+                                   pooling_strategy=EMBEDDING_POOLING_STRATEGY, emb_extraction_layer=EMBEDDING_EXTRACTION_LAYER)
 
 if READER_MODEL_PATH:
     # needed for extractive QA
@@ -149,7 +152,7 @@ def ask(model_id: int, request: Query):
 
 
 @router.post("/models/{model_id}/faq-qa", response_model=Response, response_model_exclude_unset=True)
-def ask(model_id: int, request: Query):
+def ask_faq(model_id: int, request: Query):
     t1 = time.time()
     finder = FINDERS.get(model_id, None)
     if not finder:
