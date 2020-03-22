@@ -44,14 +44,14 @@ class SearchForm extends PureComponent {
           <Col span={24}>
             <Form.Item>
               {getFieldDecorator('question', {
-                rules: [{ required: true, message: 'Please insert your question!' }],
+                rules: [{ required: true, message: 'Stellen Sie eine Frage zu Covid-19 (Corona-Virus)' }],
               })(
                 <AutoComplete
                   className={styles.autocomplete}
                   autoFocus
                   size="large"
                   defaultActiveFirstOption={false}
-                  placeholder="Ask any question about Corona..."
+                  placeholder="Stellen Sie eine Frage zu Covid-19 (Corona-Virus)"
                   filterOption={(value, option) =>
                     option.props.children.toLowerCase().startsWith(value.toLowerCase())
                     // option.props.children.toLowerCase().indexOf(value.toLowerCase()) !== -1 // to show all options with substring

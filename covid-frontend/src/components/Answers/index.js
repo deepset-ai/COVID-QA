@@ -106,7 +106,7 @@ class Answers extends PureComponent {
                 size="large"
                 value={search.currentString}
                 defaultActiveFirstOption={false}
-                placeholder="Ask any question about Corona..."
+                placeholder="Stellen Sie eine Frage zu Covid-19 (Corona-Virus)"
                 filterOption={(value, option) =>
                   option.props.children.toLowerCase().startsWith(value.toLowerCase())
                   // option.props.children.toLowerCase().indexOf(value.toLowerCase()) !== -1 // to show all options with substring
