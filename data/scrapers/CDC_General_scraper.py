@@ -4,7 +4,7 @@ from datetime import date
 import scrapy
 import pandas as pd
 
-class CDCScrapper(scrapy.Spider):
+class CovidScraper(scrapy.Spider):
   name = "CDC_Scraper"
   start_urls = ["https://www.cdc.gov/coronavirus/2019-ncov/faq.html"]
 
@@ -69,7 +69,7 @@ class CDCScrapper(scrapy.Spider):
 
     dataframe = pd.DataFrame(columns)
 
-    dataframe.to_csv("cdc.tsv", sep="\t", index=False)
+    dataframe.to_csv("cdc_general_en.tsv", sep="\t", index=False)
 
 
 

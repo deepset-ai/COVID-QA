@@ -4,6 +4,12 @@ const initialState = {
   entries: [],
 
   isLoading: false,
+
+  // the state of the answer-popup
+  userFeedbackPopup: {
+    visible: false,
+    answerDocumentId: null
+  }
 };
 
 export default (state = initialState, action) => {
@@ -18,6 +24,16 @@ export default (state = initialState, action) => {
         ...state,
         isLoading: action.status
       };
+      case types.SHOW_USER_FEEDBACK_PANEL:
+      return {
+        ...state,
+        userFeedbackPopup: { ...state.userFeedbackPopup, visible: true, answerDocumentId: action.payload }
+      };
+      case types.HIDE_USER_FEEDBACK_PANEL:
+        return {
+          ...state,
+          userFeedbackPopup: { ...initialState.userFeedbackPopup }
+        };
     case types.RESET:
       return {
         ...initialState

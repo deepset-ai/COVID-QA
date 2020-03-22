@@ -15,10 +15,11 @@ class Tag extends PureComponent {
     theme: 'green',
   }
 
+  // Themes signify level of confidence in answer
   static themes = {
     RED: 'red',
     GREEN: 'green',
-    ORANGE: 'orange',
+    ORANGE: 'orange'
   }
 
   render() {

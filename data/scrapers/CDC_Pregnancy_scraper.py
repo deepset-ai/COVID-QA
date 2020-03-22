@@ -4,7 +4,7 @@ from datetime import date
 import scrapy
 import pandas as pd
 
-class CDCPregnancyScrapper(scrapy.Spider):
+class CovidScraper(scrapy.Spider):
   name = "CDC_Pregnancy_Scraper"
   start_urls = ["https://www.cdc.gov/coronavirus/2019-ncov/prepare/pregnancy-breastfeeding.html"]
 
@@ -97,4 +97,4 @@ class CDCPregnancyScrapper(scrapy.Spider):
 
     dataframe = pd.DataFrame(columns)
 
-    dataframe.to_csv("cdc_pregnancy.tsv", sep="\t", index=False)
+    dataframe.to_csv("cdc_pregnancy_en.tsv", sep="\t", index=False)
