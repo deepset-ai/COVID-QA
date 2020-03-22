@@ -58,10 +58,10 @@ class CovidScraper(scrapy.Spider):
     columns["name"] = ["Ihre Fragen - unsere Antworten zum neuartigen Coronavirus / COVID-19"] * len(columns["question"])
     columns["source"] = ["Bundesministerium für Gesundheit (BMG)"] * len(columns["question"])
     columns["category"] = [""] * len(columns["question"])
-    columns["country"] = [""] * len(columns["question"])
+    columns["country"] = ["DE"] * len(columns["question"])
     columns["region"] = [""] * len(columns["question"])
     columns["city"] = [""] * len(columns["question"])
-    columns["lang"] = ["en"] * len(columns["question"])
+    columns["lang"] = ["de"] * len(columns["question"])
     columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
     return columns
