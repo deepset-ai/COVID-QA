@@ -13,3 +13,4 @@ export const RESET = activeAnswersPrefix('RESET');
 
 export const MARK_AS_CORRECT_ANSWER = activeAnswersPrefix('MARK_AS_CORRECT_ANSWER');
 export const MARK_AS_WRONG_ANSWER = activeAnswersPrefix('MARK_AS_WRONG_ANSWER');
+export const MARK_AS_FEEDBACK_GIVEN = activeAnswersPrefix('MARK_AS_FEEDBACK_GIVEN');

@@ -52,6 +52,9 @@ export function* markAsCorrectAnswer({ question, answerDocumentId }) {
   } catch (error) {
     message.error(error.message);
   }
+
+  yield put(actions.markAsFeedbackGiven({ [answerDocumentId]: 'relevant' }));
+  message.success('Thanks for giving us feedback.')
 }
 
 export function* markAsWrongAnswer({ question, answerDocumentId, feedback }) {
@@ -73,6 +76,11 @@ export function* markAsWrongAnswer({ question, answerDocumentId, feedback }) {
   } catch (error) {
     message.error(error.message);
   }
+
+  yield put(actions.markAsFeedbackGiven({ [answerDocumentId]: feedback }));
+
+  // the popup did already say 'thank you'
+  // message.success('Thanks for giving us feedback.')
 }
 
 export default function* () {
