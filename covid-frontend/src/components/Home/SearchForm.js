@@ -74,7 +74,7 @@ class SearchForm extends PureComponent {
         <Row gutter={32}>
           <Col>
             <div className={styles.poweredBy}>
-              <p className="madeBy">Made with <span>❤</span> and <a href="https://github.com/deepset-ai/haystack">open source</a></p>
+              <p className="made-by">Made with <span className="heart">❤</span> and <a href="https://github.com/deepset-ai/haystack">open source</a></p>
               <div className="project-logo">
                 <a href="https://wirvsvirushackathon.org/" target="_blank" rel="noopener noreferrer">
                   <img src={logoHackathon} alt="Logo WirVsVirus Hackathon" />

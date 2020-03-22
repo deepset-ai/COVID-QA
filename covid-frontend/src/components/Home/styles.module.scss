@@ -48,13 +48,10 @@
   a {
     text-decoration: underline;
     color: $secondary-grey;
-  }
-  &:hover span {
-    color: $strong-emotion;
-  }
-  &:hover a {
-    color: $strong-emotion;
-    text-decoration: underline;
+    &:hover {
+      color: $strong-emotion;
+      text-decoration: underline;
+    }
   }
   img {
     width: 300px;
