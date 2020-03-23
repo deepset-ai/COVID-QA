@@ -5,6 +5,7 @@ import com.theapache64.cs.core.SecretConstants
 import com.theapache64.cs.models.TelegramUpdate
 import com.theapache64.cs.utils.GsonUtil
 import com.theapache64.cs.utils.TelegramAPI
+import java.lang.StringBuilder
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
@@ -51,8 +52,19 @@ class CoronaScholarServlet : HttpServlet() {
                         in 31..70 -> "🧡️" // orange = ok
                         else -> "💚" // green = best
                     }
+
+
                     val confString = "$emoji Answer Confidence : $confidence%\n\n"
                     confString + ans.answer + "\n\n \uD83C\uDF0E Source : <a href=\"${ans.meta.link}\">${ans.meta.source}</a>"
+
+                    """
+                        Q: ${ans.question}
+                        A: ${ans.answer}
+                        
+                        💪 Answer Confidence : $confidence% $emoji
+                        🌍 Source : <a href="${ans.meta.link}">${ans.meta.source}</a>
+                    """.trimIndent()
+
                 } else {
                     // Invalid query
                     "Sorry, I don't know about that"
