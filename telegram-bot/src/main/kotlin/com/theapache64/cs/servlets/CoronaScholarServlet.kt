@@ -2,6 +2,8 @@ package com.theapache64.cs.servlets
 
 import com.theapache64.cs.core.Scholar
 import com.theapache64.cs.core.SecretConstants
+import com.theapache64.cs.models.SendMessageRequest
+import com.theapache64.cs.models.TelegramCallbackQuery
 import com.theapache64.cs.models.TelegramUpdate
 import com.theapache64.cs.utils.GsonUtil
 import com.theapache64.cs.utils.TelegramAPI
@@ -15,6 +17,18 @@ import javax.servlet.http.HttpServletResponse
 class CoronaScholarServlet : HttpServlet() {
 
     companion object {
+
+        // Feedback buttons
+        private const val FEEDBACK_RELEVANT_TEXT = "✅ Relevant"
+        private const val FEEDBACK_FAKE_TEXT = "😤 Fake!"
+        private const val FEEDBACK_IRRELEVANT_TEXT = "😒 Irrelevant"
+        private const val FEEDBACK_OUTDATED_TEXT = "📆 Outdated"
+
+        private const val FEEDBACK_RELEVANT_KEY = 'r'
+        private const val FEEDBACK_FAKE_KEY = 'f'
+        private const val FEEDBACK_IRRELEVANT_KEY = 'i'
+        private const val FEEDBACK_OUTDATED_KEY = 'o'
+
         private const val GITHUB_REPO_URL = "https://github.com/deepset-ai/COVID-QA"
 
         private val INTRO = """
@@ -25,16 +39,45 @@ class CoronaScholarServlet : HttpServlet() {
 
     }
 
+    private var feedbackQuery: TelegramCallbackQuery? = null
+
+    private fun isFeedback(jsonString: String): Boolean {
+        this.feedbackQuery = GsonUtil.gson.fromJson(jsonString, TelegramCallbackQuery::class.java)
+        return this.feedbackQuery?.callbackQuery != null
+    }
+
 
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {
 
-        val request = parseUpdate(req)
+        val jsonString = req.reader.readText()
+        if (isFeedback(jsonString)) {
+            resp.writer.write("ok") // tell telegram that it's being handled to stop receiving duplicate messages.
+            Thread {
+                val feedbackData = feedbackQuery!!.callbackQuery.data
+                val feedbackChar = feedbackData[0]
+                val modelId = feedbackData.substring(1)
+                println("Adding feedback")
+                Scholar.addFeedback(modelId, feedbackChar)
+            }.start()
+        } else {
+            // Normal response
+            handleNormalResponse(jsonString, resp)
+        }
+    }
+
+
+    private fun handleNormalResponse(jsonString: String, resp: HttpServletResponse) {
+
+        val request = GsonUtil.gson.fromJson(jsonString, TelegramUpdate::class.java)
+
+        println("Request : $request")
         resp.writer.write("ok") // tell telegram that it's being handled to stop receiving duplicate messages.
 
         Thread {
 
             val question = request.message.text.trim()
 
+            var modelId: String? = null
             val msg = if (question == "/start" || question == "/help") {
                 INTRO
             } else {
@@ -53,6 +96,8 @@ class CoronaScholarServlet : HttpServlet() {
                         else -> "💚" // green = best
                     }
 
+                    // Setting modelId to get feedback
+                    modelId = ans.meta.documentId
 
                     val confString = "$emoji Answer Confidence : $confidence%\n\n"
                     confString + ans.answer + "\n\n \uD83C\uDF0E Source : <a href=\"${ans.meta.link}\">${ans.meta.source}</a>"
@@ -71,18 +116,35 @@ class CoronaScholarServlet : HttpServlet() {
                 }
             }
 
+            val replyMarkup = if (modelId != null) {
+                SendMessageRequest.ReplyMarkup(
+                    listOf(
+                        listOf(
+                            SendMessageRequest.InlineButton(FEEDBACK_RELEVANT_TEXT, FEEDBACK_RELEVANT_KEY + modelId),
+                            SendMessageRequest.InlineButton(FEEDBACK_FAKE_TEXT, FEEDBACK_FAKE_KEY + modelId)
+                        ),
+                        listOf(
+                            SendMessageRequest.InlineButton(
+                                FEEDBACK_IRRELEVANT_TEXT,
+                                FEEDBACK_IRRELEVANT_KEY + modelId
+                            ),
+                            SendMessageRequest.InlineButton(FEEDBACK_OUTDATED_TEXT, FEEDBACK_OUTDATED_KEY + modelId)
+                        )
+                    )
+                )
+            } else {
+                null
+            }
+
             // Sending the message
             TelegramAPI.sendHtmlMessage(
                 SecretConstants.DEV_BOT_TOKEN,
                 "${request.message.chat.id}",
                 msg,
-                request.message.messageId
+                request.message.messageId,
+                replyMarkup
             )
         }.start()
-    }
 
-    private fun parseUpdate(req: HttpServletRequest): TelegramUpdate {
-        val jsonString = req.reader.readText()
-        return GsonUtil.gson.fromJson(jsonString, TelegramUpdate::class.java)
     }
 }

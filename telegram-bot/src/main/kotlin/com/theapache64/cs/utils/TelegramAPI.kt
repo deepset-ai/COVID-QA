@@ -17,7 +17,8 @@ object TelegramAPI {
         from: String,
         to: String,
         message: String,
-        replyMsgId: Long?
+        replyMsgId: Long?,
+        replayMarkup: SendMessageRequest.ReplyMarkup?
     ): SendMessageResponse {
 
         val url = "$BASE_URL/bot$from/sendMessage"
@@ -30,7 +31,8 @@ object TelegramAPI {
                 message,
                 true,
                 "HTML",
-                replyMsgId
+                replyMsgId,
+                replayMarkup
             )
         )
 

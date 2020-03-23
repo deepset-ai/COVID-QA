@@ -13,5 +13,19 @@ data class SendMessageRequest(
     @SerializedName("parse_mode")
     val parseMode: String?,
     @SerializedName("reply_to_message_id")
-    val replyMsgId: Long?
-)
+    val replyMsgId: Long?,
+    @SerializedName("reply_markup")
+    val replyMarkup: ReplyMarkup?
+) {
+    data class ReplyMarkup(
+        @SerializedName("inline_keyboard")
+        val inlineKeyboard: List<List<InlineButton>>
+    )
+
+    data class InlineButton(
+        @SerializedName("text")
+        val text: String, // ✅ Relevant
+        @SerializedName("callback_data")
+        val callbackData: String // r123
+    )
+}
