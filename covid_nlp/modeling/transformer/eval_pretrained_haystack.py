@@ -5,8 +5,7 @@ from sklearn.metrics import roc_auc_score
 from farm.utils import MLFlowLogger
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
 from sklearn.metrics.pairwise import cosine_similarity
-from covid-qa.eval import eval_question_similarity
-
+from covid_nlp.eval import eval_question_similarity
 
 def eval_pretrained_transformers(eval_file, lang, models, pooling_methods, extraction_layers):
     for model_name in models:
@@ -45,7 +44,8 @@ def eval_pretrained_transformers(eval_file, lang, models, pooling_methods, extra
 if __name__ == "__main__":
     eval_file =  "../data/eval_question_similarity_en.csv"
     lang = "en"
-    models = ["deepset/sentence_bert","bert-base-uncased", "DeepPavlov/bert-base-multilingual-cased-sentence"]
+#    models = ["deepset/sentence_bert","bert-base-uncased", "DeepPavlov/bert-base-multilingual-cased-sentence"]
+    models = ["deepset/quora_dedup_bert_base"]
     pooling_methods = ["reduce_mean","cls_token","reduce_max"]
     extraction_layers = [-1, -2]
     eval_pretrained_transformers(eval_file, lang, models, pooling_methods, extraction_layers)
