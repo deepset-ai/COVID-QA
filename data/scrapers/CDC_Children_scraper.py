@@ -44,7 +44,7 @@ class CovidScraper(scrapy.Spider):
                 response = response.strip()
                 columns["question"].append(question)
                 columns["answer"].append(response)
-                columns["answer_html"].append(responseParagraphPaths.getall())
+                columns["answer_html"].append(" ".join(responseParagraphPaths.getall()))
 
         today = date.today()
 
