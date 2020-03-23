@@ -28,9 +28,17 @@ class SearchForm extends PureComponent {
     // if enter pressed and no options
     if (keyCode === 13) {
       form.validateFields((err, values) => {
-        if (!err) {
-          onSubmit(values.question);
+        if (err) {
+          return;
         }
+        for (let option of this.props.options){
+          if (option.id === parseInt(values.question)){
+            onSubmit(option.question);
+            return;
+          }
+        }
+        onSubmit(values.question);
+
       });
     }
   }

@@ -6,6 +6,9 @@ USE_GPU = os.getenv("USE_GPU", "True").lower() == "true"
 MAX_PROCESSES = int(os.getenv("MAX_PROCESSES", 4))
 BATCHSIZE = int(os.getenv("BATCHSIZE", 50))
 
+# Monitoring
+APM_SERVER = "http://localhost:8200"
+
 # Reader
 READER_MODEL_PATH = os.getenv("READER_MODEL_PATH", None)
 CONTEXT_WINDOW_SIZE = int(os.getenv("CONTEXT_WINDOW_SIZE", 500))

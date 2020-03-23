@@ -1,4 +1,5 @@
 import importlib.util
+import logging
 import os
 
 import pandas as pd
@@ -6,16 +7,48 @@ from haystack.database.elasticsearch import ElasticsearchDocumentStore
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
 from scrapy.crawler import CrawlerProcess
 
+logger = logging.getLogger(__name__)
+
 PATH = os.getcwd()
 RESULTS = []
+MISSED = []
 
 
 class Pipeline(object):
+    questionsOnly = True
+
+    def filter(self, item, index):
+        question = item['question'][index].strip()
+        if self.questionsOnly and not question.endswith("?"):
+            return False
+        if len(item['answer'][index].strip()) == 0:
+            return False
+        return True
+
     def process_item(self, item, spider):
-        RESULTS.append(pd.DataFrame.from_dict(item))
+        if len(item['question']) == 0:
+            logger.error("Scraper '" + spider.name + "' provided zero results!")
+            MISSED.append(spider.name)
+            return
+        validatedItems = {}
+        for key, values in item.items():
+            validatedItems[key] = []
+        for i in range(len(item['question'])):
+            if not self.filter(item, i):
+                continue
+            for key, values in item.items():
+                validatedItems[key].append(values[i])
+        if len(validatedItems['question']) == 0:
+            logger.error("Scraper '" + spider.name + "' provided zero results after filtering!")
+            MISSED.append(spider.name)
+            return
+        df = pd.DataFrame.from_dict(validatedItems)
+        RESULTS.append(df)
 
 
 if __name__ == "__main__":
+    logging.disable(logging.WARNING)
+
     crawler_files = [f for f in os.listdir(PATH) if os.path.isfile(os.path.join(PATH, f)) and "META" not in f]
     process = CrawlerProcess({
         'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
@@ -29,10 +62,11 @@ if __name__ == "__main__":
         process.crawl(CovidScraper)
     process.start()
     dataframe = pd.concat(RESULTS)
+    if len(MISSED) > 0:
+        logger.error(f"Could not scrape: {', '.join(MISSED)} ")
 
     MODEL = "bert-base-uncased"
     GPU = False
-
     document_store = ElasticsearchDocumentStore(
         host="localhost",
         username="",
@@ -49,12 +83,11 @@ if __name__ == "__main__":
     dataframe.fillna(value="", inplace=True)
     # Index to ES
     docs_to_index = []
-    doc_id = 1
 
-    for idx, row in list(dataframe.iterrows()):
+    for doc_id, (_, row) in enumerate(dataframe.iterrows()):
         d = row.to_dict()
         d = {k: v.strip() for k, v in d.items()}
-        d["document_id"] = idx
+        d["document_id"] = doc_id
         # add embedding
         question_embedding = retriever.create_embedding(row["question"])
         d["question_emb"] = question_embedding

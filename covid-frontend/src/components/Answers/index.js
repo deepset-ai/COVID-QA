@@ -77,7 +77,7 @@ class Answers extends PureComponent {
     }
 
     return (
-      <a href='#upvote' rel="noopener noreferrer" className={className} 
+      <a href='#upvote' rel="noopener noreferrer" className={className}
         onClick={onClickHandler}>
         <Icon type={icon} theme={theme}/>
       </a>
@@ -214,25 +214,12 @@ class Answers extends PureComponent {
                               )
                             }
                           </div>
-                          <div className="feedback-buttons">
-
+                          <div className="feedback-buttons" >
                             <span>Feedback</span>
-
-                          { this.renderFeedbackLink(topAnswerMeta, true) }
-                          { this.renderFeedbackLink(topAnswerMeta, false) }
-
-//                             <a href='#upvote' rel="noopener noreferrer" className={styles.answerDocLink}
-//                               onClick={this.onFeedbackPositive.bind(this, topAnswerMeta.document_id)}>
-//                               <Icon type="like" />
-//                             </a>
-//                             { !showUserFeedbackPanel &&
-//                               <a href='#downvote' rel="noopener noreferrer" className={styles.answerDocLink}
-//                                 onClick={this.onFeedbackNegative.bind(this, topAnswerMeta.document_id)}>
-//                                 <Icon type="dislike" />
-//                               </a>}
-
+                            { this.renderFeedbackLink(topAnswerMeta, true) }
+                            { this.renderFeedbackLink(topAnswerMeta, false) }
                           </div>
-                        </div>
+                          </div>
                       </Col>
                     </Row>
                   </Fragment>
@@ -289,19 +276,8 @@ class Answers extends PureComponent {
                           </div>
                           <div className="feedback-buttons">
                             <span>Feedback</span>
-
                             { this.renderFeedbackLink(itemMeta, true) }
                             { this.renderFeedbackLink(itemMeta, false) }
-
-//                             <a href='#upvote' target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}
-//                               onClick={this.onFeedbackPositive.bind(this, itemMeta.document_id)}>
-//                               <Icon type="like" />
-//                             </a>
-//                             { !showUserFeedbackPanel &&
-//                               <a href='#downvote' rel="noopener noreferrer" className={styles.answerDocLink}
-//                                 onClick={this.onFeedbackNegative.bind(this, itemMeta.document_id)}>
-//                                 <Icon type="dislike" />
-//                               </a>}
 
                           </div>
 
