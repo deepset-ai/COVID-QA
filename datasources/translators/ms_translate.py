@@ -35,7 +35,7 @@ def main():
     azure_endpoint = "https://api.cognitive.microsofttranslator.com/"
     ms_translator = MSTranslator(endpoint = azure_endpoint, lang = lang)
 
-    faq_file = "../faqs/faq_covidbert.csv"
+    faq_file = "../../data/faqs/faq_covidbert.csv"
     df = pd.read_csv(faq_file)
     df[f'question_{lang}'] = df.apply(lambda x: ms_translator.translate(x.question), axis=1)
     df[f'answer_{lang}'] = df.apply(lambda x: ms_translator.translate(x.answer), axis=1)
