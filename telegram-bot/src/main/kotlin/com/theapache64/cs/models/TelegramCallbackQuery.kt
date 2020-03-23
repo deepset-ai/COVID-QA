@@ -42,7 +42,7 @@ data class TelegramCallbackQuery(
             @SerializedName("from")
             val from: From,
             @SerializedName("message_id")
-            val messageId: Int, // 61
+            val messageId: Long, // 61
             @SerializedName("reply_markup")
             val replyMarkup: ReplyMarkup,
             @SerializedName("text")

@@ -1,7 +1,10 @@
 package com.theapache64.cs.utils
 
+import com.theapache64.cs.models.AnswerCallbackRequest
+import com.theapache64.cs.models.SendChatActionRequest
 import com.theapache64.cs.models.SendMessageRequest
 import com.theapache64.cs.models.SendMessageResponse
+import okhttp3.Response
 import java.io.IOException
 
 object TelegramAPI {
@@ -41,5 +44,35 @@ object TelegramAPI {
             throw IOException("Failed to send message '$message' -> $respJsonString")
         }
         return GsonUtil.gson.fromJson(respJsonString, SendMessageResponse::class.java)
+    }
+
+    fun answerCallbackQuery(
+        from: String,
+        id: String
+    ) {
+        val url = "$BASE_URL/bot$from/answerCallbackQuery"
+        val resp = RestClient.post(
+            url,
+            null,
+            AnswerCallbackRequest(id)
+        ).body!!.string()
+        println("Callback response : $resp")
+    }
+
+    fun sendChatAction(
+        from: String,
+        chatId: String,
+        action: String
+    ) {
+        val url = "$BASE_URL/bot$from/sendChatAction"
+        val resp = RestClient.post(
+            url,
+            null,
+            SendChatActionRequest(
+                action,
+                chatId
+            )
+        ).body!!.string()
+        println("Chat action response : $resp")
     }
 }

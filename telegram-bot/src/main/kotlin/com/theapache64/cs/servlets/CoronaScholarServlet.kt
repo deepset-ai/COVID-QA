@@ -47,17 +47,52 @@ class CoronaScholarServlet : HttpServlet() {
     }
 
 
+    private fun sendTyping(to: String) {
+        Thread {
+            TelegramAPI.sendChatAction(
+                SecretConstants.ACTIVE_BOT_TOKEN,
+                to,
+                "typing"
+            )
+        }.start()
+    }
+
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {
+
 
         val jsonString = req.reader.readText()
         if (isFeedback(jsonString)) {
-            resp.writer.write("ok") // tell telegram that it's being handled to stop receiving duplicate messages.
+
             Thread {
+
                 val feedbackData = feedbackQuery!!.callbackQuery.data
+
+                // Sending typing
+                sendTyping("${feedbackQuery!!.callbackQuery.from.id}")
+
                 val feedbackChar = feedbackData[0]
                 val modelId = feedbackData.substring(1)
                 println("Adding feedback")
                 Scholar.addFeedback(modelId, feedbackChar)
+
+                Thread {
+                    // Sending feedback to cancel progress animation
+                    TelegramAPI.answerCallbackQuery(
+                        SecretConstants.ACTIVE_BOT_TOKEN,
+                        feedbackQuery!!.callbackQuery.id
+                    )
+                }.start()
+
+                // Sending thanks
+                TelegramAPI.sendHtmlMessage(
+                    SecretConstants.ACTIVE_BOT_TOKEN,
+                    "${feedbackQuery!!.callbackQuery.message.chat.id}",
+                    "Thank you for your feedback 🤗",
+                    feedbackQuery!!.callbackQuery.message.messageId,
+                    null
+                )
+
+
             }.start()
         } else {
             // Normal response
@@ -67,13 +102,12 @@ class CoronaScholarServlet : HttpServlet() {
 
 
     private fun handleNormalResponse(jsonString: String, resp: HttpServletResponse) {
-
         val request = GsonUtil.gson.fromJson(jsonString, TelegramUpdate::class.java)
-
-        println("Request : $request")
         resp.writer.write("ok") // tell telegram that it's being handled to stop receiving duplicate messages.
 
         Thread {
+
+            sendTyping(request!!.message.from.id.toString())
 
             val question = request.message.text.trim()
 
@@ -138,7 +172,7 @@ class CoronaScholarServlet : HttpServlet() {
 
             // Sending the message
             TelegramAPI.sendHtmlMessage(
-                SecretConstants.DEV_BOT_TOKEN,
+                SecretConstants.ACTIVE_BOT_TOKEN,
                 "${request.message.chat.id}",
                 msg,
                 request.message.messageId,
