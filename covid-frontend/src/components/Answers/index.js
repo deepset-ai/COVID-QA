@@ -50,6 +50,40 @@ class Answers extends PureComponent {
     return false;
   }
 
+  feedbackGiven = (answerDocumentId, feedbackPositive) => {
+    const feedback = feedbackPositive ? ['relevant'] : ['irrelevant', 'outdated', 'fake']
+    return feedback.indexOf(this.props.answers.feedbackGiven[answerDocumentId]) >= 0;
+  }
+
+  renderFeedbackLink = ({document_id}, feedbackPositive) => {
+    const contraryFeedbackAlreadyGiven = this.feedbackGiven(document_id, !feedbackPositive);
+
+    // hide the button if the contrary feedback has been given
+    if (contraryFeedbackAlreadyGiven) {
+      return '';
+    }
+
+    const feedbackAlreadyGiven = this.feedbackGiven(document_id, feedbackPositive);
+    const theme = feedbackAlreadyGiven ? 'filled' : 'outlined';
+    const clazz = feedbackPositive ? styles.answerDocLinkPositive : styles.answerDocLinkNegative;
+    const className = feedbackAlreadyGiven ? clazz : styles.answerDocLink;
+    const icon = feedbackPositive ? 'like' : 'dislike'
+    let onClickHandler = (e) => e.preventDefault();
+
+    if (!feedbackAlreadyGiven) {
+      onClickHandler = feedbackPositive
+        ? this.onFeedbackPositive.bind(this, document_id)
+        : this.onFeedbackNegative.bind(this, document_id);
+    }
+
+    return (
+      <a href='#upvote' rel="noopener noreferrer" className={className}
+        onClick={onClickHandler}>
+        <Icon type={icon} theme={theme}/>
+      </a>
+    );
+  }
+
   renderTag = (probability) => {
     const value = probability * 100;
     const theme = value >= 80 ? Tag.themes.GREEN : value >= 30 ? Tag.themes.ORANGE : Tag.themes.RED;
@@ -142,17 +176,11 @@ class Answers extends PureComponent {
               {
                 topAnswer.hasOwnProperty('probability') ? (
                   <Fragment>
-                    <Row gutter={[24, 40]} className="top-answer-wrapper">
+                    <Row gutter={[24, 20]} className="top-answer-wrapper-old">
                       <Col span={19}>
-                        <div className={styles.topAnswerTitle + ' top-answer-box'}>
-                          Beste Antwort
-                        </div>
+
                         <div className={styles.answerTitle + ' headline-faq-match'}>
                           {topAnswer.question}
-                        </div>
-                        <div className='headline-faq-match-confidence'>
-                          <CheckCircleOutlined style={{ color: 'white' }}/>
-                          {this.renderTag(topAnswer.probability)}
                         </div>
                         <div className={styles.answerText + ' answer-text'}>
                           {
@@ -165,15 +193,19 @@ class Answers extends PureComponent {
                             ) : topAnswer.context || '-'
                           }
                         </div>
-                      </Col>
+                        <div className='headline-faq-match-confidence'>
+                            <CheckCircleOutlined />
+                            {this.renderTag(topAnswer.probability)}
+                        </div>
+                    </Col>
                     </Row>
 
                     <Row gutter={[24, 40]} className="top-answer-meta-wrapper">
                       <Col span={19}>
                         <div className={styles.answerMeta + ' answer-meta-info top-answer'}>
-                          <div><span>Stand:</span> {this.formattedDateDE(topAnswerMeta.last_update) || '–'}</div>
+                          <div><span>Stand</span> {this.formattedDateDE(topAnswerMeta.last_update) || '–'}</div>
                           <div>
-                            <span>Quelle:</span> {topAnswerMeta.source || '–'}
+                            <span>Quelle</span> {topAnswerMeta.source || '–'}
                             {
                               topAnswerMeta.link && (
                                 <a href={topAnswerMeta.link} target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}>
@@ -182,19 +214,12 @@ class Answers extends PureComponent {
                               )
                             }
                           </div>
-                          <div className="feedback-buttons">
-                            <span>Feedback:</span>
-                            <a href='#upvote' rel="noopener noreferrer" className={styles.answerDocLink}
-                              onClick={this.onFeedbackPositive.bind(this, topAnswerMeta.document_id)}>
-                              <Icon type="like" />
-                            </a>
-                            { !showUserFeedbackPanel &&
-                              <a href='#downvote' rel="noopener noreferrer" className={styles.answerDocLink}
-                                onClick={this.onFeedbackNegative.bind(this, topAnswerMeta.document_id)}>
-                                <Icon type="dislike" />
-                              </a>}
+                          <div className="feedback-buttons" >
+                            <span>Feedback</span>
+                            { this.renderFeedbackLink(topAnswerMeta, true) }
+                            { this.renderFeedbackLink(topAnswerMeta, false) }
                           </div>
-                        </div>
+                          </div>
                       </Col>
                     </Row>
                   </Fragment>
@@ -221,10 +246,6 @@ class Answers extends PureComponent {
                     <Row gutter={[24, 40]} key={i} className={`other-answer-row row_${i}`}>
                       <Col span={19}>
                         <div className={styles.answerTitle + ' headline-faq-match other-answer-index-' + i}>{item.question}</div>
-                        <div className="headline-faq-match-confidence">
-                          <CheckCircleOutlined style={{ color: 'black' }}/>
-                          {this.renderTag(item.probability)}
-                        </div>
                         <div className={styles.answerText + ' answer-text'}>
                           {
                             item.answer ? (
@@ -236,10 +257,15 @@ class Answers extends PureComponent {
                             ) : item.context || '-'
                           }
                         </div>
-                        <div className={styles.answerMeta + ' answer-meta-info'}>
-                          <div><span>Stand:</span> {this.formattedDateDE(topAnswerMeta.last_update) || '–'}</div>
+                    <div className="headline-faq-match-confidence">
+                        <CheckCircleOutlined style={{ color: 'black' }}/>
+                    {this.renderTag(item.probability)}
+                </div>
+
+                    <div className={styles.answerMeta + ' answer-meta-info'}>
+                          <div><span>Stand</span> {this.formattedDateDE(topAnswerMeta.last_update) || '–'}</div>
                           <div>
-                            <span>Source:</span> {itemMeta.source || '–'}
+                            <span>Quelle</span> {itemMeta.source || '–'}
                             {
                               itemMeta.link && (
                                 <a href={itemMeta.link} target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}>
@@ -249,17 +275,10 @@ class Answers extends PureComponent {
                             }
                           </div>
                           <div className="feedback-buttons">
-                            <span>Feedback:</span>
+                            <span>Feedback</span>
+                            { this.renderFeedbackLink(itemMeta, true) }
+                            { this.renderFeedbackLink(itemMeta, false) }
 
-                            <a href='#upvote' target="_blank" rel="noopener noreferrer" className={styles.answerDocLink}
-                              onClick={this.onFeedbackPositive.bind(this, itemMeta.document_id)}>
-                              <Icon type="like" />
-                            </a>
-                            { !showUserFeedbackPanel &&
-                              <a href='#downvote' rel="noopener noreferrer" className={styles.answerDocLink}
-                                onClick={this.onFeedbackNegative.bind(this, itemMeta.document_id)}>
-                                <Icon type="dislike" />
-                              </a>}
                           </div>
 
                         </div>
