@@ -1,13 +1,12 @@
 import logging
 
 import uvicorn
+from elasticapm.contrib.starlette import make_apm_client, ElasticAPM
+from elasticsearch import Elasticsearch
 from fastapi import FastAPI, HTTPException
 from starlette.middleware.cors import CORSMiddleware
 
-from elasticsearch import Elasticsearch
-from backend.config import DB_HOST, DB_USER, DB_PW
-
-
+from backend.config import DB_HOST, DB_USER, DB_PW, APM_SERVER
 from backend.controller.errors.http_error import http_error_handler
 from backend.controller.router import router as api_router
 # from backend.events.fastapi import create_start_app_handler, create_stop_app_handler
@@ -27,6 +26,9 @@ def get_application() -> FastAPI:
     application.add_middleware(
         CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"],
     )
+    apm_config = {"SERVICE_NAME": "covid-backend", "SERVER_URL": APM_SERVER}
+    elasticapm = make_apm_client(apm_config)
+    application.add_middleware(ElasticAPM, client=elasticapm)
 
     application.add_exception_handler(HTTPException, http_error_handler)
     # application.add_event_handler("startup", create_start_app_handler(application))
