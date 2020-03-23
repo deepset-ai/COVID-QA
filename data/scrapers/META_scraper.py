@@ -1,17 +1,21 @@
 import importlib.util
+import logging
 import os
+
 
 import pandas as pd
 from haystack.database.elasticsearch import ElasticsearchDocumentStore
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
 from scrapy.crawler import CrawlerProcess
 
+logger = logging.getLogger(__name__)
+
 PATH = os.getcwd()
 RESULTS = []
+MISSED = []
 
 
 class Pipeline(object):
-
     questionsOnly = True
 
     def filter(self, item, index):
@@ -24,7 +28,8 @@ class Pipeline(object):
 
     def process_item(self, item, spider):
         if len(item['question']) == 0:
-            print("WARNING: Scraper '"+spider.name+"' provided zero results!")
+            logger.error("Scraper '" + spider.name + "' provided zero results!")
+            MISSED.append(spider.name)
             return
         validatedItems = {}
         for key, values in item.items():
@@ -35,13 +40,17 @@ class Pipeline(object):
             for key, values in item.items():
                 validatedItems[key].append(values[i])
         if len(validatedItems['question']) == 0:
-            print("WARNING: Scraper '"+spider.name+"' provided zero results after filtering!")
+            logger.error("Scraper '" + spider.name + "' provided zero results after filtering!")
+            MISSED.append(spider.name)
             return
         df = pd.DataFrame.from_dict(validatedItems)
         RESULTS.append(df)
 
 
 if __name__ == "__main__":
+    logging.disable(logging.WARNING)
+
+
     crawler_files = [f for f in os.listdir(PATH) if os.path.isfile(os.path.join(PATH, f)) and "META" not in f]
     process = CrawlerProcess({
         'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
@@ -55,10 +64,11 @@ if __name__ == "__main__":
         process.crawl(CovidScraper)
     process.start()
     dataframe = pd.concat(RESULTS)
+    if len(MISSED) > 0:
+        logger.error(f"Could not scrape: {', '.join(MISSED)} ")
 
     MODEL = "bert-base-uncased"
     GPU = False
-
     document_store = ElasticsearchDocumentStore(
         host="localhost",
         username="",
