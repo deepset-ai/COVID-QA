@@ -104,6 +104,7 @@ fabric.properties
 .mtj.tmp/
 
 # Package Files #
+*.jar
 *.war
 *.nar
 *.ear
@@ -132,7 +133,5 @@ gradle-app.setting
 
 ### Gradle Patch ###
 **/build/
-
-src/com/theapache64/cs/core/SecretConstants.kt
 
 # End of https://www.gitignore.io/api/kotlin,intellij,gradle
