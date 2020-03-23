@@ -5,7 +5,6 @@ import com.theapache64.cs.models.CoronaAnswer
 import com.theapache64.cs.models.CoronaQuestion
 import com.theapache64.cs.utils.GsonUtil
 import com.theapache64.cs.utils.RestClient
-import java.lang.IllegalArgumentException
 
 object Scholar {
 

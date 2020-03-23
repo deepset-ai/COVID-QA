@@ -7,7 +7,6 @@ import com.theapache64.cs.models.TelegramCallbackQuery
 import com.theapache64.cs.models.TelegramUpdate
 import com.theapache64.cs.utils.GsonUtil
 import com.theapache64.cs.utils.TelegramAPI
-import java.lang.StringBuilder
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
@@ -58,7 +57,6 @@ class CoronaScholarServlet : HttpServlet() {
     }
 
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {
-
 
         val jsonString = req.reader.readText()
         if (isFeedback(jsonString)) {
@@ -150,19 +148,30 @@ class CoronaScholarServlet : HttpServlet() {
                 }
             }
 
+            // Building feedback buttons
             val replyMarkup = if (modelId != null) {
                 SendMessageRequest.ReplyMarkup(
                     listOf(
                         listOf(
-                            SendMessageRequest.InlineButton(FEEDBACK_RELEVANT_TEXT, FEEDBACK_RELEVANT_KEY + modelId),
-                            SendMessageRequest.InlineButton(FEEDBACK_FAKE_TEXT, FEEDBACK_FAKE_KEY + modelId)
+                            SendMessageRequest.InlineButton(
+                                FEEDBACK_RELEVANT_TEXT,
+                                FEEDBACK_RELEVANT_KEY + modelId
+                            ),
+
+                            SendMessageRequest.InlineButton(
+                                FEEDBACK_FAKE_TEXT,
+                                FEEDBACK_FAKE_KEY + modelId
+                            )
                         ),
                         listOf(
                             SendMessageRequest.InlineButton(
                                 FEEDBACK_IRRELEVANT_TEXT,
                                 FEEDBACK_IRRELEVANT_KEY + modelId
                             ),
-                            SendMessageRequest.InlineButton(FEEDBACK_OUTDATED_TEXT, FEEDBACK_OUTDATED_KEY + modelId)
+                            SendMessageRequest.InlineButton(
+                                FEEDBACK_OUTDATED_TEXT,
+                                FEEDBACK_OUTDATED_KEY + modelId
+                            )
                         )
                     )
                 )

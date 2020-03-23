@@ -4,7 +4,6 @@ import com.theapache64.cs.models.AnswerCallbackRequest
 import com.theapache64.cs.models.SendChatActionRequest
 import com.theapache64.cs.models.SendMessageRequest
 import com.theapache64.cs.models.SendMessageResponse
-import okhttp3.Response
 import java.io.IOException
 
 object TelegramAPI {
