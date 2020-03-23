@@ -8,6 +8,8 @@ Staging: https://covid-staging.deepset.ai/
 
 Prod: https://covid.deepset.ai/
 
+API: https://covid-backend.deepset.ai/docs
+
 ## :zap: Problem
 - People have many questions about COVID-19
 - Answers are scattered on different websites 
