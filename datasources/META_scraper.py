@@ -9,7 +9,7 @@ from scrapy.crawler import CrawlerProcess
 
 logger = logging.getLogger(__name__)
 
-PATH = os.getcwd()
+PATH = os.getcwd() + "/scrapers"
 RESULTS = []
 MISSED = []
 
@@ -49,7 +49,7 @@ class Pipeline(object):
 if __name__ == "__main__":
     logging.disable(logging.WARNING)
 
-    crawler_files = [f for f in os.listdir(PATH) if os.path.isfile(os.path.join(PATH, f)) and "META" not in f]
+    crawler_files = [os.path.join(PATH, f) for f in os.listdir(PATH) if os.path.isfile(os.path.join(PATH, f)) and (not f.startswith('.'))]
     process = CrawlerProcess({
         'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
         'ITEM_PIPELINES': {'__main__.Pipeline': 1}

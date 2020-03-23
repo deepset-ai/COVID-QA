@@ -62,13 +62,13 @@ class CovidScraper(scrapy.Spider):
 
         today = date.today()
 
-        columns["link"] = ["https://www.berlin.de/corona/faq/"] * len(columns["question"])
-        columns["name"] = ["Corona-Prävention in Berlin – Fragen und Antworten"] * len(columns["question"])
-        columns["source"] = ["Berliner Senat"] * len(columns["question"])
+        columns["link"] = ["https://www.arbeitsagentur.de/corona-faq"] * len(columns["question"])
+        columns["name"] = ["FAQ: Corona-Virus"] * len(columns["question"])
+        columns["source"] = ["Bundesagentur für Arbeit"] * len(columns["question"])
         columns["category"] = [""] * len(columns["question"])
         columns["country"] = ["DE"] * len(columns["question"])
-        columns["region"] = ["Berlin"] * len(columns["question"])
-        columns["city"] = ["Berlin"] * len(columns["question"])
+        columns["region"] = [""] * len(columns["question"])
+        columns["city"] = [""] * len(columns["question"])
         columns["lang"] = ["de"] * len(columns["question"])
         columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
