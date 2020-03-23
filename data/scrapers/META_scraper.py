@@ -2,7 +2,6 @@ import importlib.util
 import logging
 import os
 
-
 import pandas as pd
 from haystack.database.elasticsearch import ElasticsearchDocumentStore
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
@@ -50,7 +49,6 @@ class Pipeline(object):
 if __name__ == "__main__":
     logging.disable(logging.WARNING)
 
-
     crawler_files = [f for f in os.listdir(PATH) if os.path.isfile(os.path.join(PATH, f)) and "META" not in f]
     process = CrawlerProcess({
         'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
@@ -85,12 +83,11 @@ if __name__ == "__main__":
     dataframe.fillna(value="", inplace=True)
     # Index to ES
     docs_to_index = []
-    doc_id = 1
 
-    for idx, row in list(dataframe.iterrows()):
+    for doc_id, (_, row) in enumerate(dataframe.iterrows()):
         d = row.to_dict()
         d = {k: v.strip() for k, v in d.items()}
-        d["document_id"] = idx
+        d["document_id"] = doc_id
         # add embedding
         question_embedding = retriever.create_embedding(row["question"])
         d["question_emb"] = question_embedding
