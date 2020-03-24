@@ -1,12 +1,13 @@
 # COVID-QA
 
-<img src="https://github.com/deepset-ai/COVID-QA/blob/master/docs/img/covid-bert.png?raw=true" width="130" height="298" />
+<img alt="cover-photo" src="https://github.com/deepset-ai/COVID-QA/blob/master/docs/img/covid-bert.png?raw=true" width="130" height="298" />
 
 Provide trustworthy questions to COVID-19 via NLP
 
-Staging: https://covid-staging.deepset.ai/
-
-Prod: https://covid.deepset.ai/
+Staging: https://covid-staging.deepset.ai/  
+Prod: https://covid.deepset.ai/  
+API: https://covid-backend.deepset.ai/docs  
+🤖Telegram Bot: Add it to your account via [@corona_scholar_bot](https://t.me/corona_scholar_bot)
 
 ## :zap: Problem
 - People have many questions about COVID-19
@@ -16,7 +17,7 @@ Prod: https://covid.deepset.ai/
 - Many answers get outdated soon
 
 ## :bulb: Idea
-- Aggregate FAQs and texts from trustworty data sources (WHO, CDC ...)
+- Aggregate FAQs and texts from trustworthy data sources (WHO, CDC ...)
 - Provide an UI where people can ask questions
 - Use NLP to match incoming questions of users with meaningful answers
 - Users can provide feedback about answers to improve the NLP model and flag outdated or wrong answers
@@ -25,7 +26,7 @@ Prod: https://covid.deepset.ai/
 ## :gear:	Tech 
 - Scrapers to collect data
 - Elasticsearch to store texts, FAQs, embeddings
-- NLP Models implented via [Haystack](https://github.com/deepset-ai/haystack/) to find answers via a) detecting similar question in FAQs b) detect answers in free texts (extractive QA)
+- NLP Models implemented via [Haystack](https://github.com/deepset-ai/haystack/) to find answers via a) detecting similar question in FAQs b) detect answers in free texts (extractive QA)
 - NodeJS / koa / eggjs middleware
 - React Frontend
 
@@ -37,16 +38,16 @@ Prod: https://covid.deepset.ai/
 4. Frontend/middleware: TODO
 
 ## :heart: How you can help
-This project is build by the community for the community. We are really appreciating every kind of support! There's plenty of work on UX, Design, ML, Backend, Frontend, Middlewware, Data collection ... 
+This project is build by the community for the community. We are really appreciating every kind of support! There's plenty of work on UX, Design, ML, Backend, Frontend, Middleware, Data collection ...
 
 We are also happy if you just report bugs, add documentation or flag useful/inappropriate answers returned by the model.
 
 Some next TODOs we see:
 ### Data / Backend
-- [ ] Integrate more data sources via scrapers that return a csv with fields: [question,	answer, answer_html, 
+- [x] Integrate more data sources via scrapers that return a csv with fields: [question,	answer, answer_html, 
 link, name, source, category, country, region, city, lang, last_update](https://github.com/deepset-ai/COVID-QA/blob/master/docs/img/example-data-format.png)
 - [ ] Handling of special non-FAQ questions via other APIs (e.g. “How many infections in Berlin?”)
-- [ ] Improve API to foster external integrations (e.g. Chatsystems) 
+- [ ] Improve API to foster external integrations (e.g. Chat systems)
 - [ ] Logging & storage to foster analysis of common queries with bad results  
 - [ ] Support other languages (data collection)
 
@@ -59,7 +60,7 @@ link, name, source, category, country, region, city, lang, last_update](https://
 - [ ] Tune Elasticsearch + Embedding models
 
 ### UI/UX/Design
-- [ ] Integrate user feedback mechanism for answers (flag as "correct", "not matching my question", "outdated", "fake news")
+- [x] Integrate user feedback mechanism for answers (flag as "correct", "not matching my question", "outdated", "fake news")
 - [ ] Tab to explore common queries and those with bad answers
 - [ ] Logos / icons
 - [ ] Intuitive displaying of search results
