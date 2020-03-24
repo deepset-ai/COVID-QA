@@ -1,4 +1,4 @@
-package com.theapache64.cs.models
+package com.theapache64.cs.models.rest.telegram
 
 import com.google.gson.annotations.SerializedName
 
@@ -33,7 +33,9 @@ data class SendMessageRequest(
         init {
             val byteSize = callbackData.toByteArray().size
             if (byteSize > 64) {
-                throw ByteOverflowException("Callback data exceeded")
+                throw ByteOverflowException(
+                    "Callback data exceeded"
+                )
             }
         }
     }

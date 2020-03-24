@@ -2,9 +2,9 @@ package com.theapache64.cs.servlets
 
 import com.theapache64.cs.core.Scholar
 import com.theapache64.cs.core.SecretConstants
-import com.theapache64.cs.models.SendMessageRequest
-import com.theapache64.cs.models.TelegramCallbackQuery
-import com.theapache64.cs.models.TelegramUpdate
+import com.theapache64.cs.models.rest.telegram.SendMessageRequest
+import com.theapache64.cs.models.rest.telegram.TelegramCallbackQuery
+import com.theapache64.cs.models.rest.telegram.TelegramUpdate
 import com.theapache64.cs.utils.FeedbackParser
 import com.theapache64.cs.utils.GsonUtil
 import com.theapache64.cs.utils.TelegramAPI
@@ -59,8 +59,13 @@ class CoronaScholarServlet : HttpServlet() {
 
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {
 
+        println("------------------------------------")
+        println("/get_response hit!")
+
         val jsonString = req.reader.readText()
         if (isFeedback(jsonString)) {
+
+            println("It's a feedback")
 
             Thread {
 
@@ -71,7 +76,7 @@ class CoronaScholarServlet : HttpServlet() {
 
                 val feedback = FeedbackParser.parse(feedbackData)
 
-                println("Adding feedback")
+
                 Scholar.addFeedback(
                     feedback.documentId,
                     feedback.question,
@@ -105,6 +110,8 @@ class CoronaScholarServlet : HttpServlet() {
 
 
     private fun handleNormalResponse(jsonString: String, resp: HttpServletResponse) {
+
+
         val request = GsonUtil.gson.fromJson(jsonString, TelegramUpdate::class.java)
         resp.writer.write("ok") // tell telegram that it's being handled to stop receiving duplicate messages.
 
@@ -113,8 +120,9 @@ class CoronaScholarServlet : HttpServlet() {
             sendTyping(request!!.message.from.id.toString())
 
             val question = request.message.text.trim()
+            println("It's a query: $question")
 
-            var modelId: String? = null
+            var documentId: String? = null
             val msg = if (question == "/start" || question == "/help") {
                 INTRO
             } else {
@@ -133,8 +141,8 @@ class CoronaScholarServlet : HttpServlet() {
                         else -> "💚" // green = best
                     }
 
-                    // Setting modelId to get feedback
-                    modelId = ans.meta.documentId
+                    // Setting documentId to get feedback
+                    documentId = ans.meta.documentId
 
                     val confString = "$emoji Answer Confidence : $confidence%\n\n"
                     confString + ans.answer + "\n\n \uD83C\uDF0E Source : <a href=\"${ans.meta.link}\">${ans.meta.source}</a>"
@@ -154,41 +162,8 @@ class CoronaScholarServlet : HttpServlet() {
             }
 
             // Building feedback buttons
-            val replyMarkup = if (modelId != null) {
-                try {
-
-                    val modelAndQuestion = modelId + question
-
-                    SendMessageRequest.ReplyMarkup(
-                        listOf(
-                            listOf(
-                                SendMessageRequest.InlineButton(
-                                    FEEDBACK_RELEVANT_TEXT,
-                                    FEEDBACK_RELEVANT_KEY + modelAndQuestion
-                                ),
-
-                                SendMessageRequest.InlineButton(
-                                    FEEDBACK_FAKE_TEXT,
-                                    FEEDBACK_FAKE_KEY + modelAndQuestion
-                                )
-                            ),
-                            listOf(
-                                SendMessageRequest.InlineButton(
-                                    FEEDBACK_IRRELEVANT_TEXT,
-                                    FEEDBACK_IRRELEVANT_KEY + modelAndQuestion
-                                ),
-                                SendMessageRequest.InlineButton(
-                                    FEEDBACK_OUTDATED_TEXT,
-                                    FEEDBACK_OUTDATED_KEY + modelAndQuestion
-                                )
-                            )
-                        )
-                    )
-                } catch (e: SendMessageRequest.InlineButton.ByteOverflowException) {
-                    e.printStackTrace()
-                    println("Cancelled feedback buttons")
-                    null
-                }
+            val replyMarkup = if (documentId != null) {
+                getFeedbackButtons(documentId, question)
             } else {
                 null
             }
@@ -203,5 +178,45 @@ class CoronaScholarServlet : HttpServlet() {
             )
         }.start()
 
+    }
+
+    private fun getFeedbackButtons(
+        modelId: String,
+        question: String
+    ): SendMessageRequest.ReplyMarkup? {
+        return try {
+
+            val modelAndQuestion = modelId + question
+
+            SendMessageRequest.ReplyMarkup(
+                listOf(
+                    listOf(
+                        SendMessageRequest.InlineButton(
+                            FEEDBACK_RELEVANT_TEXT,
+                            FEEDBACK_RELEVANT_KEY + modelAndQuestion
+                        ),
+
+                        SendMessageRequest.InlineButton(
+                            FEEDBACK_FAKE_TEXT,
+                            FEEDBACK_FAKE_KEY + modelAndQuestion
+                        )
+                    ),
+                    listOf(
+                        SendMessageRequest.InlineButton(
+                            FEEDBACK_IRRELEVANT_TEXT,
+                            FEEDBACK_IRRELEVANT_KEY + modelAndQuestion
+                        ),
+                        SendMessageRequest.InlineButton(
+                            FEEDBACK_OUTDATED_TEXT,
+                            FEEDBACK_OUTDATED_KEY + modelAndQuestion
+                        )
+                    )
+                )
+            )
+        } catch (e: SendMessageRequest.InlineButton.ByteOverflowException) {
+            e.printStackTrace()
+
+            null
+        }
     }
 }

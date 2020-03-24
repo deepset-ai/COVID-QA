@@ -1,8 +1,8 @@
 package com.theapache64.cs.core
 
-import com.theapache64.cs.models.AddFeedbackRequest
-import com.theapache64.cs.models.CoronaAnswer
-import com.theapache64.cs.models.CoronaQuestion
+import com.theapache64.cs.models.rest.AddFeedbackRequest
+import com.theapache64.cs.models.rest.CoronaAnswer
+import com.theapache64.cs.models.rest.CoronaQuestion
 import com.theapache64.cs.utils.GsonUtil
 import com.theapache64.cs.utils.RestClient
 
@@ -18,7 +18,7 @@ object Scholar {
             CoronaQuestion(question)
         ).body!!.string()
 
-        println("RESP : $jsonString")
+
 
         return GsonUtil.gson.fromJson(jsonString, CoronaAnswer::class.java)
     }
@@ -30,7 +30,7 @@ object Scholar {
             null,
             AddFeedbackRequest(feedbackString, question, documentId)
         ).body!!.string()
-        println("Feeback response : $jsonString")
+        println("Feedback response : $jsonString")
     }
 
     private fun getFeedbackString(feedback: Char): String {

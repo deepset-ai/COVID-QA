@@ -1,9 +1,9 @@
 package com.theapache64.cs.utils
 
-import com.theapache64.cs.models.AnswerCallbackRequest
-import com.theapache64.cs.models.SendChatActionRequest
-import com.theapache64.cs.models.SendMessageRequest
-import com.theapache64.cs.models.SendMessageResponse
+import com.theapache64.cs.models.rest.telegram.AnswerCallbackRequest
+import com.theapache64.cs.models.rest.telegram.SendChatActionRequest
+import com.theapache64.cs.models.rest.telegram.SendMessageRequest
+import com.theapache64.cs.models.rest.telegram.SendMessageResponse
 import java.io.IOException
 
 object TelegramAPI {
@@ -55,7 +55,7 @@ object TelegramAPI {
             null,
             AnswerCallbackRequest(id)
         ).body!!.string()
-        println("Callback response : $resp")
+
     }
 
     fun sendChatAction(
@@ -72,6 +72,6 @@ object TelegramAPI {
                 chatId
             )
         ).body!!.string()
-        println("Chat action response : $resp")
+
     }
 }

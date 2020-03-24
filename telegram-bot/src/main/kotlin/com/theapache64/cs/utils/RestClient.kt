@@ -24,14 +24,15 @@ object RestClient {
 
     private fun call(method: String, url: String, headers: Map<String, String>?, body: Any?): Response {
 
-        println("$method : $url : $body")
 
         val request = Request.Builder()
             .url(url)
 
         if (body != null) {
             val json = GsonUtil.gson.toJson(body)
-            println(json)
+
+            println("$method : $url -> $json")
+
             request.addHeader("Content-Type", "application/json")
             request.method(method, json.toRequestBody())
         } else {

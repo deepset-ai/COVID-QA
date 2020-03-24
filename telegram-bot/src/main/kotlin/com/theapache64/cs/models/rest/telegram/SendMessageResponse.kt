@@ -1,4 +1,4 @@
-package com.theapache64.cs.models
+package com.theapache64.cs.models.rest.telegram
 
 import com.google.gson.annotations.SerializedName
 
