@@ -127,37 +127,37 @@ class Response(BaseModel):
 # Endpoints
 #############################################
 
-# CURL example: curl --request POST --url 'http://127.0.0.1:8000/models/1/doc-qa' --data '{"questions": ["Who is the father of Arya Starck?"]}
-@router.post("/models/{model_id}/doc-qa", response_model=Response, response_model_exclude_unset=True)
-def ask(model_id: int, request: Query):
-    finder = FINDERS.get(model_id, None)
-    if not finder:
-        raise HTTPException(
-            status_code=404, detail=f"Couldn't get Finder with ID {model_id}. Available IDs: {list(FINDERS.keys())}"
-        )
-
-    results = []
-    for question in request.questions:
-        if request.filters:
-            # put filter values into a list and remove filters with null value
-            request.filters = {key: [value] for key, value in request.filters.items() if value is not None}
-            logger.info(f" [{datetime.now()}] Request: {request}")
-
-        result = finder.get_answers(
-            question=question,
-            top_k_retriever=request.top_k_retriever,
-            top_k_reader=request.top_k_reader,
-            filters=request.filters,
-        )
-        results.append(result)
-
-        logger.info({"request": request.json(), "results": results})
-
-        # remember questions with result in the autocomplete
-        if len(results) > 0:
-            addQuestionToAutocomplete(question)
-
-        return {"results": results}
+# # CURL example: curl --request POST --url 'http://127.0.0.1:8000/models/1/doc-qa' --data '{"questions": ["Who is the father of Arya Starck?"]}
+# @router.post("/models/{model_id}/doc-qa", response_model=Response, response_model_exclude_unset=True)
+# def ask(model_id: int, request: Query):
+#     finder = FINDERS.get(model_id, None)
+#     if not finder:
+#         raise HTTPException(
+#             status_code=404, detail=f"Couldn't get Finder with ID {model_id}. Available IDs: {list(FINDERS.keys())}"
+#         )
+#
+#     results = []
+#     for question in request.questions:
+#         if request.filters:
+#             # put filter values into a list and remove filters with null value
+#             request.filters = {key: [value] for key, value in request.filters.items() if value is not None}
+#             logger.info(f" [{datetime.now()}] Request: {request}")
+#
+#         result = finder.get_answers(
+#             question=question,
+#             top_k_retriever=request.top_k_retriever,
+#             top_k_reader=request.top_k_reader,
+#             filters=request.filters,
+#         )
+#         results.append(result)
+#
+#         logger.info({"request": request.json(), "results": results})
+#
+#         # remember questions with result in the autocomplete
+#         if len(results) > 0:
+#             addQuestionToAutocomplete(question)
+#
+#         return {"results": results}
 
 
 @router.post("/models/{model_id}/faq-qa", response_model=Response, response_model_exclude_unset=True)
