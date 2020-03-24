@@ -26,7 +26,7 @@ def get_application() -> FastAPI:
     application.add_middleware(
         CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"],
     )
-    apm_config = {"SERVICE_NAME": "covid-backend", "SERVER_URL": APM_SERVER}
+    apm_config = {"SERVICE_NAME": "covid-backend", "SERVER_URL": APM_SERVER, "CAPTURE_BODY": "all"}
     elasticapm = make_apm_client(apm_config)
     application.add_middleware(ElasticAPM, client=elasticapm)
 

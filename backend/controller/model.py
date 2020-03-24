@@ -1,8 +1,8 @@
 import logging
-import time
 from datetime import datetime
 from typing import List, Dict, Optional
 
+import elasticapm
 from fastapi import APIRouter
 from fastapi import HTTPException
 from haystack import Finder
@@ -10,8 +10,6 @@ from haystack.database.elasticsearch import ElasticsearchDocumentStore
 from haystack.reader.farm import FARMReader
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
 from pydantic import BaseModel
-
-from backend.controller.autocomplete import addQuestionToAutocomplete
 
 from backend.config import (
     DB_HOST,
@@ -39,6 +37,7 @@ from backend.config import (
     DEFAULT_TOP_K_READER,
     DEFAULT_TOP_K_RETRIEVER,
 )
+from backend.controller.autocomplete import addQuestionToAutocomplete
 
 logger = logging.getLogger(__name__)
 
@@ -131,7 +130,6 @@ class Response(BaseModel):
 # CURL example: curl --request POST --url 'http://127.0.0.1:8000/models/1/doc-qa' --data '{"questions": ["Who is the father of Arya Starck?"]}
 @router.post("/models/{model_id}/doc-qa", response_model=Response, response_model_exclude_unset=True)
 def ask(model_id: int, request: Query):
-    t1 = time.time()
     finder = FINDERS.get(model_id, None)
     if not finder:
         raise HTTPException(
@@ -153,8 +151,7 @@ def ask(model_id: int, request: Query):
         )
         results.append(result)
 
-        resp_time = round(time.time() - t1, 2)
-        logger.info({"time": resp_time, "request": request.json(), "results": results})
+        logger.info({"request": request.json(), "results": results})
 
         # remember questions with result in the autocomplete
         if len(results) > 0:
@@ -165,7 +162,6 @@ def ask(model_id: int, request: Query):
 
 @router.post("/models/{model_id}/faq-qa", response_model=Response, response_model_exclude_unset=True)
 def ask_faq(model_id: int, request: Query):
-    t1 = time.time()
     finder = FINDERS.get(model_id, None)
     if not finder:
         raise HTTPException(
@@ -185,8 +181,8 @@ def ask_faq(model_id: int, request: Query):
         )
         results.append(result)
 
-        resp_time = round(time.time() - t1, 2)
-        logger.info({"time": resp_time, "request": request.json(), "results": results})
+        elasticapm.set_custom_context({"results": results})
+        logger.info({"request": request.json(), "results": results})
 
         # remember questions with result in the autocomplete
         if len(results) > 0:
