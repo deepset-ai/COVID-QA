@@ -27,5 +27,14 @@ data class SendMessageRequest(
         val text: String, // ✅ Relevant
         @SerializedName("callback_data")
         val callbackData: String // r123
-    )
+    ) {
+        class ByteOverflowException(message: String?) : Throwable(message)
+
+        init {
+            val byteSize = callbackData.toByteArray().size
+            if (byteSize > 64) {
+                throw ByteOverflowException("Callback data exceeded")
+            }
+        }
+    }
 }

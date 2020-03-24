@@ -5,6 +5,7 @@ import com.theapache64.cs.core.SecretConstants
 import com.theapache64.cs.models.SendMessageRequest
 import com.theapache64.cs.models.TelegramCallbackQuery
 import com.theapache64.cs.models.TelegramUpdate
+import com.theapache64.cs.utils.FeedbackParser
 import com.theapache64.cs.utils.GsonUtil
 import com.theapache64.cs.utils.TelegramAPI
 import javax.servlet.annotation.WebServlet
@@ -68,10 +69,14 @@ class CoronaScholarServlet : HttpServlet() {
                 // Sending typing
                 sendTyping("${feedbackQuery!!.callbackQuery.from.id}")
 
-                val feedbackChar = feedbackData[0]
-                val modelId = feedbackData.substring(1)
+                val feedback = FeedbackParser.parse(feedbackData)
+
                 println("Adding feedback")
-                Scholar.addFeedback(modelId, feedbackChar)
+                Scholar.addFeedback(
+                    feedback.documentId,
+                    feedback.question,
+                    feedback.feedback
+                )
 
                 Thread {
                     // Sending feedback to cancel progress animation
@@ -150,31 +155,40 @@ class CoronaScholarServlet : HttpServlet() {
 
             // Building feedback buttons
             val replyMarkup = if (modelId != null) {
-                SendMessageRequest.ReplyMarkup(
-                    listOf(
-                        listOf(
-                            SendMessageRequest.InlineButton(
-                                FEEDBACK_RELEVANT_TEXT,
-                                FEEDBACK_RELEVANT_KEY + modelId
-                            ),
+                try {
 
-                            SendMessageRequest.InlineButton(
-                                FEEDBACK_FAKE_TEXT,
-                                FEEDBACK_FAKE_KEY + modelId
-                            )
-                        ),
+                    val modelAndQuestion = modelId + question
+
+                    SendMessageRequest.ReplyMarkup(
                         listOf(
-                            SendMessageRequest.InlineButton(
-                                FEEDBACK_IRRELEVANT_TEXT,
-                                FEEDBACK_IRRELEVANT_KEY + modelId
+                            listOf(
+                                SendMessageRequest.InlineButton(
+                                    FEEDBACK_RELEVANT_TEXT,
+                                    FEEDBACK_RELEVANT_KEY + modelAndQuestion
+                                ),
+
+                                SendMessageRequest.InlineButton(
+                                    FEEDBACK_FAKE_TEXT,
+                                    FEEDBACK_FAKE_KEY + modelAndQuestion
+                                )
                             ),
-                            SendMessageRequest.InlineButton(
-                                FEEDBACK_OUTDATED_TEXT,
-                                FEEDBACK_OUTDATED_KEY + modelId
+                            listOf(
+                                SendMessageRequest.InlineButton(
+                                    FEEDBACK_IRRELEVANT_TEXT,
+                                    FEEDBACK_IRRELEVANT_KEY + modelAndQuestion
+                                ),
+                                SendMessageRequest.InlineButton(
+                                    FEEDBACK_OUTDATED_TEXT,
+                                    FEEDBACK_OUTDATED_KEY + modelAndQuestion
+                                )
                             )
                         )
                     )
-                )
+                } catch (e: SendMessageRequest.InlineButton.ByteOverflowException) {
+                    e.printStackTrace()
+                    println("Cancelled feedback buttons")
+                    null
+                }
             } else {
                 null
             }
