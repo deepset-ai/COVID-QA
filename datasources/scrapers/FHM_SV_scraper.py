@@ -67,8 +67,8 @@ class CovidScraper(scrapy.Spider):
                 dater = splitted[-2].strip().replace("Uppdaterad: ", "").replace("-", "/").split(" ")[0]
                 response = "\n".join(splitted[:-2 or None])
 
-                columns["question"].append(question)
-                columns["category"].append(categoryName)
+                columns["question"].append(question[0])
+                columns["category"].append(categoryName[0])
                 columns["answer"].append(response)
                 columns["last_update"].append(dater)
                 columns["answer_html"].append(" ".join(responseParagraphPaths.getall()))
