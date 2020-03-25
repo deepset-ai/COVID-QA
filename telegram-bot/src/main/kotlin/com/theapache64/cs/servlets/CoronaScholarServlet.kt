@@ -33,8 +33,11 @@ class CoronaScholarServlet : HttpServlet() {
 
         private val INTRO = """
                     🤖 Ask me anything about COVID-19. I provide trustworthy answers via NLP.
-                    Meet my makers <a href="$GITHUB_REPO_URL/graphs/contributors">here</a>
+                    
+                    eg: <b>What are the symptoms?</b> 
                 """.trimIndent()
+
+        private const val ANALYTICS_CHANNEL = "-1001364744561"
 
 
     }
@@ -100,6 +103,14 @@ class CoronaScholarServlet : HttpServlet() {
                     null
                 )
 
+                // Sending feedback analytics
+                TelegramAPI.sendHtmlMessage(
+                    SecretConstants.ACTIVE_BOT_TOKEN,
+                    ANALYTICS_CHANNEL,
+                    "@${feedbackQuery!!.callbackQuery.from.username} - ${feedbackQuery!!.callbackQuery.message.from.firstName} : $feedbackData",
+                    null,
+                    null
+                )
 
             }.start()
         } else {
@@ -128,12 +139,12 @@ class CoronaScholarServlet : HttpServlet() {
             } else {
 
                 // Getting answer
-                val answer = Scholar.getAnswer(question)
+                val sResponse = Scholar.getAnswer(question)
 
-                if (answer != null && answer.answers.isNotEmpty()) {
+                if (sResponse != null && sResponse.results[0].answers.isNotEmpty()) {
 
                     // Building reply message
-                    val ans = answer.answers.first()
+                    val ans = sResponse.results[0].answers.first()
                     val confidence = (ans.probability * 100).toInt()
                     val emoji = when (confidence) {
                         in 0..30 -> "❤️" // red = average
@@ -154,6 +165,7 @@ class CoronaScholarServlet : HttpServlet() {
                         💪 Answer Confidence : $confidence% $emoji
                         🌍 Source : <a href="${ans.meta.link}">${ans.meta.source}</a>
                     """.trimIndent()
+
 
                 } else {
                     // Invalid query
@@ -176,6 +188,16 @@ class CoronaScholarServlet : HttpServlet() {
                 request.message.messageId,
                 replyMarkup
             )
+
+            // Sending feedback : -1001364744561
+            TelegramAPI.sendHtmlMessage(
+                SecretConstants.ACTIVE_BOT_TOKEN,
+                ANALYTICS_CHANNEL,
+                "@${request.message.from.username} - ${request.message.from.firstName} : $question\n \uD83D\uDC49 $msg",
+                null,
+                null
+            )
+
         }.start()
 
     }
