@@ -159,9 +159,17 @@ class Response(BaseModel):
 #
 #         return {"results": results}
 
+# CURL example: curl --request POST --url 'http://127.0.0.1:8000/question/ask' --data '{"questions": ["Who is the father of Arya Starck?"]}
+@router.post("/question/ask", response_model=Response, response_model_exclude_unset=True)
+def ask(request: Query):
+    # todo provide some logic to determin the model, e.g. language, is it FAQ or QA etc.
+
+    return askFaq(1, request)
+    
 
 @router.post("/models/{model_id}/faq-qa", response_model=Response, response_model_exclude_unset=True)
 def ask_faq(model_id: int, request: Query):
+
     finder = FINDERS.get(model_id, None)
     if not finder:
         raise HTTPException(
