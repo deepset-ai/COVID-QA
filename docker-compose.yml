@@ -5,17 +5,21 @@ services:
     ports:
       - "80:80"
     environment:
+      # see backend/config.py for additional variables to configure
       - TEXT_FIELD_NAME=answer
       - SEARCH_FIELD_NAME=question
       - EXCLUDE_META_DATA_FIELDS=["question_emb"]
       # optional: use an embedding model instead of plain elasticsearch query
 #      - EMBEDDING_FIELD_NAME=question_emb
 #      - EMBEDDING_DIM=768
-#      - EMBEDDING_MODEL_PATH=bert-base-uncased # MUST be the same as used for indexing the FAQs
+#      - EMBEDDING_MODEL_PATH=deepset/sentence-bert # MUST be the same as used for indexing the FAQs
       - USE_GPU=False
-    command: /bin/sh -c "cd /home/user && sleep 20 && uvicorn covid-qa.api:app --host 0.0.0.0 --port 80 --limit-concurrency 10 --workers 1"
+    command: /bin/sh -c "cd /home/user && sleep 20 && uvicorn backend.api:app --host 0.0.0.0 --port 80 --limit-concurrency 10 --workers 1"
     network_mode: host
   elastic:
+  # use plain elasticsearch image if you want to ingest fresh data (via backend/data_ingestion.py)
+  # use covid-qa-elastic only for dev to have some (old) docs preindexed.
+  # image: "elasticsearch:7.5.1"
     image: "deepset/covid-qa-elastic"
     ports:
       - "9200:9200"

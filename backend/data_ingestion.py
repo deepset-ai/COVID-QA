@@ -66,10 +66,10 @@ if __name__=="__main__":
                                        emb_extraction_layer=-2, pooling_strategy="reduce_mean")
 
     # index new docs
-    # index_new_docs(document_store, retriever)
+    index_new_docs(document_store, retriever)
 
     # or just update embeddings
-    update_embeddings(document_store, retriever)
+    # update_embeddings(document_store, retriever)
 
     # test with a query
     finder = Finder(reader=None, retriever=retriever)
