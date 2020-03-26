@@ -9,14 +9,6 @@ from scrapy.crawler import CrawlerProcess
 class CovidScraper(scrapy.Spider):
     name = 'bmwi_spyder'
     start_urls = ['https://www.bmwi.de/Redaktion/DE/FAQ/Coronavirus/faq-coronavirus.html']
-
-    def transformContent(self, contentNode):
-        responseParts = []
-        for responsePart in contentNode.xpath('.//text()').getall():
-            strippedPart = responsePart.strip()
-            if len(strippedPart) > 0:
-                responseParts.append(strippedPart)
-        return ' '.join(responseParts)
 		
     def parse(self, response):
         columns = {
