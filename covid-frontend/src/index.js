@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
@@ -12,7 +12,7 @@ import Routes from './routes';
 import rootReducer from './store/reducers';
 import rootSaga from './store/sagas';
 
-
+import './i18n';
 import './assets/styles/global.scss';
 
 
@@ -33,7 +33,9 @@ sagaMiddleware.run(rootSaga);
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
-      <Routes />
+      <Suspense fallback={<div></div>}>
+        <Routes />
+      </Suspense>
     </Router>
   </Provider>,
   document.getElementById('root')

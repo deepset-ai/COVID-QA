@@ -1,0 +1,42 @@
+{
+  "inputs": {
+    "question": {
+        "label": "Your Question",
+        "placeholder": "Ask a question about COVID-19 (corona virus)"
+    }
+  },
+  "loader": {
+      "heading": "The BERT is working",
+      "text": "Please Wait – Bitte warten..."
+  },
+  "answer": {
+      "meta": {
+          "datelabel": "From",
+          "source": "Source"
+      },
+      "feedback": {
+          "header": "Feedback"
+      },
+      "no-answer": "Found no answers",
+      "other-answers": "Other answers",
+      "tags": {
+          "probability": "Relevance"
+      }
+  },
+  "feedback": {
+      "title": "Thank you for giving us feedback.",
+      "text": "What was wrong with the answer?",
+      "fake": "The stated facts were inaccurate or wrong.",
+      "outdated": "The information were outdated.",
+      "irrelevant": "The answer had nothing to do with my question.",
+      "nothing": "Nothing."
+  },
+  "languages": {
+      "de": "German",
+      "en": "English"
+  },
+  "404": {
+      "subtitle": "Sorry, the page you visited does not exist.",
+      "button-text": "Back to Home"
+  }
+}

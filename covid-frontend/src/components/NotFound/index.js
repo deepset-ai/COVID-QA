@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Result, Button } from 'antd';
 import links from 'routes/links';
+import { withTranslation } from 'react-i18next';
 
 class NotFound extends PureComponent {
 
@@ -15,14 +16,16 @@ class NotFound extends PureComponent {
   }
 
   render() {
+    const { t } = this.props;
+
     return (
       <Result
         status="404"
         title="404"
-        subTitle="Sorry, the page you visited does not exist."
+        subTitle={t('404.subtitle')}
         extra={
           <Button onClick={this.handleBackHome}>
-            Back to Home
+            {t('404.button-text')}
           </Button>
         }
       />
@@ -30,4 +33,4 @@ class NotFound extends PureComponent {
   }
 }
 
-export default connect()(NotFound);
+export default connect()(withTranslation()(NotFound));

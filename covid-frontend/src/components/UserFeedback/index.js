@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import { Icon } from 'antd';
 import * as answersActions from 'store/actions/activeAnswers';
 import styles from './styles.module.scss';
+import { withTranslation } from 'react-i18next';
 
 class UserFeedback extends PureComponent {
 
@@ -33,25 +34,27 @@ class UserFeedback extends PureComponent {
 
 
   render() {
+    const { t } = this.props;
+
     return (
       <div className={styles.wrapper}>
         <div>
-          <h2>Thank you for giving us feedback.</h2>
-          <p>What was wrong with the answer?</p>
+          <h2>{t('feedback.title')}</h2>
+          <p>{t('feedback.text')}</p>
           <button rel="noopener noreferrer" className={styles.answerDocLink}
             onClick={this.onFeedbackNegative.bind(this, 'fake')}>
-            <Icon type="warning" /> The stated facts were inaccurate or wrong.
+            <Icon type="warning" /> {t('feedback.fake')}
           </button>
           <button rel="noopener noreferrer" className={styles.answerDocLink}
             onClick={this.onFeedbackNegative.bind(this, 'outdated')}>
-            <Icon type="clock-circle" /> The information were outdated.
+            <Icon type="clock-circle" /> {t('feedback.outdated')}
           </button>
           <button rel="noopener noreferrer" className={styles.answerDocLink}
             onClick={this.onFeedbackNegative.bind(this, 'irrelevant')}>
-            <Icon type="question" /> The answer had nothing to do with my question.
+            <Icon type="question" /> {t('feedback.irrelevant')}
           </button>
           <button rel="noopener noreferrer" className={styles.answerDocLink} onClick={this.closeHandler}>
-            <Icon type="like" /> Nothing.
+            <Icon type="like" /> {t('feedback.nothing')}
           </button>
         </div>
       </div>
@@ -67,4 +70,4 @@ export default connect(
   dispatch => ({
     answersActions: bindActionCreators(answersActions, dispatch)
   })
-)(UserFeedback);
+)(withTranslation()(UserFeedback));
