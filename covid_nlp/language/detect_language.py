@@ -3,7 +3,7 @@ import cld3 # requires protobuf
 import pycld2 as cld2
 
 class LanguageDetector():
-    def __init__(self, version = 3):
+    def __init__(self, version = 2):
         self.version = version
 
     def detect_lang_cld2(self, text):

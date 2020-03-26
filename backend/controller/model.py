@@ -11,6 +11,8 @@ from haystack.reader.farm import FARMReader
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
 from pydantic import BaseModel
 
+from covid_nlp.language.detect_language import LanguageDetector
+
 from backend.config import (
     DB_HOST,
     DB_USER,
@@ -159,13 +161,24 @@ class Response(BaseModel):
 #
 #         return {"results": results}
 
-# CURL example: curl --request POST --url 'http://127.0.0.1:8000/question/ask' --data '{"questions": ["Who is the father of Arya Starck?"]}
+# CURL example: curl --request POST --url 'http://127.0.0.1:8000/question/ask' --data '{"questions": ["Who is the father of Arya Starck?"]}'
 @router.post("/question/ask", response_model=Response, response_model_exclude_unset=True)
 def ask(request: Query):
     # todo provide some logic to determin the model, e.g. language, is it FAQ or QA etc.
 
-    return askFaq(1, request)
-    
+    lang_detector = LanguageDetector()
+    english_question_count = 0
+    # count number of english question
+    for question in request.questions:
+        if lang_detector.detect_lang(question)[0] == "en":
+            english_question_count += 1
+
+    # if majority of questions is english, send questions to english model
+    if english_question_count > int(len(request.questions) / 2):
+        return ask_faq(2, request)
+    # send questions to general model
+    else:
+        return ask_faq(1, request)
 
 @router.post("/models/{model_id}/faq-qa", response_model=Response, response_model_exclude_unset=True)
 def ask_faq(model_id: int, request: Query):
