@@ -42,6 +42,8 @@ This project is build by the community for the community. We are really apprecia
 
 We are also happy if you just report bugs, add documentation or flag useful/inappropriate answers returned by the model.
 
+[Gitter Channel](https://gitter.im/COVID-QA/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link): GitHub Issues will be the main communication channel, but Gitter can be used for higher-level coordination etc.
+
 Some next TODOs we see:
 ### Data / Backend
 - [x] Integrate more data sources via scrapers that return a csv with fields: [question,	answer, answer_html, 
