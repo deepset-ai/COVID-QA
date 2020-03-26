@@ -8,7 +8,7 @@ from scrapy.crawler import CrawlerProcess
 
 class CovidScraper(scrapy.Spider):
     name = "Salute_IT_Scraper"
-    start_urls = ["http://www.salute.gov.it/portale/nuovocoronavirus/dettaglioFaqNuovoCoronavirus.jsp?id=228"]
+    start_urls = ["https://www.salute.gov.it/portale/nuovocoronavirus/dettaglioFaqNuovoCoronavirus.jsp?id=228"]
 
     def parse(self, response):
         columns = {
@@ -45,7 +45,7 @@ class CovidScraper(scrapy.Spider):
         today = date.today()
 
         columns["link"] = [
-                              "http://www.salute.gov.it/portale/nuovocoronavirus/dettaglioFaqNuovoCoronavirus.jsp?id=228"] * len(
+                              "https://www.salute.gov.it/portale/nuovocoronavirus/dettaglioFaqNuovoCoronavirus.jsp?id=228"] * len(
             columns["question"])
         columns["name"] = ["FAQ - Covid-19, domande e risposte"] * len(columns["question"])
         columns["source"] = ["Ministero della Salute, IT"] * len(columns["question"])
