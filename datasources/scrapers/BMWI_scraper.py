@@ -1,7 +1,7 @@
 # run 'scrapy runspider BMWI_scraper.py' to scrape data
 
 from datetime import date
-
+import re
 import scrapy
 from scrapy.crawler import CrawlerProcess
 
@@ -30,17 +30,20 @@ class CovidScraper(scrapy.Spider):
         question = ""
         for elementPath in response.xpath('//div[@class="content"]/div/child::node()'):
             tagName = elementPath.xpath('name()').get()
-            if tagName == "h2":
-                categoryName = " ".join(elementPath.xpath('.//text()').getall()).strip()
+            if tagName == 'h2':
+                categoryName = ' '.join(elementPath.xpath('.//text()').getall()).strip()
             if len(categoryName) == 0:
                 continue
-            if tagName == "div":
-                question = " ".join(elementPath.xpath('.//h2//text()').getall()).strip()
-                response = ""
+            if tagName == 'div':
+                question = ' '.join(elementPath.xpath('.//h2//text()').getall()).strip()
+                response = ''
                 responsePath = elementPath.xpath('.//div[@class="accordion-body collapse"]//div[@class="rich-text"]')
                 for path in responsePath.xpath('.//p|.//ul/li'):
-                    response += "\n\n" + " ".join(path.xpath('.//text()').getall())
-                response = response.strip()
+                    response += '\n\n' + ' '.join(path.xpath('.//text()').getall())
+                response = re.sub('Stand', '', response).strip()
+                print("--------------")
+                print("Question: "+question)
+                print(response)
                 columns['category'].append(categoryName)
                 columns['question'].append(question)
                 columns['answer'].append(response)
