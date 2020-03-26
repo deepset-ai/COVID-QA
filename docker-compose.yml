@@ -5,6 +5,7 @@ services:
     ports:
       - "80:80"
     environment:
+      # see backend/config.py for additional variables to configure
       - TEXT_FIELD_NAME=answer
       - SEARCH_FIELD_NAME=question
       - EXCLUDE_META_DATA_FIELDS=["question_emb"]
