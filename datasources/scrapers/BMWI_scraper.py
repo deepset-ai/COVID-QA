@@ -38,9 +38,9 @@ class CovidScraper(scrapy.Spider):
                 question = " ".join(elementPath.xpath('.//h2//text()').getall()).strip()
                 response = ""
                 responsePath = elementPath.xpath('.//div[@class="accordion-body collapse"]//div[@class="rich-text"]')
-                for path in responsePath.xpath('.//p[position()>1]'):
+                for path in responsePath.xpath('.//p|.//ul/li'):
                     response += "\n\n" + " ".join(path.xpath('.//text()').getall())
-                response.strip()
+                response = response.strip()
                 columns['category'].append(categoryName)
                 columns['question'].append(question)
                 columns['answer'].append(response)
