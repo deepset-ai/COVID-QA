@@ -3,7 +3,12 @@ package com.theapache64.cs.models.rest
 import com.google.gson.annotations.SerializedName
 
 
-data class CoronaAnswer(
+class CoronaAnswer(
+    @SerializedName("results")
+    val results: List<Result>
+)
+
+data class Result(
     @SerializedName("answers")
     val answers: List<Answer>,
     @SerializedName("question")

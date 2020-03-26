@@ -8,17 +8,19 @@ import com.theapache64.cs.utils.RestClient
 
 object Scholar {
 
-    private const val ANSWER_ENDPOINT = "https://covid-middleware.deepset.ai/api/bert/question"
-    private const val FEEDBACK_ENDPOINT_FORMAT = "http://3.121.62.187/models/1/feedback"
+    private const val BASE_URL = "https://covid-backend.deepset.ai"
+    private const val MODEL_ID = "1"
 
     fun getAnswer(question: String): CoronaAnswer? {
         val jsonString = RestClient.post(
-            ANSWER_ENDPOINT,
+            "$BASE_URL/models/$MODEL_ID/faq-qa",
             null,
-            CoronaQuestion(question)
+            CoronaQuestion(
+                arrayOf(question)
+            )
         ).body!!.string()
 
-
+        println(jsonString)
 
         return GsonUtil.gson.fromJson(jsonString, CoronaAnswer::class.java)
     }
@@ -26,7 +28,7 @@ object Scholar {
     fun addFeedback(documentId: Long, question: String, feedback: Char) {
         val feedbackString = getFeedbackString(feedback)
         val jsonString = RestClient.post(
-            FEEDBACK_ENDPOINT_FORMAT,
+            "$BASE_URL/models/$MODEL_ID/feedback",
             null,
             AddFeedbackRequest(feedbackString, question, documentId)
         ).body!!.string()
