@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.theapache64'
-version 'v1.1.0-alpha01'
+version 'v1.1.0-alpha02'
 
 sourceCompatibility = 1.8
 
