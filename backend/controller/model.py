@@ -173,6 +173,8 @@ def ask(request: Query):
 
     # if majority of questions is english, send questions to english model
     if english_question_count > int(len(request.questions) / 2):
+        if not request.filters:
+            request.filters = {}
         request.filters["lang"] = "en"
         return ask_faq(2, request)
     # send questions to general model
