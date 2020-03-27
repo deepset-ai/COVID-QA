@@ -87,7 +87,6 @@ else:
     # don't need one for pure FAQ matching
     reader = None
 
-# TODO we should switch this later to use "en" / "de" etc in the endpoint than plain model ids
 FINDERS = {1: Finder(reader=reader, retriever=retriever),
            2: Finder(reader=reader, retriever=english_retriever)}
 
@@ -164,8 +163,7 @@ class Response(BaseModel):
 # CURL example: curl --request POST --url 'http://127.0.0.1:8000/question/ask' --data '{"questions": ["Who is the father of Arya Starck?"]}'
 @router.post("/question/ask", response_model=Response, response_model_exclude_unset=True)
 def ask(request: Query):
-    # todo provide some logic to determin the model, e.g. language, is it FAQ or QA etc.
-
+    # detect language & route request to related model
     lang_detector = LanguageDetector()
     english_question_count = 0
     # count number of english question
@@ -175,6 +173,7 @@ def ask(request: Query):
 
     # if majority of questions is english, send questions to english model
     if english_question_count > int(len(request.questions) / 2):
+        request.filters["lang"] = "en"
         return ask_faq(2, request)
     # send questions to general model
     else:
