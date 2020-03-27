@@ -34,8 +34,8 @@ class CovidScraper(scrapy.Spider):
             answer_html_list = []
             answer_list = []
             for a in x.xpath('./dd')[:-1]:
-                answer_html_list.append(' '.join([h.strip() for h in a.xpath('./p').extract()]))
-                answer_list.append(' '.join([t.strip() for t in a.xpath('./p/text()').extract()]))
+                answer_html_list.append(' '.join([h.strip() for h in a.xpath('./descendant-or-self::*').extract()]))
+                answer_list.append(' '.join([t.strip() for t in a.xpath('./descendant-or-self::*/text()').extract()]))
             if len(question_list) == len(answer_list):
                 for question_text, answer_text, answer_html in zip(question_list, answer_list, answer_html_list):
                     columns["question"].append(question_text)

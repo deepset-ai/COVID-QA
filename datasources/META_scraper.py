@@ -62,6 +62,8 @@ if __name__ == "__main__":
         process.crawl(CovidScraper)
     process.start()
     dataframe = pd.concat(RESULTS)
+    dataframe.fillna(value="", inplace=True)
+    dataframe["answer"] = dataframe['answer'].str.strip()
     if len(MISSED) > 0:
         logger.error(f"Could not scrape: {', '.join(MISSED)} ")
 

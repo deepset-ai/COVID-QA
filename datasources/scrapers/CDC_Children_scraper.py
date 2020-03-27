@@ -2,6 +2,7 @@
 
 from datetime import date
 import scrapy
+from scrapy.crawler import CrawlerProcess
 import pandas as pd
 
 class CovidScraper(scrapy.Spider):
@@ -37,7 +38,7 @@ class CovidScraper(scrapy.Spider):
             qnaPaths = catPath.xpath('.//div[@role="tablist"]//div[@class="card"]')
             for qnaPath in qnaPaths:
                 question = qnaPath.xpath('.//span[@role="heading"]/text()').get()
-                responseParagraphPaths = qnaPath.xpath('.//div[@class="card-body"]/p')
+                responseParagraphPaths = qnaPath.xpath('.//div[@class="card-body"]')
                 response = ""
                 for respParaPath in responseParagraphPaths:
                     response += " ".join(respParaPath.xpath('.//text()').getall()) + "\n\n"
@@ -60,3 +61,11 @@ class CovidScraper(scrapy.Spider):
         columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
         return columns
+
+if __name__ == "__main__":
+    process = CrawlerProcess({
+        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+    })
+
+    process.crawl(CovidScraper)
+    process.start()
