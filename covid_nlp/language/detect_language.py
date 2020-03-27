@@ -1,5 +1,4 @@
 import sys
-import cld3 # requires protobuf
 import pycld2 as cld2
 
 class LanguageDetector():
@@ -11,6 +10,7 @@ class LanguageDetector():
         return pred[1], float(pred[2])
 
     def detect_lang_cld3(self, text):
+        import cld3  # requires protobuf
         pred = cld3.get_language(text)
         return pred.language, 100*pred.probability
 
@@ -21,6 +21,7 @@ class LanguageDetector():
             return self.detect_lang_cld3(text)
 
     def detect_freq_lang(self, text, n = 3):
+        import cld3  # requires protobuf
         pred = cld3.get_frequent_languages(text, num_langs = n)
         pred_list = [ (p.language, 100*p.probability) for p in pred ]
         return pred_list
