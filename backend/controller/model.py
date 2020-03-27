@@ -118,6 +118,7 @@ class Answer(BaseModel):
 class ResponseToIndividualQuestion(BaseModel):
     question: str
     answers: List[Optional[Answer]]
+    model_id: int
 
 
 class Response(BaseModel):
@@ -201,6 +202,7 @@ def ask_faq(model_id: int, request: Query):
         result = finder.get_answers_via_similar_questions(
             question=question, top_k_retriever=request.top_k_retriever, filters=request.filters,
         )
+        result["model_id"] = model_id
         results.append(result)
 
         elasticapm.set_custom_context({"results": results})
