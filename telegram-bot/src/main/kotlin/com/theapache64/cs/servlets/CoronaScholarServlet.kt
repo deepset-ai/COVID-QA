@@ -78,13 +78,8 @@ class CoronaScholarServlet : HttpServlet() {
                 sendTyping("${feedbackQuery!!.callbackQuery.from.id}")
 
                 val feedback = FeedbackParser.parse(feedbackData)
-
-
-                Scholar.addFeedback(
-                    feedback.documentId,
-                    feedback.question,
-                    feedback.feedback
-                )
+                println("Feedback is $feedback")
+                Scholar.addFeedback(feedback)
 
                 Thread {
                     // Sending feedback to cancel progress animation
@@ -133,7 +128,8 @@ class CoronaScholarServlet : HttpServlet() {
             val question = request.message.text.trim()
             println("It's a query: $question")
 
-            var documentId: String? = null
+            var documentId: Long? = null
+            var modelId: Int? = null
             val msg = if (question == "/start" || question == "/help") {
                 INTRO
             } else {
@@ -144,7 +140,8 @@ class CoronaScholarServlet : HttpServlet() {
                 if (sResponse != null && sResponse.results[0].answers.isNotEmpty()) {
 
                     // Building reply message
-                    val ans = sResponse.results[0].answers.first()
+                    val result = sResponse.results[0]
+                    val ans = result.answers.first()
                     val confidence = (ans.probability * 100).toInt()
                     val emoji = when (confidence) {
                         in 0..30 -> "❤️" // red = average
@@ -154,6 +151,7 @@ class CoronaScholarServlet : HttpServlet() {
 
                     // Setting documentId to get feedback
                     documentId = ans.meta.documentId
+                    modelId = result.modelId
 
                     val confString = "$emoji Answer Confidence : $confidence%\n\n"
                     confString + ans.answer + "\n\n \uD83C\uDF0E Source : <a href=\"${ans.meta.link}\">${ans.meta.source}</a>"
@@ -174,8 +172,8 @@ class CoronaScholarServlet : HttpServlet() {
             }
 
             // Building feedback buttons
-            val replyMarkup = if (documentId != null) {
-                getFeedbackButtons(documentId, question)
+            val replyMarkup = if (documentId != null && modelId != null) {
+                getFeedbackButtons(modelId, documentId, question)
             } else {
                 null
             }
@@ -203,12 +201,13 @@ class CoronaScholarServlet : HttpServlet() {
     }
 
     private fun getFeedbackButtons(
-        modelId: String,
+        modelId: Int,
+        documentId: Long,
         question: String
     ): SendMessageRequest.ReplyMarkup? {
         return try {
 
-            val modelAndQuestion = modelId + question
+            val modelAndQuestion = "${modelId}d$documentId$question"
 
             SendMessageRequest.ReplyMarkup(
                 listOf(

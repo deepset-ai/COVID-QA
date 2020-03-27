@@ -1,5 +1,6 @@
 package com.theapache64.cs.core
 
+import com.theapache64.cs.models.Feedback
 import com.theapache64.cs.models.rest.AddFeedbackRequest
 import com.theapache64.cs.models.rest.CoronaAnswer
 import com.theapache64.cs.models.rest.CoronaQuestion
@@ -9,11 +10,10 @@ import com.theapache64.cs.utils.RestClient
 object Scholar {
 
     private const val BASE_URL = "https://covid-backend.deepset.ai"
-    private const val MODEL_ID = "1"
 
     fun getAnswer(question: String): CoronaAnswer? {
         val jsonString = RestClient.post(
-            "$BASE_URL/models/$MODEL_ID/faq-qa",
+            "$BASE_URL/question/ask",
             null,
             CoronaQuestion(
                 arrayOf(question)
@@ -25,23 +25,18 @@ object Scholar {
         return GsonUtil.gson.fromJson(jsonString, CoronaAnswer::class.java)
     }
 
-    fun addFeedback(documentId: Long, question: String, feedback: Char) {
-        val feedbackString = getFeedbackString(feedback)
+    fun addFeedback(feedback: Feedback) {
         val jsonString = RestClient.post(
-            "$BASE_URL/models/$MODEL_ID/feedback",
+            "$BASE_URL/models/${feedback.modelId}/feedback",
             null,
-            AddFeedbackRequest(feedbackString, question, documentId)
+            AddFeedbackRequest(
+                feedback.feedback,
+                feedback.question,
+                feedback.documentId
+            )
         ).body!!.string()
         println("Feedback response : $jsonString")
     }
 
-    private fun getFeedbackString(feedback: Char): String {
-        return when (feedback) {
-            'r' -> "relevant"
-            'f' -> "fake"
-            'o' -> "outdated"
-            'i' -> "irrelevant"
-            else -> throw IllegalArgumentException("Undefined feedback char `$feedback`")
-        }
-    }
+
 }
