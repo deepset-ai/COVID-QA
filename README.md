@@ -48,7 +48,7 @@ Some next TODOs we see:
 ### Data / Backend
 - [x] Integrate basic data sources via scrapers that return a csv with fields: [question,	answer, answer_html, 
 link, name, source, category, country, region, city, lang, last_update](https://github.com/deepset-ai/COVID-QA/blob/master/docs/img/example-data-format.png)
-- [] More scrapers / [smart scraper](https://github.com/deepset-ai/COVID-QA/issues/81) to scale data sources 
+- [ ] More scrapers / [smart scraper](https://github.com/deepset-ai/COVID-QA/issues/81) to scale data sources 
 - [ ] Handling of special non-FAQ questions via other APIs (e.g. “How many infections in Berlin?”)
 - [x] Improve API to foster external integrations (e.g. Chat systems)
 - [ ] Logging & storage to foster analysis of common queries with bad results  
