@@ -1,7 +1,8 @@
 package com.theapache64.cs.models
 
-class Feedback (
-    val feedback : Char,
-    val question : String,
-    val documentId : Long
+data class Feedback(
+    val modelId:Int,
+    val feedback: String,
+    val question: String,
+    val documentId: Long
 )
