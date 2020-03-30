@@ -11,6 +11,8 @@ from haystack.reader.farm import FARMReader
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
 from pydantic import BaseModel
 
+from covid_nlp.language.detect_language import LanguageDetector
+
 from backend.config import (
     DB_HOST,
     DB_USER,
@@ -85,7 +87,6 @@ else:
     # don't need one for pure FAQ matching
     reader = None
 
-# TODO we should switch this later to use "en" / "de" etc in the endpoint than plain model ids
 FINDERS = {1: Finder(reader=reader, retriever=retriever),
            2: Finder(reader=reader, retriever=english_retriever)}
 
@@ -117,6 +118,7 @@ class Answer(BaseModel):
 class ResponseToIndividualQuestion(BaseModel):
     question: str
     answers: List[Optional[Answer]]
+    model_id: int
 
 
 class Response(BaseModel):
@@ -159,13 +161,26 @@ class Response(BaseModel):
 #
 #         return {"results": results}
 
-# CURL example: curl --request POST --url 'http://127.0.0.1:8000/question/ask' --data '{"questions": ["Who is the father of Arya Starck?"]}
+# CURL example: curl --request POST --url 'http://127.0.0.1:8000/question/ask' --data '{"questions": ["Who is the father of Arya Starck?"]}'
 @router.post("/question/ask", response_model=Response, response_model_exclude_unset=True)
 def ask(request: Query):
-    # todo provide some logic to determin the model, e.g. language, is it FAQ or QA etc.
+    # detect language & route request to related model
+    lang_detector = LanguageDetector()
+    english_question_count = 0
+    # count number of english question
+    for question in request.questions:
+        if lang_detector.detect_lang(question)[0] == "en":
+            english_question_count += 1
 
-    return askFaq(1, request)
-    
+    # if majority of questions is english, send questions to english model
+    if english_question_count > int(len(request.questions) / 2):
+        if not request.filters:
+            request.filters = {}
+        request.filters["lang"] = "en"
+        return ask_faq(2, request)
+    # send questions to general model
+    else:
+        return ask_faq(1, request)
 
 @router.post("/models/{model_id}/faq-qa", response_model=Response, response_model_exclude_unset=True)
 def ask_faq(model_id: int, request: Query):
@@ -187,6 +202,7 @@ def ask_faq(model_id: int, request: Query):
         result = finder.get_answers_via_similar_questions(
             question=question, top_k_retriever=request.top_k_retriever, filters=request.filters,
         )
+        result["model_id"] = model_id
         results.append(result)
 
         elasticapm.set_custom_context({"results": results})

@@ -1,0 +1,42 @@
+{
+    "inputs": {
+      "question": {
+          "label": "Ihre Frage",
+          "placeholder": "Stellen Sie eine Frage zu COVID-19 (Corona-Virus)"
+      }
+    },
+    "loader": {
+        "heading": "The BERT is working",
+        "text": "Please Wait – Bitte warten..."
+    },
+    "answer": {
+        "meta": {
+            "datelabel": "Stand",
+            "source": "Quelle"
+        },
+        "feedback": {
+            "header": "Feedback"
+        },
+        "no-answer": "Keine Antworten gefunden",
+        "other-answers": "Weitere Antworten",
+        "tags": {
+            "probability": "Relevanz"
+        }
+    },
+    "feedback": {
+        "title": "Danke für Ihr Feedback!",
+        "text": "Was war falsch mit der Antwort?",
+        "fake": "Die Antwort war falsch oder ungenau.",
+        "outdated": "Die Informationen waren veraltet.",
+        "irrelevant": "Die Antwort hatte nichts mit meiner Frage zu tun.",
+        "nothing": "Nichts."
+    },
+    "languages": {
+        "de": "Deutsch",
+        "en": "Englisch"
+    },
+    "404": {
+        "subtitle": "Tut uns leid, diese Seite gibt es nicht.",
+        "button-text": "Zurück"
+    }
+}

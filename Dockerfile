@@ -7,6 +7,8 @@ COPY requirements.txt /home/user/
 RUN pip install -r requirements.txt
 
 COPY backend /home/user/backend
+COPY covid_nlp /home/user/covid_nlp
+
 EXPOSE 8000
 
 # cmd for running the API

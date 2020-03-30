@@ -1,3 +1,0 @@
-pandas
-cld2
-pycld3

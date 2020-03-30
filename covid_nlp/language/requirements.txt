@@ -1,0 +1,3 @@
+pandas
+pycld2
+pycld3

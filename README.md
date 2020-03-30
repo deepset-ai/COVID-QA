@@ -42,12 +42,15 @@ This project is build by the community for the community. We are really apprecia
 
 We are also happy if you just report bugs, add documentation or flag useful/inappropriate answers returned by the model.
 
+[Gitter Channel](https://gitter.im/COVID-QA/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link): GitHub Issues will be the main communication channel, but Gitter can be used for higher-level coordination etc.
+
 Some next TODOs we see:
 ### Data / Backend
-- [x] Integrate more data sources via scrapers that return a csv with fields: [question,	answer, answer_html, 
+- [x] Integrate basic data sources via scrapers that return a csv with fields: [question,	answer, answer_html, 
 link, name, source, category, country, region, city, lang, last_update](https://github.com/deepset-ai/COVID-QA/blob/master/docs/img/example-data-format.png)
+- [ ] More scrapers / [smart scraper](https://github.com/deepset-ai/COVID-QA/issues/81) to scale data sources 
 - [ ] Handling of special non-FAQ questions via other APIs (e.g. “How many infections in Berlin?”)
-- [ ] Improve API to foster external integrations (e.g. Chat systems)
+- [x] Improve API to foster external integrations (e.g. Chat systems)
 - [ ] Logging & storage to foster analysis of common queries with bad results  
 - [ ] Support other languages (data collection)
 
