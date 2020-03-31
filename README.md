@@ -2,10 +2,10 @@
 
 <img alt="cover-photo" src="https://github.com/deepset-ai/COVID-QA/blob/master/docs/img/covid-bert.png?raw=true" width="130" height="298" />
 
-Provide trustworthy questions to COVID-19 via NLP
+Provide trustworthy answers to questions about COVID-19 via NLP
 
-Staging: https://covid-staging.deepset.ai/  
 Prod: https://covid.deepset.ai/  
+Staging: https://covid-staging.deepset.ai/  
 API: https://covid-backend.deepset.ai/docs  
 🤖Telegram Bot: Add it to your account via [@corona_scholar_bot](https://t.me/corona_scholar_bot)
 
