@@ -3,6 +3,7 @@
 from datetime import date
 
 import scrapy
+from scrapy.crawler import CrawlerProcess
 
 
 class CovidScraper(scrapy.Spider):
@@ -30,13 +31,13 @@ class CovidScraper(scrapy.Spider):
         all_nodes = response.xpath("//*")
         for node in all_nodes:
             # in question
-            if node.attrib.get("class") == "card-header h4 bg-tertiary":
+            if node.attrib.get("role") == "heading":
                 found_question = True
                 current_question = node.css("::text").get()
                 continue
 
             # in answer
-            if found_question and (node.attrib.get("class") == "card-body "):
+            if found_question and (node.attrib.get("class") == "collapse "):
                 current_answer = node.css(" ::text").getall()
                 current_answer = " ".join(current_answer).strip()
                 current_answer_html = node.getall()
@@ -47,10 +48,6 @@ class CovidScraper(scrapy.Spider):
                 columns["answer_html"].append(current_answer_html)
             else:
                 found_question = False
-
-        columns["question"].append(current_question)
-        columns["answer"].append(current_answer)
-        columns["answer_html"].append(current_answer_html)
 
         today = date.today()
 
@@ -65,3 +62,11 @@ class CovidScraper(scrapy.Spider):
         columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
         return columns
+
+if __name__ == "__main__":
+    process = CrawlerProcess({
+        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+    })
+
+    process.crawl(CovidScraper)
+    process.start()
