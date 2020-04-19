@@ -68,8 +68,6 @@ if __name__ == "__main__":
     if len(MISSED) > 0:
         logger.error(f"Could not scrape: {', '.join(MISSED)} ")
 
-    print('here 1:')
-
 
     MODEL = "bert-base-uncased"
     GPU = False
