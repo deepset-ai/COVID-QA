@@ -62,8 +62,10 @@ class CovidScraper(scrapy.Spider):
                     continue
                 questionId = questionId[0]
                 question = " ".join(path.xpath('./text()').getall()).strip()
-                if self.questionsOnly and "?" != question[-1]:
-                    continue
+                # commented out to get to valid data - the links might need to be
+                # further processed - swapna - TBD
+                #if self.questionsOnly and "?" != question[-1]:
+                    #continue
                 responsePath = path.xpath("./following-sibling::dd[1]")
                 response = self.transformContent(responsePath)
                 columns['category'].append(categoryName)

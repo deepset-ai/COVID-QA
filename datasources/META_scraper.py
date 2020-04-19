@@ -55,6 +55,7 @@ if __name__ == "__main__":
         'ITEM_PIPELINES': {'__main__.Pipeline': 1}
     })
     for crawler in crawler_files:
+        logger.error("Scraping '" + crawler + "' BEGIN processing now...")
         scraper_spec = importlib.util.spec_from_file_location("CovidScraper", crawler)
         scraper = importlib.util.module_from_spec(scraper_spec)
         scraper_spec.loader.exec_module(scraper)
@@ -66,6 +67,9 @@ if __name__ == "__main__":
     dataframe["answer"] = dataframe['answer'].str.strip()
     if len(MISSED) > 0:
         logger.error(f"Could not scrape: {', '.join(MISSED)} ")
+
+    print('here 1:')
+
 
     MODEL = "bert-base-uncased"
     GPU = False
