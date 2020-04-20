@@ -29,10 +29,10 @@ class CovidScraper(scrapy.Spider):
         current_category = ""
 
         all_nodes = response.xpath("//*")
-        for node in all_nodes:
+        for i,node in enumerate(all_nodes):
             # in category
-            if node.attrib.get("class") == "card-header h4 bg-amber-t":
-                current_category = node.css("::text").get()
+            if node.attrib.get("class") == "onThisPageAnchor":
+                current_category = node.attrib["title"]
                 continue
 
             # in category
@@ -42,7 +42,7 @@ class CovidScraper(scrapy.Spider):
                     current_question = node.css("::text").get()
 
                 # in answer
-                if node.attrib.get("class") == "card-body bg-gray-l3":
+                if node.attrib.get("class") == "card-body":
                     current_answer = node.css(" ::text").getall()
                     current_answer = " ".join(current_answer).strip()
                     current_answer_html = node.getall()
@@ -61,7 +61,7 @@ class CovidScraper(scrapy.Spider):
         today = date.today()
 
         columns["link"] = ["https://www.cdc.gov/coronavirus/2019-ncov/faq.html"] * len(columns["question"])
-        columns["name"] = ["Frequently Asked Questions"] * len(columns["question"])
+        columns["name"] = ["CDC General FAQ"] * len(columns["question"])
         columns["source"] = ["Center for Disease Control and Prevention (CDC)"] * len(columns["question"])
         columns["country"] = ["USA"] * len(columns["question"])
         columns["region"] = [""] * len(columns["question"])
@@ -70,6 +70,7 @@ class CovidScraper(scrapy.Spider):
         columns["last_update"] = [today.strftime("%Y/%m/%d")] * len(columns["question"])
 
         return columns
+
 
 
 if __name__ == "__main__":
