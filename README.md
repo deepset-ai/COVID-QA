@@ -22,7 +22,7 @@ many professional annotators who spend valuable time looking through Covid relat
 
 ## :bulb: Idea
 - Aggregate FAQs and texts from trustworthy data sources (WHO, CDC ...)
-- Provide an UI where people can ask questions
+- Provide a UI where people can ask questions
 - Use NLP to match incoming questions of users with meaningful answers
 - Users can provide feedback about answers to improve the NLP model and flag outdated or wrong answers
 - Display most common queries without good answers to guide data collection and model improvements
@@ -42,7 +42,7 @@ many professional annotators who spend valuable time looking through Covid relat
 4. Frontend/middleware: TODO
 
 ## :heart: How you can help
-This project is build by the community for the community. We are really appreciating every kind of support! There's plenty of work on UX, Design, ML, Backend, Frontend, Middleware, Data collection ...
+This project is built by the community for the community. We are really appreciating every kind of support! There's plenty of work on UX, Design, ML, Backend, Frontend, Middleware, Data collection ...
 
 We are also happy if you just report bugs, add documentation or flag useful/inappropriate answers returned by the model.
 
@@ -72,3 +72,4 @@ link, name, source, category, country, region, city, lang, last_update](https://
 - [ ] Logos / icons
 - [ ] Intuitive displaying of search results
 - [ ] UX for adding/reviewing data sources by the crowd
+
