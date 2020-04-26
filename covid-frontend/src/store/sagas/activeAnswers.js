@@ -25,7 +25,7 @@ export function* get() {
       top_k_retriever: 5,
     };
 
-    const data = yield api.post(`/models/${MODEL_ID}/faq-qa`, null, query);
+    const data = yield api.post(`/question/ask`, null, query);
 
     const answers = data.results[0].answers
     yield put(actions.set(answers));

@@ -4,10 +4,14 @@
 
 Provide trustworthy answers to questions about COVID-19 via NLP
 
-Prod: https://covid.deepset.ai/  
-Staging: https://covid-staging.deepset.ai/  
+URL: https://covid.deepset.ai/  
 API: https://covid-backend.deepset.ai/docs  
-🤖Telegram Bot: Add it to your account via [@corona_scholar_bot](https://t.me/corona_scholar_bot)
+🤖Telegram Bot: Add it to your account via [@corona_scholar_bot](https://t.me/corona_scholar_bot). Thanks to [@theapache64](https://github.com/theapache64)
+
+**Update 14th April, 2020:** We are open sourcing the first batch of 
+[SQuAD style question answering annotations](https://github.com/deepset-ai/COVID-QA/tree/master/data/question-answering).
+Thanks to [Tony Reina](https://www.linkedin.com/in/skysurgery/) for managing the process and the 
+many professional annotators who spend valuable time looking through Covid related research papers.
 
 ## :zap: Problem
 - People have many questions about COVID-19
