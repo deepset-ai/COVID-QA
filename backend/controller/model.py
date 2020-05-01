@@ -169,7 +169,7 @@ def ask(request: Query):
     english_question_count = 0
     # count number of english question
     for question in request.questions:
-        if lang_detector.detect_lang(question)[0] == "en":
+        if lang_detector.detect_lang(question)[0] == "eng":
             english_question_count += 1
 
     # if majority of questions is english, send questions to english model
