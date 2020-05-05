@@ -7,7 +7,17 @@ import scrapy
 
 class CovidScraper(scrapy.Spider):
     name = "WHO_scraper"
-    start_urls = ["https://www.who.int/news-room/q-a-detail/q-a-coronaviruses"]
+    start_urls = ["https://www.who.int/news-room/q-a-detail/q-a-coronaviruses",
+                  "https://www.who.int/news-room/q-a-detail/q-a-on-covid-19-and-pregnancy-and-childbirth",
+                  "https://www.who.int/news-room/q-a-detail/q-a-on-covid-19-and-breastfeeding",
+                  "https://www.who.int/news-room/q-a-detail/q-a-on-covid-19-and-masks",
+                  "https://www.who.int/news-room/q-a-detail/q-a-on-covid-19-hiv-and-antiretrovirals",
+                  "https://www.who.int/news-room/q-a-detail/q-a-on-mass-gatherings-and-covid-19",
+                  "https://www.who.int/news-room/q-a-detail/q-a-on-infection-prevention-and-control-for-health-care-workers-caring-for-patients-with-suspected-or-confirmed-2019-ncov",
+                  "https://www.who.int/news-room/q-a-detail/be-active-during-covid-19",
+                  "https://www.who.int/news-room/q-a-detail/malaria-and-the-covid-19-pandemic",
+                  "https://www.who.int/news-room/q-a-detail/violence-against-women-during-covid-19",
+                  "https://www.who.int/news-room/q-a-detail/contraception-family-planning-and-covid-19"]
 
     def parse(self, response):
         columns = {
@@ -46,7 +56,7 @@ class CovidScraper(scrapy.Spider):
 
         today = date.today()
 
-        columns["link"] = ["https://www.who.int/news-room/q-a-detail/q-a-coronaviruses"] * len(columns["question"])
+        columns["link"] = [response.url] * len(columns["question"])
         columns["name"] = ["Q&A on coronaviruses (COVID-19)"] * len(columns["question"])
         columns["source"] = ["World Health Organization (WHO)"] * len(columns["question"])
         columns["category"] = [""] * len(columns["question"])
