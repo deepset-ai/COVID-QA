@@ -43,6 +43,7 @@ from backend.controller.autocomplete import addQuestionToAutocomplete
 
 logger = logging.getLogger(__name__)
 
+LANGS_IN_ES = ["de","it","sv","pl"]
 
 router = APIRouter()
 
@@ -167,10 +168,16 @@ def ask(request: Query):
     # detect language & route request to related model
     lang_detector = LanguageDetector()
     english_question_count = 0
+    langs_in_faq_count = 0
+    request_langs = []
     # count number of english question
     for question in request.questions:
-        if lang_detector.detect_lang(question)[0] == "eng":
+        current_lang = lang_detector.detect_lang_cld2(question)[0]
+        request_langs.append(current_lang)
+        if current_lang == "en":
             english_question_count += 1
+        elif current_lang in LANGS_IN_ES:
+            langs_in_faq_count += 1
 
     # if majority of questions is english, send questions to english model
     if english_question_count > int(len(request.questions) / 2):
@@ -179,7 +186,19 @@ def ask(request: Query):
         request.filters["lang"] = "en"
         return ask_faq(2, request)
     # send questions to general model
+    elif langs_in_faq_count > int(len(request.questions) / 2):
+        return ask_faq(1, request)
+    # detect special languages
     else:
+        for i,question in enumerate(request.questions):
+            cld2_lang = request_langs[i]
+            # SIL language detection can be unstable, so if we have detected high resource languages with cld2, we keep those
+            if cld2_lang not in LANGS_IN_ES:
+                special_lang = lang_detector.detect_lang_sil(question)[0]
+                # if the language is not in our ElasticSearch DB we turn the question into a 3 letter language code (ISO 639-3 code)
+                # In the ES DB we have a mapping of low resource language codes to the corresponding
+                # "wash your hands" translation
+                request.questions[i] = special_lang
         return ask_faq(1, request)
 
 @router.post("/models/{model_id}/faq-qa", response_model=Response, response_model_exclude_unset=True)
@@ -210,6 +229,7 @@ def ask_faq(model_id: int, request: Query):
 
         # remember questions with result in the autocomplete
         if len(results) > 0:
-            addQuestionToAutocomplete(question)
+            if len(question) > 10:
+                addQuestionToAutocomplete(question)
 
         return {"results": results}
