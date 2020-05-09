@@ -39,3 +39,8 @@ EMBEDDING_DIM = os.getenv("EMBEDDING_DIM", None)
 EXCLUDE_META_DATA_FIELDS = os.getenv("EXCLUDE_META_DATA_FIELDS", "['question_emb']")
 if EXCLUDE_META_DATA_FIELDS:
     EXCLUDE_META_DATA_FIELDS = ast.literal_eval(EXCLUDE_META_DATA_FIELDS)
+
+# SIL language detection API
+SIL_API_KEY=os.getenv("SIL_API_KEY", "")
+SIL_API_SECRET=os.getenv("SIL_API_SECRET", "")
+SIL_API_URL=os.getenv("SIL_API_URL", "https://langdetect.apis.sil.org/langdetect")
