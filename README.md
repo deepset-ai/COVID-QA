@@ -4,9 +4,7 @@
 
 Provide trustworthy answers to questions about COVID-19 via NLP
 
-URL: https://covid.deepset.ai/  
-API: https://covid-backend.deepset.ai/docs  
-🤖Telegram Bot: Add it to your account via [@corona_scholar_bot](https://t.me/corona_scholar_bot). Thanks to [@theapache64](https://github.com/theapache64)
+**Update 17th June, 2020**: As the pandemic is thankfully slowing down and other information sources have catched up, we decided to take our hosted API and UI offline. We will keep the repository here as an inspiration for other projects and to share the COVID-QA dataset. 
 
 **Update 14th April, 2020:** We are open sourcing the first batch of 
 [SQuAD style question answering annotations](https://github.com/deepset-ai/COVID-QA/tree/master/data/question-answering).
@@ -31,45 +29,5 @@ many professional annotators who spend valuable time looking through Covid relat
 - Scrapers to collect data
 - Elasticsearch to store texts, FAQs, embeddings
 - NLP Models implemented via [Haystack](https://github.com/deepset-ai/haystack/) to find answers via a) detecting similar question in FAQs b) detect answers in free texts (extractive QA)
-- NodeJS / koa / eggjs middleware
 - React Frontend
-
-## Quick overview of current status 
-
-1. Check out the [demo app](https://covid.deepset.ai/) to get a basic idea 
-2. Data: At the moment we are using [scrapers](https://github.com/deepset-ai/COVID-QA/tree/master/data/scrapers) to create a CSV that get's ingested into elasticsearch
-3. Model: The NLP models to find answers are build via haystack. They are configured and exposed via this [API](https://github.com/deepset-ai/COVID-QA/tree/master/backend). English: sentence-bert, Other languages: BM25
-4. Frontend/middleware: TODO
-
-## :heart: How you can help
-This project is built by the community for the community. We are really appreciating every kind of support! There's plenty of work on UX, Design, ML, Backend, Frontend, Middleware, Data collection ...
-
-We are also happy if you just report bugs, add documentation or flag useful/inappropriate answers returned by the model.
-
-[Gitter Channel](https://gitter.im/COVID-QA/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link): GitHub Issues will be the main communication channel, but Gitter can be used for higher-level coordination etc.
-
-Some next TODOs we see:
-### Data / Backend
-- [x] Integrate basic data sources via scrapers that return a csv with fields: [question,	answer, answer_html, 
-link, name, source, category, country, region, city, lang, last_update](https://github.com/deepset-ai/COVID-QA/blob/master/docs/img/example-data-format.png)
-- [ ] More scrapers / [smart scraper](https://github.com/deepset-ai/COVID-QA/issues/81) to scale data sources 
-- [ ] Handling of special non-FAQ questions via other APIs (e.g. “How many infections in Berlin?”)
-- [x] Improve API to foster external integrations (e.g. Chat systems)
-- [ ] Logging & storage to foster analysis of common queries with bad results  
-- [ ] Support other languages (data collection)
-
-### Machine learning / NLP / IR
-- [x] English+German evaluation dataset & pipeline to benchmark models
-- [x] Benchmark baseline models 
-- [ ] Improve NLP models for FAQ matching (better embeddings, e.g. sentence-bert trained on Quora duplicate questions dataset)
-- [ ] Add extractive QA Models
-- [ ] Support other languages (models)
-- [ ] Tune Elasticsearch + Embedding models
-
-### UI/UX/Design
-- [x] Integrate user feedback mechanism for answers (flag as "correct", "not matching my question", "outdated", "fake news")
-- [ ] Tab to explore common queries and those with bad answers
-- [ ] Logos / icons
-- [ ] Intuitive displaying of search results
-- [ ] UX for adding/reviewing data sources by the crowd
 
