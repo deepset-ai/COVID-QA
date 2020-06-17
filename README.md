@@ -4,6 +4,8 @@
 
 Provide trustworthy answers to questions about COVID-19 via NLP
 
+Link to [COVID-QA Dataset](https://github.com/deepset-ai/COVID-QA/tree/master/data/question-answering/COVID-QA.json) and accompanying paper: TBD 
+
 **Update 17th June, 2020**: As the pandemic is thankfully slowing down and other information sources have catched up, we decided to take our hosted API and UI offline. We will keep the repository here as an inspiration for other projects and to share the COVID-QA dataset. 
 
 **Update 14th April, 2020:** We are open sourcing the first batch of 
