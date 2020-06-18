@@ -1,9 +1,7 @@
-# COVID-QA
-
 <img alt="cover-photo" src="https://github.com/deepset-ai/COVID-QA/blob/master/docs/img/covid-bert.png?raw=true" width="130" height="298" />
 
 This open source project serves two purposes. 
-1. Collection and evaluation of a Question Answering dataset to improve existing NLP methods - **COVID-QA**
+1. Collection and evaluation of a Question Answering dataset to improve existing QA/search methods - **COVID-QA**
 2. Question matching capabilities: Provide trustworthy answers to questions about COVID-19 via NLP - **outdated**
 
 # COVID-QA
