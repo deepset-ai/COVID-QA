@@ -6,7 +6,7 @@ This open source project serves two purposes.
 
 # COVID-QA
 - Link to [COVID-QA Dataset](https://github.com/deepset-ai/COVID-QA/tree/master/data/question-answering/COVID-QA.json) 
-- Accompanying paper: TBD
+- Accompanying paper on [OpenReview](https://openreview.net/forum?id=JENSKEEzsoU)
 - Annotation guidelines as [pdf](https://drive.google.com/file/d/1Wv3OIC0Z7ibHIzOm9Xw_r0gjTFmpl-33/view?usp=sharing) or [videos](https://www.youtube.com/playlist?list=PL0pJupneBHx4rkCtNmaXUs1q7SV7EjLED)
 - [deepset/roberta-base-squad2-covid](https://huggingface.co/deepset/roberta-base-squad2-covid) a QA model trained on COVID-QA 
 
