@@ -30,10 +30,10 @@ class CovidScraper(scrapy.Spider):
 
         all_nodes = response.xpath("//*")
         for node in all_nodes:
-            if node.attrib.get("class") == "ba-content-article":
+            if node.attrib.get("class") == "ba-content-row":
                 ba_content_article_count += 1
-                # end of FAQ
-                if ba_content_article_count == 2:
+                # end of FAQ 
+                if ba_content_article_count == 4:
                     break
 
             # in question
