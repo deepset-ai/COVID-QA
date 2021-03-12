@@ -58,6 +58,7 @@ def ask(search: str):
 
     resultCount = len(interim['hits']['hits'])
     result = []
+    #loop invariant result is not empty
     for i in range(resultCount):
         result.append(interim['hits']['hits'][i]['_source']['phrase'])
 
@@ -68,5 +69,3 @@ def ask(search: str):
             "results":result,
             "language": lang
         }
-
-
