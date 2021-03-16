@@ -17,8 +17,8 @@ from eval import eval_question_similarity
 
 
 class TfidfEvaluator():
-    def __init__(self):
-        self.model = TfidfTrainer(instream = "dummy")
+    def __init__(self, trainer):
+        self.model = trainer
         self.model.load_model()
 
     def process_string(self, mystring):
@@ -37,8 +37,13 @@ class TfidfEvaluator():
         cos_sim = cosine_similarity(vec1, vec2)
         return cos_sim[0][0]
 
+
+# main() is modified to initialize a trainer object first and 
+# pass it as a param into TfidfEvaluator() to initialize a evaluator
+
 def main():
-    evaluator = TfidfEvaluator()
+    trainer = TfidfTrainer(instream="dummy")
+    evaluator = TfidfEvaluator(trainer)
 
     eval_file = "../../../data/eval_question_similarity_en.csv"
     df = pd.read_csv(eval_file)
