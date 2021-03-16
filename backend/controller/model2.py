@@ -245,4 +245,5 @@ def ask_faq(model_id: int, request: Query):
 # This way, the elements within one root would not interfere another unless the root itself
 # is communicating with another root. 
 # Grouping what is essential to search bar and NLP differentiates their roles
-# and more easy to detect the errors. 
+# and more easy to detect the errors.
+# Therefore, making boundaries for entities would make things more effficient.
