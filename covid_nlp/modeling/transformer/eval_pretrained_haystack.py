@@ -5,7 +5,7 @@ from sklearn.metrics import roc_auc_score
 from farm.utils import MLFlowLogger
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
 from sklearn.metrics.pairwise import cosine_similarity
-from covid_nlp.eval import eval_question_similarity
+from covid_nlp.eval import Eval
 
 def eval_pretrained_transformers(eval_file, lang, models, pooling_methods, extraction_layers):
     for model_name in models:
@@ -38,7 +38,8 @@ def eval_pretrained_transformers(eval_file, lang, models, pooling_methods, extra
                 df["pred"] = np.diag(cosine_similarity(res1, res2))
 
                 # eval & track results
-                eval_question_similarity(y_true=y_true, y_pred=df["pred"].values, lang=lang, model_name=model_name,
+                eval = Eval()
+                eval.eval_question_similarity(y_true=y_true, y_pred=df["pred"].values, lang=lang, model_name=model_name,
                                          params=params, user="malte", log_to_mlflow=log_to_mlflow, run_name=experiment_name)
 
 if __name__ == "__main__":
