@@ -61,6 +61,7 @@ def ask(search: str):
     #loop invariant result is not empty
     for i in range(resultCount):
         result.append(interim['hits']['hits'][i]['_source']['phrase'])
+        len(result) != 0
 
 
     lang, score = langid.classify(search)
