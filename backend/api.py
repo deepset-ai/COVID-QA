@@ -19,27 +19,27 @@ elasticsearch_client = Elasticsearch(
     hosts=[{"host": DB_HOST}], http_auth=(DB_USER, DB_PW), scheme="http", ca_certs=False, verify_certs=False
 )
 
+class Api:
+    def get_application() -> FastAPI:
+        application = FastAPI(title="Haystack API", debug=True, version="0.1")
 
-def get_application() -> FastAPI:
-    application = FastAPI(title="Haystack API", debug=True, version="0.1")
+        application.add_middleware(
+            CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"],
+        )
+        apm_config = {"SERVICE_NAME": "covid-backend", "SERVER_URL": APM_SERVER, "CAPTURE_BODY": "all"}
+        elasticapm = make_apm_client(apm_config)
+        application.add_middleware(ElasticAPM, client=elasticapm)
 
-    application.add_middleware(
-        CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"],
-    )
-    apm_config = {"SERVICE_NAME": "covid-backend", "SERVER_URL": APM_SERVER, "CAPTURE_BODY": "all"}
-    elasticapm = make_apm_client(apm_config)
-    application.add_middleware(ElasticAPM, client=elasticapm)
+        application.add_exception_handler(HTTPException, http_error_handler)
+        # application.add_event_handler("startup", create_start_app_handler(application))
+        # application.add_event_handler("shutdown", create_stop_app_handler(application))
 
-    application.add_exception_handler(HTTPException, http_error_handler)
-    # application.add_event_handler("startup", create_start_app_handler(application))
-    # application.add_event_handler("shutdown", create_stop_app_handler(application))
+        application.include_router(api_router)
 
-    application.include_router(api_router)
+        return application
 
-    return application
-
-
-app = get_application()
+api = Api()
+app = api.get_application()
 
 logger.info("Open http://127.0.0.1:8000/docs to see Swagger API Documentation.")
 logger.info(
