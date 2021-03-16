@@ -13,7 +13,7 @@ from preprocess import Preprocessor
 from tfidf_train import TfidfTrainer
 
 sys.path.insert(0, "./../../")
-from eval import eval_question_similarity
+from eval import Eval
 
 
 class TfidfEvaluator():
@@ -51,7 +51,8 @@ def main():
     exp_name = "tfidf_cos_sim_2"
     params = {"sp_voc": 16000, "max_ngram": 2, "remove_stopwords": 1, 
                 "data_train": "eval, scraped", "data_sp": "eval, scraped, CORD-19.200k"}
-    eval_question_similarity(y_true=y_true, y_pred=y_pred, lang="en", model_name=model_name,
+    eval = Eval()
+    eval.eval_question_similarity(y_true=y_true, y_pred=y_pred, lang="en", model_name=model_name,
                              params=params, user="carmen", log_to_mlflow=True, run_name=exp_name)
 
 
