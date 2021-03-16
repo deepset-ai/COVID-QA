@@ -27,3 +27,16 @@ def feedback(model_id: int, request: Feedback):
         )
     feedback_payload["model_id"] = model_id
     api.elasticsearch_client.index(index=DB_INDEX_FEEDBACK, body=feedback_payload)
+
+###############################################################################
+# Recommendation for more efficiency
+###############################################################################
+# aggregate pattern can be applied to the following Python file
+# Instead of having dictionary method for overall types, split the dictionary cetegory that applies to
+# Search Bar and the NLP.
+# The aggregate root of Search Bar takes feedback of irrelevant questions, relevant questions and questions
+# that are not found on the server. 
+# The aggregate root of NLP, on the other hand, takes feedbacks of wrong information, outdated inforamtion
+# and questions that are not matchable with resources within NLP server. 
+# By spliting the feedback category into two aggregate roots, it froms a small tree structure 
+# which then also takes O(log n) rather than O(n) since it is no longer scheming through dictionary in array format
