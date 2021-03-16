@@ -73,9 +73,9 @@ if __name__ == "__main__":
 
 
 
-#
+
 #language translator to translate users query to search with other similar queries
-#
+
 
 class MSTranslator():
     def __init__(self, key = None, endpoint = None, lang = None):
