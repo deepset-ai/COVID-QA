@@ -11,8 +11,8 @@ from preprocess import Preprocessor
 
 class TfidfTrainer():
 
-    def __init__(self, instream = None):
-        self.preprocessor = Preprocessor(instream = instream)
+    def __init__(self, preprocessor):
+        self.preprocessor = preprocessor
         self.feature_vectors = None
         self.vectorizer = None
 
@@ -44,11 +44,17 @@ class TfidfTrainer():
             self.vectorizer = pickle.load(infile)
 
 
+# main() is modified to initialize a Preprocessor outside the TfidfTrainer()
+# and pass a preprocessor into TfidfTrainer() as a param
+
 def main():
-    trainer = TfidfTrainer()
+
+    instream = None
+    preprocessor = Preprocessor(instream = instream)
+    trainer = TfidfTrainer(preprocessor)
     corpus = trainer.preprocess_corpus()
     trainer.train_model(corpus)
     trainer.save_model()
- 
+
 if __name__ == "__main__":
     main()
