@@ -4,7 +4,7 @@ import sys
 
 import pandas as pd
 
-# MSTranslator is a given aggregate.
+
 class MSTranslator():
     def __init__(self, key = None, endpoint = None, lang = None):
         if key:
