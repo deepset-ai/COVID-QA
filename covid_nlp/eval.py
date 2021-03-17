@@ -13,6 +13,10 @@ def eval_question_similarity(y_true, y_pred, lang, model_name, params, user=None
     metrics = {"roc_auc": roc_auc, "mean_abs_diff": mean_diff, "f1_score": f1}
     print(metrics)
 
+    apm_config = {"SERVICE_NAME": "covid-backend", "SERVER_URL": APM_SERVER, "CAPTURE_BODY": "all"}
+        elasticapm = make_apm_client(apm_config)
+        application.add_middleware(ElasticAPM, client=elasticapm)
+        
     # log experiment results to MLFlow (visit https://public-mlflow.deepset.ai/)
     if log_to_mlflow:
         params["lang"] = lang
@@ -24,6 +28,10 @@ def eval_question_similarity(y_true, y_pred, lang, model_name, params, user=None
         ml_logger.init_experiment(experiment_name="COVID-question-sim", run_name=run_name)
         ml_logger.log_params(params)
         ml_logger.log_metrics(metrics, step=0)
+        
+     eval = Eval()
+    eval.eval_question_similarity(y_true=y_true, y_pred=y_pred, lang="en", model_name=model_name,
+                             params=params, user="carmen", log_to_mlflow=True, run_name=exp_name)
 
 
 if __name__ == "__main__":
@@ -48,3 +56,5 @@ if __name__ == "__main__":
                              params=params, user="malte", log_to_mlflow=log_to_mlflow, run_name=experiment_name)
 
 
+# split into two parts, track and eval
+# makes code more efficiency
