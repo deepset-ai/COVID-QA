@@ -27,3 +27,11 @@ def feedback(model_id: int, request: Feedback):
         )
     feedback_payload["model_id"] = model_id
     api.elasticsearch_client.index(index=DB_INDEX_FEEDBACK, body=feedback_payload)
+    
+    
+# aggregate can be applied to this python file
+
+# the feedback category can be merged to two roots
+# one takes search, collecting feedback of irrelevant, relevant and normal questions
+# one takes NLP, which takes feedbacks of wrong info and outdated info
+# and result can have less complexity which is more efficiency
