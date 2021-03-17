@@ -5,7 +5,9 @@ from sklearn.metrics import roc_auc_score, f1_score
 from farm.utils import MLFlowLogger
 
 
-def eval_question_similarity(y_true, y_pred, lang, model_name, params, user=None, log_to_mlflow=True, run_name="default"):
+class evalQuestionSimilarity:
+
+    def eval_question_similarity(y_true, y_pred, lang, model_name, params, user=None, log_to_mlflow=True, run_name="default"):
     # basic metrics
     mean_diff = np.mean(np.abs(y_true - y_pred))
     roc_auc = roc_auc_score(y_true, y_pred)
@@ -44,7 +46,8 @@ if __name__ == "__main__":
     y_pred = [0.5] * len(y_true)
 
     # eval & track results
-    eval_question_similarity(y_true=y_true, y_pred=y_pred, lang=lang, model_name=model_name,
+    evalQuesSim = evalQuestionSimilarity()
+    evalQuesSim.eval_question_similarity(y_true=y_true, y_pred=y_pred, lang=lang, model_name=model_name,
                              params=params, user="malte", log_to_mlflow=log_to_mlflow, run_name=experiment_name)
 
 
