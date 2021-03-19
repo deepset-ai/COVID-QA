@@ -5,25 +5,36 @@ from sklearn.metrics import roc_auc_score, f1_score
 from farm.utils import MLFlowLogger
 
 
-def eval_question_similarity(y_true, y_pred, lang, model_name, params, user=None, log_to_mlflow=True, run_name="default"):
-    # basic metrics
-    mean_diff = np.mean(np.abs(y_true - y_pred))
-    roc_auc = roc_auc_score(y_true, y_pred)
-    f1 = f1_score(y_true, y_pred.round(0))
-    metrics = {"roc_auc": roc_auc, "mean_abs_diff": mean_diff, "f1_score": f1}
-    print(metrics)
+class eval_ques_sim:
+    def __init__(self, y_true,y_pred, lang, model_name,params, user):
+        self.y_true = y_true
+        self.y_pred = y_pred
+        self.lang = lang
+        self.model_name = model_name
+        self.params = params
+        self.user = user
 
-    # log experiment results to MLFlow (visit https://public-mlflow.deepset.ai/)
-    if log_to_mlflow:
-        params["lang"] = lang
-        params["model_name"] = model_name
-        if user:
-            params["user"] = user
+    def eval_question_similarity(y_true, y_pred, lang, model_name, params, user=None, log_to_mlflow=True, run_name="default"):
+        # basic metrics
+        mean_diff = np.mean(np.abs(y_true - y_pred))
+        roc_auc = roc_auc_score(y_true, y_pred)
+        f1 = f1_score(y_true, y_pred.round(0))
+        metrics = {"roc_auc": roc_auc, "mean_abs_diff": mean_diff, "f1_score": f1}
+        print(metrics)
 
-        ml_logger = MLFlowLogger(tracking_uri="https://public-mlflow.deepset.ai/")
-        ml_logger.init_experiment(experiment_name="COVID-question-sim", run_name=run_name)
-        ml_logger.log_params(params)
-        ml_logger.log_metrics(metrics, step=0)
+        # log experiment results to MLFlow (visit https://public-mlflow.deepset.ai/)
+        if log_to_mlflow:
+            params["lang"] = lang
+            params["model_name"] = model_name
+            if user:
+                params["user"] = user
+
+            ml_logger = MLFlowLogger(
+                tracking_uri="https://public-mlflow.deepset.ai/")
+            ml_logger.init_experiment(
+                experiment_name="COVID-question-sim", run_name=run_name)
+            ml_logger.log_params(params)
+            ml_logger.log_metrics(metrics, step=0)
 
 
 if __name__ == "__main__":
@@ -44,7 +55,6 @@ if __name__ == "__main__":
     y_pred = [0.5] * len(y_true)
 
     # eval & track results
-    eval_question_similarity(y_true=y_true, y_pred=y_pred, lang=lang, model_name=model_name,
-                             params=params, user="malte", log_to_mlflow=log_to_mlflow, run_name=experiment_name)
-
-
+    # Aggregated Class evaluate and track results
+    similarity_check = eval_ques_sim()
+    similarity_check.eval_question_similarity(y_true,y_pred, lang, model_name, params, user= "malte", log_to_mlflow=log_to_mlflow, run_name=experiment_name)
