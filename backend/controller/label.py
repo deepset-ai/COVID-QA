@@ -10,8 +10,10 @@ class Label():
     questionText: str
     answer: str
     documentId: int
+    creatorId: int
 
-    def Label(questionText, answer, documentId):
+    def Label(self, questionText, answer, documentId, creatorId):
         self.questionText = questionText
         self.answer = answer
         self.documentId = documentId
+        self.creatorId = creatorId
