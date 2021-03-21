@@ -52,7 +52,7 @@ def main():
     exp_name = "tfidf_cos_sim_2"
     params = {"sp_voc": 16000, "max_ngram": 2, "remove_stopwords": 1,"data_train": "eval, scraped", "data_sp": "eval, scraped, CORD-19.200k"}
     evalQues = evalQuestion()
-    evalQueseval_question_similarity(y_true=y_true, y_pred=y_pred, lang=lang, model_name=model_name,
+    evalQues.eval_question_similarity(y_true=y_true, y_pred=y_pred, lang=lang, model_name=model_name,
                              params=params, user="malte", log_to_mlflow=log_to_mlflow, run_name=experiment_name)
 
 
