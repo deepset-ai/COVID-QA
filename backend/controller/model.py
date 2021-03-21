@@ -41,12 +41,6 @@ from backend.config import (
 )
 from backend.controller.autocomplete import addQuestionToAutocomplete
 
-logger = logging.getLogger(__name__)
-
-LANGS_IN_ES = ["de","it","sv","pl"]
-
-router = APIRouter()
-
 
 document_store = ElasticsearchDocumentStore(
     host=DB_HOST,
@@ -63,33 +57,114 @@ document_store = ElasticsearchDocumentStore(
     excluded_meta_data=EXCLUDE_META_DATA_FIELDS,
 )
 
-# multilingual baseline retriever (=BM25)
-retriever = ElasticsearchRetriever(document_store=document_store, embedding_model=None, gpu=USE_GPU)
 
-# english_retriever
-english_retriever = ElasticsearchRetriever(document_store=document_store, embedding_model=EMBEDDING_MODEL_PATH, gpu=USE_GPU,
-                                   pooling_strategy=EMBEDDING_POOLING_STRATEGY, emb_extraction_layer=EMBEDDING_EXTRACTION_LAYER)
+class Model:
+    def __init__(self, document_store, request: Query, model_id: int):
+        self.reader = createReader()
+        self.document_store = document_store
+        # english_retriever
+        self.english_retriever = ElasticsearchRetriever(document_store=document_store, embedding_model=EMBEDDING_MODEL_PATH, gpu=USE_GPU,
+                                            pooling_strategy=EMBEDDING_POOLING_STRATEGY, emb_extraction_layer=EMBEDDING_EXTRACTION_LAYER)
+        # multilingual baseline retriever (=BM25)
+        self.retriever = ElasticsearchRetriever(document_store=document_store, embedding_model=None, gpu=USE_GPU)
+        self.FINDERS = {1: Finder(reader=self.reader, retriever=self.retriever),
+                        2: Finder(reader=self.reader, retriever=self.english_retriever)}
+        self.logger = logging.getLogger(__name__)
+        self.LANGS_IN_ES = ["de","it","sv","pl"]
+        self.router = APIRouter()
+        self.request = request
+        self.model_id = model_id
 
+    def createReader():
+        if READER_MODEL_PATH:
+            # needed for extractive QA
+            reader = FARMReader(
+                model_name_or_path=str(READER_MODEL_PATH),
+                batch_size=BATCHSIZE,
+                use_gpu=USE_GPU,
+                context_window_size=CONTEXT_WINDOW_SIZE,
+                top_k_per_candidate=TOP_K_PER_CANDIDATE,
+                no_ans_boost=NO_ANS_BOOST,
+                max_processes=MAX_PROCESSES,
+                max_seq_len=MAX_SEQ_LEN,
+                doc_stride=DOC_STRIDE,
+            )
+        else:
+            # don't need one for pure FAQ matching
+            reader = None
+        return reader
 
-if READER_MODEL_PATH:
-    # needed for extractive QA
-    reader = FARMReader(
-        model_name_or_path=str(READER_MODEL_PATH),
-        batch_size=BATCHSIZE,
-        use_gpu=USE_GPU,
-        context_window_size=CONTEXT_WINDOW_SIZE,
-        top_k_per_candidate=TOP_K_PER_CANDIDATE,
-        no_ans_boost=NO_ANS_BOOST,
-        max_processes=MAX_PROCESSES,
-        max_seq_len=MAX_SEQ_LEN,
-        doc_stride=DOC_STRIDE,
-    )
-else:
-    # don't need one for pure FAQ matching
-    reader = None
+    # CURL example: curl --request POST --url 'http://127.0.0.1:8000/question/ask' --data '{"questions": ["Who is the father of Arya Starck?"]}'
+    @self.router.post("/question/ask", response_model=Response, response_model_exclude_unset=True)
+    def ask(request: Query):
+        # detect language & route request to related model
+        lang_detector = LanguageDetector()
+        english_question_count = 0
+        langs_in_faq_count = 0
+        request_langs = []
+        # count number of english question
+        for question in request.questions:
+            current_lang = lang_detector.detect_lang_cld2(question)[0]
+            request_langs.append(current_lang)
+            if current_lang == "en":
+                english_question_count += 1
+            elif current_lang in self.LANGS_IN_ES:
+                langs_in_faq_count += 1
 
-FINDERS = {1: Finder(reader=reader, retriever=retriever),
-           2: Finder(reader=reader, retriever=english_retriever)}
+        # if majority of questions is english, send questions to english model
+        if english_question_count > int(len(request.questions) / 2):
+            if not request.filters:
+                request.filters = {}
+            request.filters["lang"] = "en"
+            return ask_faq(2, request)
+        # send questions to general model
+        elif langs_in_faq_count > int(len(request.questions) / 2):
+            return ask_faq(1, request)
+        # detect special languages
+        else:
+            for i,question in enumerate(request.questions):
+                cld2_lang = request_langs[i]
+                # SIL language detection can be unstable, so if we have detected high resource languages with cld2, we keep those
+                if cld2_lang not in self.LANGS_IN_ES:
+                    special_lang = lang_detector.detect_lang_sil(question)[0]
+                    # if the language is not in our ElasticSearch DB we turn the question into a 3 letter language code (ISO 639-3 code)
+                    # In the ES DB we have a mapping of low resource language codes to the corresponding
+                    # "wash your hands" translation
+                    request.questions[i] = special_lang
+            return ask_faq(1, request)
+
+    @self.router.post("/models/{model_id}/faq-qa", response_model=Response, response_model_exclude_unset=True)
+    def ask_faq(model_id: int, request: Query):
+
+        finder = self.FINDERS.get(model_id, None)
+        if not finder:
+            raise HTTPException(
+                status_code=404, detail=f"Couldn't get Finder with ID {model_id}. Available IDs: {list(self.FINDERS.keys())}"
+            )
+
+        results = []
+        for question in request.questions:
+            if request.filters:
+                # put filter values into a list and remove filters with null value
+                request.filters = {key: [value] for key, value in request.filters.items() if value is not None}
+                self.logger.info(f" [{datetime.now()}] Request: {request}")
+
+            # temporary routing of requests by language
+            result = finder.get_answers_via_similar_questions(
+                question=question, top_k_retriever=request.top_k_retriever, filters=request.filters,
+            )
+            result["model_id"] = model_id
+            results.append(result)
+
+            elasticapm.set_custom_context({"results": results})
+            self.logger.info({"request": request.json(), "results": results})
+
+            # remember questions with result in the autocomplete
+            if len(results) > 0:
+                if len(question) > 10:
+                    addQuestionToAutocomplete(question)
+
+            return {"results": results}
 
 
 #############################################
@@ -163,73 +238,3 @@ class Response(BaseModel):
 #         return {"results": results}
 
 # CURL example: curl --request POST --url 'http://127.0.0.1:8000/question/ask' --data '{"questions": ["Who is the father of Arya Starck?"]}'
-@router.post("/question/ask", response_model=Response, response_model_exclude_unset=True)
-def ask(request: Query):
-    # detect language & route request to related model
-    lang_detector = LanguageDetector()
-    english_question_count = 0
-    langs_in_faq_count = 0
-    request_langs = []
-    # count number of english question
-    for question in request.questions:
-        current_lang = lang_detector.detect_lang_cld2(question)[0]
-        request_langs.append(current_lang)
-        if current_lang == "en":
-            english_question_count += 1
-        elif current_lang in LANGS_IN_ES:
-            langs_in_faq_count += 1
-
-    # if majority of questions is english, send questions to english model
-    if english_question_count > int(len(request.questions) / 2):
-        if not request.filters:
-            request.filters = {}
-        request.filters["lang"] = "en"
-        return ask_faq(2, request)
-    # send questions to general model
-    elif langs_in_faq_count > int(len(request.questions) / 2):
-        return ask_faq(1, request)
-    # detect special languages
-    else:
-        for i,question in enumerate(request.questions):
-            cld2_lang = request_langs[i]
-            # SIL language detection can be unstable, so if we have detected high resource languages with cld2, we keep those
-            if cld2_lang not in LANGS_IN_ES:
-                special_lang = lang_detector.detect_lang_sil(question)[0]
-                # if the language is not in our ElasticSearch DB we turn the question into a 3 letter language code (ISO 639-3 code)
-                # In the ES DB we have a mapping of low resource language codes to the corresponding
-                # "wash your hands" translation
-                request.questions[i] = special_lang
-        return ask_faq(1, request)
-
-@router.post("/models/{model_id}/faq-qa", response_model=Response, response_model_exclude_unset=True)
-def ask_faq(model_id: int, request: Query):
-
-    finder = FINDERS.get(model_id, None)
-    if not finder:
-        raise HTTPException(
-            status_code=404, detail=f"Couldn't get Finder with ID {model_id}. Available IDs: {list(FINDERS.keys())}"
-        )
-
-    results = []
-    for question in request.questions:
-        if request.filters:
-            # put filter values into a list and remove filters with null value
-            request.filters = {key: [value] for key, value in request.filters.items() if value is not None}
-            logger.info(f" [{datetime.now()}] Request: {request}")
-
-        # temporary routing of requests by language
-        result = finder.get_answers_via_similar_questions(
-            question=question, top_k_retriever=request.top_k_retriever, filters=request.filters,
-        )
-        result["model_id"] = model_id
-        results.append(result)
-
-        elasticapm.set_custom_context({"results": results})
-        logger.info({"request": request.json(), "results": results})
-
-        # remember questions with result in the autocomplete
-        if len(results) > 0:
-            if len(question) > 10:
-                addQuestionToAutocomplete(question)
-
-        return {"results": results}
