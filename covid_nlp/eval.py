@@ -51,5 +51,5 @@ if __name__ == "__main__":
 
     # eval & track results
     evalQues = evalQuestion()
-    evalQues.eval_question_similarity(y_true=y_true, y_pred=y_pred, lang=lang, model_name=model_name,
+    evalQueseval_question_similarity(y_true=y_true, y_pred=y_pred, lang=lang, model_name=model_name,
                              params=params, user="malte", log_to_mlflow=log_to_mlflow, run_name=experiment_name)

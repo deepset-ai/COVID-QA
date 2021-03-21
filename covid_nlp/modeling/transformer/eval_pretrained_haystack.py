@@ -58,4 +58,4 @@ if __name__ == "__main__":
     pooling_methods = ["reduce_mean","cls_token","reduce_max"]
     extraction_layers = [-1, -2]
     evalPreTransformers = evalPretrainedTransformers()
-    evalPreTransformers.eval_pretrained_transformers(eval_file, lang, models, pooling_methods, extraction_layers)
+    evalPreTransformerseval_pretrained_transformers(eval_file, lang, models, pooling_methods, extraction_layers)
