@@ -29,7 +29,6 @@ class Algo():
 
 
 class LanguageDetector():
-    Algo algorithm
 
     def __init__(self, model = 'sil'):
         self.model = model
@@ -44,12 +43,13 @@ class LanguageDetector():
         return pred.language, 100*pred.probability
 
     def detect_lang_sil(self, text):
+    yes = Algo()
     #setting these to an algorithm class
-        algorithm = Algo.setAlgo()
-        curr_time = Algo.setTime()
-        concat = Algo.setConcat()
-        concatB = Algo.setConcatB()
-        secretB = Algo.setSecretB()
+        algorithm = yes.setAlgo()
+        curr_time = yes.setTime()
+        concat = yes.setConcat()
+        concatB = yes.setConcatB()
+        secretB = yes.setSecretB()
         h1 = hmac.new(secretB, concatB, sha1)
         api_sig = h1.hexdigest()
         params = {'api_key': os.environ.get('SIL_API_KEY'), 'api_sig': api_sig}
