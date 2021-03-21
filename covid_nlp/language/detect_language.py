@@ -6,7 +6,31 @@ from hashlib import sha1
 from time import time
 import requests
 
+class Algo():
+    def setAlgo():
+        algorithm = 'HMAC+SHA1'
+        return algorithm
+
+    def setTime():
+        time = curr_time = str(int(time()))
+        return time
+
+    def setConcat():
+        concat = curr_time+os.environ.get('SIL_API_KEY')
+        return concat
+
+    def setConcatB(concat):
+        concatB = (concat).encode('utf-8')
+        return concatB
+
+    def setSecretB():
+            secretB = os.environ.get('SIL_API_SECRET').encode('utf-8')
+            return secretB
+
+
 class LanguageDetector():
+    Algo algorithm
+
     def __init__(self, model = 'sil'):
         self.model = model
 
@@ -20,11 +44,12 @@ class LanguageDetector():
         return pred.language, 100*pred.probability
 
     def detect_lang_sil(self, text):
-        algorithm = 'HMAC+SHA1'
-        curr_time = str(int(time()))
-        concat = curr_time+os.environ.get('SIL_API_KEY')
-        concatB = (concat).encode('utf-8')
-        secretB = os.environ.get('SIL_API_SECRET').encode('utf-8')
+    #setting these to an algorithm class
+        algorithm = Algo.setAlgo()
+        curr_time = Algo.setTime()
+        concat = Algo.setConcat()
+        concatB = Algo.setConcatB()
+        secretB = Algo.setSecretB()
         h1 = hmac.new(secretB, concatB, sha1)
         api_sig = h1.hexdigest()
         params = {'api_key': os.environ.get('SIL_API_KEY'), 'api_sig': api_sig}
