@@ -11,9 +11,10 @@ import pandas as pd
 
 from preprocess import Preprocessor
 from tfidf_train import TfidfTrainer
+from covid_nlp.eval import evalQuestion
+
 
 sys.path.insert(0, "./../../")
-from eval import eval_question_similarity
 
 
 class TfidfEvaluator():
@@ -49,10 +50,10 @@ def main():
 
     model_name = "tfidf_baseline"
     exp_name = "tfidf_cos_sim_2"
-    params = {"sp_voc": 16000, "max_ngram": 2, "remove_stopwords": 1, 
-                "data_train": "eval, scraped", "data_sp": "eval, scraped, CORD-19.200k"}
-    eval_question_similarity(y_true=y_true, y_pred=y_pred, lang="en", model_name=model_name,
-                             params=params, user="carmen", log_to_mlflow=True, run_name=exp_name)
+    params = {"sp_voc": 16000, "max_ngram": 2, "remove_stopwords": 1,"data_train": "eval, scraped", "data_sp": "eval, scraped, CORD-19.200k"}
+    evalQues = evalQuestion()
+    evalQues.eval_question_similarity(y_true=y_true, y_pred=y_pred, lang=lang, model_name=model_name,
+                             params=params, user="malte", log_to_mlflow=log_to_mlflow, run_name=experiment_name)
 
 
 if __name__ == "__main__":
