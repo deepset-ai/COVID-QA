@@ -32,10 +32,24 @@ class TfidfEvaluator():
         return cos_list_enumerated[:top_n]
 
     def score_string_pair(self, string1, string2):
-        vec1 = self.process_string(string1)
-        vec2 = self.process_string(string2)
-        cos_sim = cosine_similarity(vec1, vec2)
+        vector = Vector()
+        vec1 = vector.setVec1(string1)
+        vec2 = vector.setVec2(string1)
+        cos_sim = vector.setCosSim(vec1,vec2)
         return cos_sim[0][0]
+
+class Vector():
+    def setVec1(self,string1):
+        vectorOne = self.process_string(string1)
+        return vectorOne
+
+    def setVec2(self,string2):
+        vectorTwo = self.process_string(string2)
+        return vectorTwo
+
+    def setCosSim(vec1, vec2):
+        cosSim = cosine_similarity(vec1,vec2)
+        return cosSim
 
 def main():
     evaluator = TfidfEvaluator()
