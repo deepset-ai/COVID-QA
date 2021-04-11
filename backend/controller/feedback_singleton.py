@@ -29,14 +29,12 @@ def feedback(model_id: int, request: Feedback):
     api.elasticsearch_client.index(index=DB_INDEX_FEEDBACK, body=feedback_payload)
 
 ###############################################################################
-# Recommendation for more efficiency
+# Creational Design Pattern - Singleton is applied  on this file. 
 ###############################################################################
-# aggregate pattern can be applied to the following Python file
-# Instead of having dictionary method for overall types, split the dictionary cetegory that applies to
-# Search Bar and the NLP.
-# The aggregate root of Search Bar takes feedback of irrelevant questions, relevant questions and questions
-# that are not found on the server. 
-# The aggregate root of NLP, on the other hand, takes feedbacks of wrong information, outdated inforamtion
-# and questions that are not matchable with resources within NLP server. 
-# By spliting the feedback category into two aggregate roots, it froms a small tree structure 
-# which then also takes O(log n) rather than O(n) since it is no longer scheming through dictionary in array format
+# Despite of different types in ase of reporting feedbacks, the file only holds one instance, "feedback", to 
+# handle all types of feedbacks - revelant, fake, outdated and irrelevant. 
+# There is nothing I need to adjust on this file because it already implements singleton design pattern.
+# The purpose of the singleton design pattern is to ensure a class has only one instance,
+# while providing a global point of access to it, whcih the function "feedback" already behaves. 
+# The users only have accessibility on feedback since the feedback is the only instance that can be handled. 
+# Moreover, feedback is infinitely repeateable with selecting different types of feedbacks. 
