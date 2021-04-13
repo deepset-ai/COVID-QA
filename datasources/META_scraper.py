@@ -7,11 +7,24 @@ from haystack.database.elasticsearch import ElasticsearchDocumentStore
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
 from scrapy.crawler import CrawlerProcess
 
-logger = logging.getLogger(__name__)
-
 PATH = os.getcwd() + "/scrapers"
 RESULTS = []
 MISSED = []
+
+class SingleLogger(object):
+    # singleton instance
+    __instance = None
+
+    def __init__(self) -> None:
+        self.logger = logging.getLogger(__name__)
+
+    # __new__ will apply staticmethod automatically so @staticmethod is not needed
+    def __new__(cls):
+        # Single instance check
+        if not hasattr(SingleLogger, "_instance"):
+            SingleLogger.__instance = object.__new__(cls)
+        # else if there is an instance then return
+        return SingleLogger.__instance
 
 
 class Pipeline(object):
@@ -27,7 +40,9 @@ class Pipeline(object):
 
     def process_item(self, item, spider):
         if len(item['question']) == 0:
-            logger.error("Scraper '" + spider.name + "' provided zero results!")
+            # call __new__ method
+            sinLogger = SingleLogger.__new__(SingleLogger())
+            sinLogger.error("Scraper '" + spider.name + "' provided zero results!")
             MISSED.append(spider.name)
             return
         validatedItems = {}
@@ -39,7 +54,9 @@ class Pipeline(object):
             for key, values in item.items():
                 validatedItems[key].append(values[i])
         if len(validatedItems['question']) == 0:
-            logger.error("Scraper '" + spider.name + "' provided zero results after filtering!")
+            # call __new__ method
+            sinLogger = SingleLogger.__new__(SingleLogger())
+            sinLogger.error("Scraper '" + spider.name + "' provided zero results after filtering!")
             MISSED.append(spider.name)
             return
         df = pd.DataFrame.from_dict(validatedItems)
@@ -65,7 +82,9 @@ if __name__ == "__main__":
     dataframe.fillna(value="", inplace=True)
     dataframe["answer"] = dataframe['answer'].str.strip()
     if len(MISSED) > 0:
-        logger.error(f"Could not scrape: {', '.join(MISSED)} ")
+        # call __new__ method
+        sinLogger = SingleLogger.__new__(SingleLogger())
+        sinLogger.error(f"Could not scrape: {', '.join(MISSED)} ")
 
     MODEL = "bert-base-uncased"
     GPU = False
