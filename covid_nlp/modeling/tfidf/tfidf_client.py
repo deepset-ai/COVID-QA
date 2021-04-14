@@ -3,6 +3,7 @@ import re
 import pickle
 import os
 import json
+import eval
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -51,8 +52,9 @@ def main():
     exp_name = "tfidf_cos_sim_2"
     params = {"sp_voc": 16000, "max_ngram": 2, "remove_stopwords": 1, 
                 "data_train": "eval, scraped", "data_sp": "eval, scraped, CORD-19.200k"}
-    eval_question_similarity(y_true=y_true, y_pred=y_pred, lang="en", model_name=model_name,
+    s1.eval_question_similarity(y_true=y_true, y_pred=y_pred, lang="en", model_name=model_name,
                              params=params, user="carmen", log_to_mlflow=True, run_name=exp_name)
+
 
 
 if __name__ == "__main__":

@@ -4,26 +4,47 @@ import numpy as np
 from sklearn.metrics import roc_auc_score, f1_score
 from farm.utils import MLFlowLogger
 
+class SingleMeta(type):
+    """ We will use the metaclass method to create the Singleton Class"""
+    _instances = {}
 
-def eval_question_similarity(y_true, y_pred, lang, model_name, params, user=None, log_to_mlflow=True, run_name="default"):
-    # basic metrics
-    mean_diff = np.mean(np.abs(y_true - y_pred))
-    roc_auc = roc_auc_score(y_true, y_pred)
-    f1 = f1_score(y_true, y_pred.round(0))
-    metrics = {"roc_auc": roc_auc, "mean_abs_diff": mean_diff, "f1_score": f1}
-    print(metrics)
+    def __call__(cls, *args, **kwargs):
+        """Checks if the instance has been created already"""
+        if cls not in cls._instances:
+            instance = super().__call__(*args, **kwargs)
+            cls._instances[cls] = instance
+        return cls._instances[cls]
 
-    # log experiment results to MLFlow (visit https://public-mlflow.deepset.ai/)
-    if log_to_mlflow:
-        params["lang"] = lang
-        params["model_name"] = model_name
-        if user:
-            params["user"] = user
+class ClassSingleton(metaclass=SingleMeta):
 
-        ml_logger = MLFlowLogger(tracking_uri="https://public-mlflow.deepset.ai/")
-        ml_logger.init_experiment(experiment_name="COVID-question-sim", run_name=run_name)
-        ml_logger.log_params(params)
-        ml_logger.log_metrics(metrics, step=0)
+    def __init__(self, y_true,y_pred, lang, model_name,params, user):
+        self.y_true = y_true
+        self.y_pred = y_pred
+        self.lang = lang
+        self.model_name = model_name
+        self.params = params
+        self.user = user
+
+
+    def eval_question_similarity(y_true, y_pred, lang, model_name, params, user=None, log_to_mlflow=True, run_name="default"):
+        # basic metrics
+        mean_diff = np.mean(np.abs(y_true - y_pred))
+        roc_auc = roc_auc_score(y_true, y_pred)
+        f1 = f1_score(y_true, y_pred.round(0))
+        metrics = {"roc_auc": roc_auc, "mean_abs_diff": mean_diff, "f1_score": f1}
+        print(metrics)
+
+        # log experiment results to MLFlow (visit https://public-mlflow.deepset.ai/)
+        if log_to_mlflow:
+            params["lang"] = lang
+            params["model_name"] = model_name
+            if user:
+                params["user"] = user
+
+            ml_logger = MLFlowLogger(tracking_uri="https://public-mlflow.deepset.ai/")
+            ml_logger.init_experiment(experiment_name="COVID-question-sim", run_name=run_name)
+            ml_logger.log_params(params)
+            ml_logger.log_metrics(metrics, step=0)
 
 
 if __name__ == "__main__":
@@ -43,8 +64,7 @@ if __name__ == "__main__":
     y_true = df["similar"].values
     y_pred = [0.5] * len(y_true)
 
-    # eval & track results
-    eval_question_similarity(y_true=y_true, y_pred=y_pred, lang=lang, model_name=model_name,
+    s1 = SingleMeta()
+    #Evaluate using the instance
+    s1.eval_question_similarity(y_true=y_true, y_pred=y_pred, lang=lang, model_name=model_name,
                              params=params, user="malte", log_to_mlflow=log_to_mlflow, run_name=experiment_name)
-
-
