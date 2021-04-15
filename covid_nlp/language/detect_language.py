@@ -32,7 +32,7 @@ class Bridge_cld3(Bridge):
     def Dl_print(self, text):
         self.model.Dl_print()
 
-class Bridge_cil(Bridge):
+class Bridge_sil(Bridge):
     def set_model(self, model):
         self.model = model
     def Dl_print(self, text):
@@ -98,7 +98,7 @@ def main():
     ld2.set_model(model = ld2_print_format)
     ld2.Dl_print
 
-    ldsil = Bridge_cil()
+    ldsil = Bridge_sil()
     ldsil_print_format = DlPrint_Detect_lang_sil(text = my_text)
     ldsil.set_model(model = ldsil_print_format)
     ldsil.Dl_print
