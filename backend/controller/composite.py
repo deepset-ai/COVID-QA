@@ -27,3 +27,5 @@ class Composite
         for child in self.children:
             replies.append(child.getReply)
         print(replies)
+
+        
