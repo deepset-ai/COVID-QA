@@ -16,16 +16,6 @@ class SingleMeta(type):
         return cls._instances[cls]
 
 class ClassSingleton(metaclass=SingleMeta):
-
-    def __init__(self, y_true,y_pred, lang, model_name,params, user):
-        self.y_true = y_true
-        self.y_pred = y_pred
-        self.lang = lang
-        self.model_name = model_name
-        self.params = params
-        self.user = user
-
-
     def eval_question_similarity(y_true, y_pred, lang, model_name, params, user=None, log_to_mlflow=True, run_name="default"):
         # basic metrics
         mean_diff = np.mean(np.abs(y_true - y_pred))
