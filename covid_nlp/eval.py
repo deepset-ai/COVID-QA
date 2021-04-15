@@ -4,6 +4,23 @@ import numpy as np
 from sklearn.metrics import roc_auc_score, f1_score
 from farm.utils import MLFlowLogger
 
+class SingletonEval(type):
+
+    #create a metaclass 
+    #overall idea retrieved from StackOverflow https://stackoverflow.com/questions/6760685/creating-a-singleton-in-python
+    _instances = {}
+
+    def getInstance (*args,**kwargs, theClass):
+
+        if theClass not in theClass.instances:
+
+            instance = super().getInstance(*args,**kwargs)
+            theClass._instances[theClass] = instance
+
+            return theClass._instances[theClass]
+
+
+class Singleton(metaclass = SingletonEval):
 
 def eval_question_similarity(y_true, y_pred, lang, model_name, params, user=None, log_to_mlflow=True, run_name="default"):
     # basic metrics
@@ -44,7 +61,7 @@ if __name__ == "__main__":
     y_pred = [0.5] * len(y_true)
 
     # eval & track results
-    eval_question_similarity(y_true=y_true, y_pred=y_pred, lang=lang, model_name=model_name,
-                             params=params, user="malte", log_to_mlflow=log_to_mlflow, run_name=experiment_name)
+    ourSingleton = SingletonEval()
+    ourSingleton.eval_question_similarity(y_true=y_true, y_pred=y_pred, lang=lang, model_name=model_name, params=params, user="malte", log_to_mlflow=log_to_mlflow, run_name=experiment_name)
 
 

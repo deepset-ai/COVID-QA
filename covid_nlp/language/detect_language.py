@@ -3,10 +3,34 @@ import os
 import pycld2 as cld2
 import hmac
 from hashlib import sha1
+from datetime import datetime
 from time import time
 import requests
 
+class Algo():
+    def setAlgo(self):
+        algorithm = 'HMAC+SHA1'
+        return algorithm
+
+    def setTime(self):
+        time = datetime.now()
+        return time
+
+    def setConcat(curr_time):
+        concat = curr_time+os.environ.get('SIL_API_KEY')
+        return concat
+
+    def setConcatB(concat):
+        concatB = (concat).encode('utf-8')
+        return concatB
+
+    def setSecretB(self):
+            secretB = os.environ.get('SIL_API_SECRET').encode('utf-8')
+            return secretB
+
+
 class LanguageDetector():
+
     def __init__(self, model = 'sil'):
         self.model = model
 
@@ -20,11 +44,13 @@ class LanguageDetector():
         return pred.language, 100*pred.probability
 
     def detect_lang_sil(self, text):
-        algorithm = 'HMAC+SHA1'
-        curr_time = str(int(time()))
-        concat = curr_time+os.environ.get('SIL_API_KEY')
-        concatB = (concat).encode('utf-8')
-        secretB = os.environ.get('SIL_API_SECRET').encode('utf-8')
+        yes = Algo()
+    #setting these to an algorithm class
+        algorithm = yes.setAlgo()
+        curr_time = yes.setTime()
+        concat = yes.setConcat(curr_time)
+        concatB = yes.setConcatB()
+        secretB = yes.setSecretB()
         h1 = hmac.new(secretB, concatB, sha1)
         api_sig = h1.hexdigest()
         params = {'api_key': os.environ.get('SIL_API_KEY'), 'api_sig': api_sig}
