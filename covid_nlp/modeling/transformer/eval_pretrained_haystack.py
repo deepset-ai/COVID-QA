@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import eval
 
 from sklearn.metrics import roc_auc_score
 from farm.utils import MLFlowLogger
@@ -38,7 +39,7 @@ def eval_pretrained_transformers(eval_file, lang, models, pooling_methods, extra
                 df["pred"] = np.diag(cosine_similarity(res1, res2))
 
                 # eval & track results
-                eval_question_similarity(y_true=y_true, y_pred=df["pred"].values, lang=lang, model_name=model_name,
+                ourSingleton.eval_question_similarity(y_true=y_true, y_pred=df["pred"].values, lang=lang, model_name=model_name,
                                          params=params, user="malte", log_to_mlflow=log_to_mlflow, run_name=experiment_name)
 
 if __name__ == "__main__":
