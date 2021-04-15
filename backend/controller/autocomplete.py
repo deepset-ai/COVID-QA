@@ -22,40 +22,14 @@ class Request(BaseModel):
 
 def addQuestionToAutocomplete(question: str):
     # todo: if it already exists; we need to increment count;
-    body = {
-        'phrase': question,
-        'count' : 1
-    }
-    res = api.elasticsearch_client.index(index=DB_INDEX_AUTOCOMPLETE,body=body)
+    res = api.elasticsearch_client.index(index=DB_INDEX_AUTOCOMPLETE,body=AutoCompleteBody.add(question))
 
 
 
 
 @router.get("/query/autocomplete")
 def ask(search: str):
-    interim = api.elasticsearch_client.search(index=DB_INDEX_AUTOCOMPLETE, body=
-    {
-        '_source':['phrase'],
-        'query':{
-            "bool": {
-                "must": [{
-                    "match": {
-                        "phrase": search
-                    }
-                },
-                    {
-                        "exists": {
-                            "field": "count"
-                        }
-                    }]
-            }
-        },
-        'size': 10,
-        'sort' :[
-                {'count' : {'order' : 'desc' }}
-        ]
-    })
-
+    interim = api.elasticsearch_client.search(index=DB_INDEX_AUTOCOMPLETE, body=AutoCompleteBody(search).ask)
     resultCount = len(interim['hits']['hits'])
     result = []
     for i in range(resultCount):
