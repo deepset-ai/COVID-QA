@@ -5,7 +5,6 @@ import hmac
 from hashlib import sha1
 from time import time
 import requests
-from abc import ABCMeta, abstractmethod
 
 # apply bridge pattern
 # print method is commonly used by the three class
