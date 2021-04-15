@@ -12,39 +12,48 @@ from abc import ABCMeta, abstractmethod
 
 # abstract class
 class Bridge:
-    def __init__(self, model):
+
+    #__init__ and model define the printing format 
+    def set_model(self, model):
         self.model = model
-    def bridge_print(self):
+
+    def Dl_print(self, text):
         pass
 
 # concrete abstract class
 class Bridge_cld2(Bridge):
-    def __init__(self, model):
+    def set_model(self, model):
         self.model = model
+    def Dl_print(self, text):
+        self.model.Dl_print()
 
 class Bridge_cld3(Bridge):
-    def __init__(self, model):
+    def set_model(self, model):
         self.model = model
+    def Dl_print(self, text):
+        self.model.Dl_print()
 
 class Bridge_cil(Bridge):
-    def __init__(self, model):
+    def set_model(self, model):
         self.model = model
-
+    def Dl_print(self, text):
+        self.model.Dl_print()
 
 # Implementation class
-class DlPrint:
+# model is the printing format of the output
+class model:
     def Dl_print(self, text):
         pass
 
-# concrete implementation class
-class DlPrint_Detect_lang_cld2(DlPrint):
+# concrete implementation classes which define different ways to print the information
+class DlPrint_Detect_lang_cld2(model):
         
     def Dl_print(self, text):
         pred = cld2.detect(text)[2][0]
         print(f"cld2: {pred[1], float(pred[2])}")
 
 
-class DlPrint_Detect_lang_cld3(DlPrint):
+class DlPrint_Detect_lang_cld3(model, n = 3):
         
     def Dl_print(self, text, n = 3):
         # print ld3_detect_result
@@ -58,7 +67,7 @@ class DlPrint_Detect_lang_cld3(DlPrint):
         print(f"cld3-freq: {pred_list}")
 
 
-class DlPrint_Detect_lang_sil(DlPrint):
+class DlPrint_Detect_lang_sil(model):
 
     def Dl_print(self, text):
         algorithm = 'HMAC+SHA1'
@@ -78,17 +87,22 @@ class DlPrint_Detect_lang_sil(DlPrint):
 
 def main():
     my_text = "Was ist das Coronavirus?"
-    ld3 = Bridge_cld3('ld3')
-    ld3_p = DlPrint_Detect_lang_cld3(text = my_text)
-    ld3_p.Dl_print
+    n_number = 4
 
-    ld2 = Bridge_cld2('ld2')
-    ld2_p = DlPrint_Detect_lang_cld2(text = my_text)
-    ld2_p.Dl_print
+    ld3 = Bridge_cld3()
+    ld3_print_format = DlPrint_Detect_lang_cld3(text = my_text, n = n_number)
+    ld3.set_model(model = ld3_print_format)
+    ld3.Dl_print
 
-    ldsil = Bridge_cil('sil')
-    ldsil_p = DlPrint_Detect_lang_sil(text = my_text)
-    ldsil_p.Dl_print
+    ld2 = Bridge_cld2()
+    ld2_print_format = DlPrint_Detect_lang_cld2(text = my_text)
+    ld2.set_model(model = ld2_print_format)
+    ld2.Dl_print
+
+    ldsil = Bridge_cil()
+    ldsil_print_format = DlPrint_Detect_lang_sil(text = my_text)
+    ldsil.set_model(model = ldsil_print_format)
+    ldsil.Dl_print
 
 if __name__ == "__main__":
     main()
