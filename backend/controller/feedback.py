@@ -19,11 +19,17 @@ class Feedback(BaseModel):
 
 @router.post("/models/{model_id}/feedback")
 def feedback(model_id: int, request: Feedback):
-    feedback_payload = request.__dict__
-    if feedback_payload["feedback"] not in ("relevant", "fake", "outdated", "irrelevant"):
+    if not isValid(request):
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content="Invalid 'feedback'. It must be one of relevant, fake, outdated or irrelevant",
         )
-    feedback_payload["model_id"] = model_id
-    api.elasticsearch_client.index(index=DB_INDEX_FEEDBACK, body=feedback_payload)
+    request.__dict__["model_id"] = model_id
+    api.elasticsearch_client.index(index=DB_INDEX_FEEDBACK, body=request.__dict__)
+
+    
+def isValid(request: Feedback):
+    if request.__dict__["feedback"] not in ("relevant", "fake", "outdated", "irrelevant"):
+        return False
+    else:
+        return True
