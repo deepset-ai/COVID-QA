@@ -10,7 +10,7 @@ class Leaf:
     def getReply(self):
         print(self.reply)
 
-class Composite
+class Composite:
 
     def __init__(self)
         self.child = []
@@ -28,4 +28,3 @@ class Composite
             replies.append(child.getReply)
         print(replies)
 
-        
