@@ -4,6 +4,9 @@ import sys
 
 import pandas as pd
 
+import json
+from typing import Dict
+
 
 class MSTranslator():
     def __init__(self, key = None, endpoint = None, lang = None):
@@ -19,6 +22,43 @@ class MSTranslator():
                 'Content-type': 'application/json',
                 'X-ClientTraceId': str(uuid.uuid4())
         }
+        t__(self, shared_state: str) -> None:
+        self._shared_state = shared_state
+
+    def operation(self, unique_state: str) -> None:
+        s = json.dumps(self._shared_state)
+        u = json.dumps(unique_state)
+
+
+class MSTranslatorFactory():
+
+
+    _MSTranslators: Dict[str, MSTranslator] = {}
+
+    def __init__(self, initial_MSTranslators: Dict) -> None:
+        for state in initial_MSTranslators:
+            self._MSTranslators[self.get_key(state)] = MSTranslator(state)
+
+    def get_key(self, state: Dict) -> str:
+
+
+        return "_".join(sorted(state))
+
+    def get_MSTranslator(self, shared_state: Dict) -> MSTranslator:
+
+        key = self.get_key(shared_state)
+
+        if not self._MSTranslators.get(key):
+            print("MSTranslatorFactory: Can't find a MSTranslator, creating new one.")
+            self._MSTranslators[key] = MSTranslator(shared_state)
+        else:
+            print("MSTranslatorFactory: Reusing existing MSTranslator.")
+
+        return self._MSTranslators[key]
+
+    def list_MSTranslators(self) -> None:
+        count = len(self._MSTranslators)
+
 
     def translate(self, text):
         body = [{'text': text.strip()}]
