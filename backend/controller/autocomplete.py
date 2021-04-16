@@ -4,6 +4,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 import langid
+
 langid.set_languages(['de', 'en'])  # ISO 639-1 codes
 
 #
@@ -24,19 +25,34 @@ def addQuestionToAutocomplete(question: str):
     # todo: if it already exists; we need to increment count;
     body = {
         'phrase': question,
-        'count' : 1
+        'count': 1
     }
-    res = api.elasticsearch_client.index(index=DB_INDEX_AUTOCOMPLETE,body=body)
+    res = api.elasticsearch_client.index(index=DB_INDEX_AUTOCOMPLETE, body=body)
 
 
+class Target:
+    def get_numsearch(self):
+        return Request.search
+
+
+class AskAdapter(Target):
+    def get(self):
+        return int(self.get_numsearch())
+
+
+if __name__ == '__main__':
+    # for testing purposes here
+    # assume that search has a value for this
+    obj = AskAdapter
+    print("testing of using " + obj.get())
 
 
 @router.get("/query/autocomplete")
 def ask(search: str):
     interim = api.elasticsearch_client.search(index=DB_INDEX_AUTOCOMPLETE, body=
     {
-        '_source':['phrase'],
-        'query':{
+        '_source': ['phrase'],
+        'query': {
             "bool": {
                 "must": [{
                     "match": {
@@ -51,8 +67,8 @@ def ask(search: str):
             }
         },
         'size': 10,
-        'sort' :[
-                {'count' : {'order' : 'desc' }}
+        'sort': [
+            {'count': {'order': 'desc'}}
         ]
     })
 
@@ -61,12 +77,10 @@ def ask(search: str):
     for i in range(resultCount):
         result.append(interim['hits']['hits'][i]['_source']['phrase'])
 
-
     lang, score = langid.classify(search)
 
     return {
-            "results":result,
-            "language": lang
-        }
-
+        "results": result,
+        "language": lang
+    }
 
