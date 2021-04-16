@@ -23,7 +23,7 @@ class FeedbackCopier:
     def _init_(self):
         self.question = Feedback.question
         self.answer = Feedback.answer
-        self.feedback = Feedback.eedback
+        self.feedback = Feedback.feedback
         self.document_id = Feedback.document_id
 
     def clone(self):
