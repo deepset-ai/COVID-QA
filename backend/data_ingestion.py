@@ -3,50 +3,55 @@ from haystack import Finder
 from haystack.database.elasticsearch import ElasticsearchDocumentStore
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
 
-def index_new_docs(document_store, retriever):
-    # Get dataframe with questions, answers and some metadata
-    df = pd.read_csv("data/faqs/faq_covidbert.csv")
-    df.fillna(value="", inplace=True)
 
-    # Index to ES
-    if document_store.get_document_count() == 0:
-        docs_to_index = []
-        for idx, row in df.iterrows():
-            d = row.to_dict()
-            d = {k: v.strip() for k, v in d.items()}
-            d["document_id"] = idx
-            # add embedding
-            question_embedding = retriever.create_embedding(row["question"])
-            d["question_emb"] = question_embedding
-            docs_to_index.append(d)
-            print(idx)
-        document_store.write_documents(docs_to_index)
+class DataIngestor:
+    instance = None
 
+    def __init__(self):
+        if DataIngestor.instance is None:
+            DataIngestor.instance = self
+        return DataIngestor.instance
 
-def update_embeddings(document_store, retriever):
-    #TODO move this upstream into haystack
-    body = {
-        "size": 10000,
-        "query": {
-        "match_all": {}
-    },
-    "_source": {"includes":["question"]}
+    def index_new_docs(self, document_store, retriever):
+        # Get dataframe with questions, answers and some metadata
+        df = pd.read_csv("data/faqs/faq_covidbert.csv")
+        df.fillna(value="", inplace=True)
 
-}
-    results = document_store.client.search(index=document_store.index, body=body, )["hits"]["hits"]
-    # update embedding field
-    for r in results:
-        question_embedding = retriever.create_embedding(r["_source"]["question"])
+        # Index to ES
+        if document_store.get_document_count() == 0:
+            docs_to_index = []
+            for idx, row in df.iterrows():
+                d = row.to_dict()
+                d = {k: v.strip() for k, v in d.items()}
+                d["document_id"] = idx
+                # add embedding
+                question_embedding = retriever.create_embedding(row["question"])
+                d["question_emb"] = question_embedding
+                docs_to_index.append(d)
+                print(idx)
+            document_store.write_documents(docs_to_index)
 
+    def update_embeddings(self, document_store, retriever):
+        # TODO move this upstream into haystack
         body = {
-        "doc" : {
-            "question_emb": question_embedding
+            "size": 10000,
+            "query": {
+                "match_all": {}
+            },
+            "_source": {"includes": ["question"]}
+
         }
-    }
-        document_store.client.update(index=document_store.index, id=r["_id"], body=body)
+        results = document_store.client.search(index=document_store.index, body=body, )["hits"]["hits"]
+        # update embedding field
+        for r in results:
+            question_embedding = retriever.create_embedding(r["_source"]["question"])
 
-
-if __name__=="__main__":
+            body = {
+                "doc": {
+                    "question_emb": question_embedding
+                }
+            }
+            document_store.client.update(index=document_store.index, id=r["_id"], body=body)
 
     document_store = ElasticsearchDocumentStore(
         host="localhost",
@@ -70,9 +75,3 @@ if __name__=="__main__":
 
     # or just update embeddings
     # update_embeddings(document_store, retriever)
-
-    # test with a query
-    finder = Finder(reader=None, retriever=retriever)
-    prediction = finder.get_answers_via_similar_questions(question="How high is mortality?", top_k_retriever=10)
-    for p in prediction["answers"]:
-        print(p["question"])
