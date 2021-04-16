@@ -3,6 +3,24 @@ from haystack import Finder
 from haystack.database.elasticsearch import ElasticsearchDocumentStore
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
 
+
+class Adaptee:
+    def get_numsearch(self):
+        return "data/faqs/faq_covidbert.csv"
+
+
+class Adapter(Adaptee):
+    # this class asks for a type to convert the ".csv" files into, and offers
+    type = None
+
+    def get(self):
+        return type(self.get_numsearch())
+
+    def __init__(self, type):
+        # client may pass in the type that they wish to convert the document format into
+        self.type = type
+
+
 def index_new_docs(document_store, retriever):
     # Get dataframe with questions, answers and some metadata
     df = pd.read_csv("data/faqs/faq_covidbert.csv")
@@ -24,30 +42,29 @@ def index_new_docs(document_store, retriever):
 
 
 def update_embeddings(document_store, retriever):
-    #TODO move this upstream into haystack
+    # TODO move this upstream into haystack
     body = {
         "size": 10000,
         "query": {
-        "match_all": {}
-    },
-    "_source": {"includes":["question"]}
+            "match_all": {}
+        },
+        "_source": {"includes": ["question"]}
 
-}
+    }
     results = document_store.client.search(index=document_store.index, body=body, )["hits"]["hits"]
     # update embedding field
     for r in results:
         question_embedding = retriever.create_embedding(r["_source"]["question"])
 
         body = {
-        "doc" : {
-            "question_emb": question_embedding
+            "doc": {
+                "question_emb": question_embedding
+            }
         }
-    }
         document_store.client.update(index=document_store.index, id=r["_id"], body=body)
 
 
-if __name__=="__main__":
-
+if __name__ == "__main__":
     document_store = ElasticsearchDocumentStore(
         host="localhost",
         username="",
@@ -71,8 +88,6 @@ if __name__=="__main__":
     # or just update embeddings
     # update_embeddings(document_store, retriever)
 
-    # test with a query
-    finder = Finder(reader=None, retriever=retriever)
-    prediction = finder.get_answers_via_similar_questions(question="How high is mortality?", top_k_retriever=10)
-    for p in prediction["answers"]:
-        print(p["question"])
+
+class Adapter:
+    str(pd.read_csv)
