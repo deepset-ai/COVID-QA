@@ -14,7 +14,19 @@ RESULTS = []
 MISSED = []
 
 
-class Pipeline(object):
+class Singleton(object):
+
+    _instances = {}
+
+    def getInstance (*args,**kwargs, theClass):
+
+        if theClass not in theClass.instances:
+
+            instance = super().getInstance(*args,**kwargs)
+            theClass._instances[theClass] = instance
+
+            return theClass._instances[theClass]
+
     questionsOnly = True
 
     def filter(self, item, index):
