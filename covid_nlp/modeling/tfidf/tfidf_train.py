@@ -43,12 +43,3 @@ class TfidfTrainer():
         with open(f"{prefix}vectorizer.pkl", 'rb') as infile:
             self.vectorizer = pickle.load(infile)
 
-
-def main():
-    trainer = TfidfTrainer()
-    corpus = trainer.preprocess_corpus()
-    trainer.train_model(corpus)
-    trainer.save_model()
- 
-if __name__ == "__main__":
-    main()
