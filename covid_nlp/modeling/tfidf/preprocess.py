@@ -61,16 +61,3 @@ class Preprocessor():
     def read_string(self, mystring):
         articles = [mystring]
         return articles
-
-
-def main():
-    vocab_size = 24000
-    if len(sys.argv) > 1:
-        vocab_size = sys.argv[1]
-    print("Create Preprocessor")
-    preprocessor = Preprocessor(language = 'english')
-    print("Train spm")
-    preprocessor.sentencepiece_train(preprocessor.corpus, vocab_size = vocab_size)
-
-if __name__ == "__main__":
-    main()
