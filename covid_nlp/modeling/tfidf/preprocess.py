@@ -12,14 +12,29 @@ import string
 import sentencepiece as spm
 
 class Preprocessor():
+    # Singleton instance
+    __instance = None
+    # flag for init
+    __inited = False
 
-    def __init__(self, language = 'english', instream = None):
+    # __new__ is a private static method is accessible from outside
+    def __new__(cls, language = 'english', instream = None):
+        if cls.__instance is None:
+            cls.__instance = super(Preprocessor, cls).__new__(cls, language, instream)
+        return cls.__instance
+
+    def __init__(self, language = 'english', instream = None) -> None:
+        # init check
+        if type(self).__inited:
+            return
         self.language = language
         if instream:
             self.corpus_orig = self.read_string(instream)
         else:
             self.corpus_orig = self.read_articles(sys.stdin)
         self.corpus = self.preprocess(self.corpus_orig)
+        # mark
+        type(self).__inited = True
 
     def preprocess(self, corpus_list):
         preproc_corpus_list = []
