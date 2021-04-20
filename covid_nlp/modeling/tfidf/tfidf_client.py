@@ -12,9 +12,6 @@ import pandas as pd
 from preprocess import Preprocessor
 from tfidf_train import TfidfTrainer
 
-sys.path.insert(0, "./../../")
-from eval import eval_question_similarity
-
 
 class TfidfEvaluator():
     def __init__(self):
