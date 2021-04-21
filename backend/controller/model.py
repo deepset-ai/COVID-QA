@@ -10,10 +10,9 @@ from haystack.database.elasticsearch import ElasticsearchDocumentStore
 from haystack.reader.farm import FARMReader
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
 from pydantic import BaseModel
+from abc import ABC, abstractmethod
 
 from covid_nlp.language.detect_language import LanguageDetector
-from collections.abc import Iterable, Iterator
-
 
 from backend.config import (
     DB_HOST,
@@ -97,6 +96,31 @@ FINDERS = {1: Finder(reader=reader, retriever=retriever),
 #############################################
 # Basic data schema for request & response
 #############################################
+
+class Context:
+    _state = None
+    def __init__(self, state: State) -> None:
+        self.transition_to(state)
+
+    def transition_to(self, state: State):
+        self._state = state
+        self._state.context = self
+        
+    def get_filtered(self):
+        self._state.get_filtered()
+class State(ABC):
+    @property
+    def context(self) -> Context:
+        return self._context
+
+    @context.setter
+    def context(self, context: Context) -> None:
+        self._context = context
+
+    @abstractmethod
+    def get_filtered(self) -> None:
+        pass
+
 class Query(BaseModel):
     questions: List[str]
     filters: Dict[str, Optional[str]] = None
@@ -118,32 +142,14 @@ class Answer(BaseModel):
     # TODO move these two into "meta" also for the regular extractive QA
 
 
-class ResponseToIndividualQuestion(Iterator):
-    _position: int = None
-    _reverse: bool = False
+class ResponseToIndividualQuestion(BaseModel):
     question: str
     answers: List[Optional[Answer]]
     model_id: int
 
-    def __init__(self, results, reverse = False) -> None:
-        self._results = results
-        self._reverse = reverse
-        self._position = -1 if reverse else 0
-    def __next__(self):
-        try:
-            value = self._results[self._position]
-            self._position += -1 if self._reverse else 1
-        except IndexError:
-            raise StopIteration()
 
-        return value
-class Response(Iterable):
-    def __init__(self, results: List[ResponseToIndividualQuestion] = []) -> None:
-        self._results = results
+class Response(BaseModel):
     results: List[ResponseToIndividualQuestion]
-    
-    def add_item(self, item):
-        self._results.append(item)
 
 
 #############################################
