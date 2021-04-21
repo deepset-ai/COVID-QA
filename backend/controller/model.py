@@ -12,6 +12,8 @@ from haystack.retriever.elasticsearch import ElasticsearchRetriever
 from pydantic import BaseModel
 
 from covid_nlp.language.detect_language import LanguageDetector
+from collections.abc import Iterable, Iterator
+
 
 from backend.config import (
     DB_HOST,
@@ -116,14 +118,32 @@ class Answer(BaseModel):
     # TODO move these two into "meta" also for the regular extractive QA
 
 
-class ResponseToIndividualQuestion(BaseModel):
+class ResponseToIndividualQuestion(Iterator):
+    _position: int = None
+    _reverse: bool = False
     question: str
     answers: List[Optional[Answer]]
     model_id: int
 
+    def __init__(self, results, reverse = False) -> None:
+        self._results = results
+        self._reverse = reverse
+        self._position = -1 if reverse else 0
+    def __next__(self):
+        try:
+            value = self._results[self._position]
+            self._position += -1 if self._reverse else 1
+        except IndexError:
+            raise StopIteration()
 
-class Response(BaseModel):
+        return value
+class Response(Iterable):
+    def __init__(self, results: List[ResponseToIndividualQuestion] = []) -> None:
+        self._results = results
     results: List[ResponseToIndividualQuestion]
+    
+    def add_item(self, item):
+        self._results.append(item)
 
 
 #############################################
