@@ -10,6 +10,7 @@ from haystack.database.elasticsearch import ElasticsearchDocumentStore
 from haystack.reader.farm import FARMReader
 from haystack.retriever.elasticsearch import ElasticsearchRetriever
 from pydantic import BaseModel
+from abc import ABC, abstractmethod
 
 from covid_nlp.language.detect_language import LanguageDetector
 
@@ -95,6 +96,31 @@ FINDERS = {1: Finder(reader=reader, retriever=retriever),
 #############################################
 # Basic data schema for request & response
 #############################################
+
+class Context:
+    _state = None
+    def __init__(self, state: State) -> None:
+        self.transition_to(state)
+
+    def transition_to(self, state: State):
+        self._state = state
+        self._state.context = self
+        
+    def get_filtered(self):
+        self._state.get_filtered()
+class State(ABC):
+    @property
+    def context(self) -> Context:
+        return self._context
+
+    @context.setter
+    def context(self, context: Context) -> None:
+        self._context = context
+
+    @abstractmethod
+    def get_filtered(self) -> None:
+        pass
+
 class Query(BaseModel):
     questions: List[str]
     filters: Dict[str, Optional[str]] = None
