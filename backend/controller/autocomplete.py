@@ -56,9 +56,8 @@ def ask(search: str):
         ]
     })
 
-    resultCount = len(interim['hits']['hits'])
     result = []
-    for i in range(resultCount):
+    for i in next(interim['hits']['hits']):
         result.append(interim['hits']['hits'][i]['_source']['phrase'])
 
 
