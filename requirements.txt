@@ -1,5 +1,5 @@
 #crawler
-Scrapy==2.0.1
+Scrapy==2.6.2
 # haystack
 -e git://github.com/deepset-ai/haystack.git@master#egg=farm-haystack
 langid===1.1.6
